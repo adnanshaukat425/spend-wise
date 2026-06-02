@@ -24,9 +24,14 @@ function RootLayoutNav() {
   const router = useRouter();
 
   useEffect(() => {
-    AsyncStorage.getItem("hasOnboarded").then((value) => {
-      if (value !== "true") {
+    Promise.all([
+      AsyncStorage.getItem("hasOnboarded"),
+      AsyncStorage.getItem("isLoggedIn"),
+    ]).then(([onboarded, loggedIn]) => {
+      if (onboarded !== "true") {
         router.replace("/onboarding");
+      } else if (loggedIn !== "true") {
+        router.replace("/login");
       }
     });
   }, []);
@@ -35,6 +40,7 @@ function RootLayoutNav() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="onboarding" />
+      <Stack.Screen name="login" />
     </Stack>
   );
 }

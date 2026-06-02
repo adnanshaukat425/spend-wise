@@ -91,7 +91,7 @@ export default function OnboardingScreen() {
   const handleGetStarted = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await AsyncStorage.setItem("hasOnboarded", "true");
-    router.replace("/(tabs)");
+    router.replace("/login");
   };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
