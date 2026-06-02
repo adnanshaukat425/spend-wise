@@ -31,7 +31,7 @@ const PREFERENCES: MenuRow[] = [
 
 const ACCOUNT: MenuRow[] = [
   { id: "accounts", kind: "chevron", label: "Manage Accounts", icon: "wallet-outline", value: "3" },
-  { id: "subscription", kind: "chevron", label: "Subscription", icon: "ribbon-outline", value: "Free Plan" },
+  { id: "subscription", kind: "chevron", label: "Subscription", icon: "ribbon-outline", value: "Free Plan", route: "/subscription" } as ChevronRow & { route: string },
   { id: "security", kind: "chevron", label: "Security", icon: "shield-outline" },
   { id: "export", kind: "chevron", label: "Export Data", icon: "document-text-outline" },
 ];
@@ -86,6 +86,8 @@ export default function ProfileScreen() {
                 onPress={() => {
                   if (row.kind !== "toggle") {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    const route = (row as ChevronRow & { route?: string }).route;
+                    if (route) router.push(route as any);
                   }
                 }}
               >
