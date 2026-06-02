@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import React from "react";
 import {
   Platform,
@@ -12,47 +13,30 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
 
-const INSIGHTS = [
+const TODAY_INSIGHTS = [
   {
     id: "1",
-    title: "Cut Food Spending",
-    body: "You spent 32% more on dining out this month. Cooking at home 3 more times a week could save you $120/month.",
-    icon: "restaurant-outline" as const,
+    title: "Shopping Overspend Alert",
+    body: "You've exceeded your shopping budget by $50 this month.",
+    iconName: "warning-outline" as const,
+    iconBg: "#FFF7E8",
     iconColor: "#F59E0B",
-    bgColor: "#FEF3C7",
-    tag: "Savings",
-    tagColor: "#F59E0B",
   },
   {
     id: "2",
-    title: "Bills Budget Alert",
-    body: "You're at 95% of your Bills budget. Consider reviewing subscriptions — you may have unused services.",
-    icon: "warning-outline" as const,
-    iconColor: "#EF4444",
-    bgColor: "#FEE2E2",
-    tag: "Alert",
-    tagColor: "#EF4444",
-  },
-  {
-    id: "3",
-    title: "Great Saving Streak!",
-    body: "You saved $480 more than last month. You're on track to reach your emergency fund goal in 3 months.",
-    icon: "trending-up-outline" as const,
-    iconColor: "#10B981",
-    bgColor: "#D1FAE5",
-    tag: "Achievement",
-    tagColor: "#10B981",
-  },
-  {
-    id: "4",
-    title: "Investment Opportunity",
-    body: "Based on your savings rate, investing $200/month in an index fund could grow to $48,000 in 10 years.",
-    icon: "analytics-outline" as const,
+    title: "Coffee Spending Pattern",
+    body: "You spend ~$5.40 on coffee daily. That's $162/month!",
+    iconName: "bulb-outline" as const,
+    iconBg: "#EFF6FF",
     iconColor: "#3B82F6",
-    bgColor: "#DBEAFE",
-    tag: "Growth",
-    tagColor: "#3B82F6",
   },
+];
+
+const PRO_PERKS = [
+  "Unlimited AI-powered insights",
+  "Personalized savings recommendations",
+  "Spending predictions & forecasts",
+  "Smart budget optimization",
 ];
 
 export default function AIScreen() {
@@ -63,127 +47,415 @@ export default function AIScreen() {
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: "#F8F9FB" }]}
-      contentContainerStyle={{ paddingBottom: botPad + 110 }}
+      style={styles.container}
+      contentContainerStyle={[
+        styles.scroll,
+        { paddingTop: topPad + 4, paddingBottom: botPad + 110 },
+      ]}
       showsVerticalScrollIndicator={false}
     >
-      <View style={[styles.header, { paddingTop: topPad + 16 }]}>
-        <View>
-          <Text style={styles.title}>AI Insights</Text>
-          <Text style={styles.subtitle}>Personalized for you</Text>
+      {/* ── Header ── */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <View style={styles.headerTitleRow}>
+            <Ionicons name="sparkles" size={20} color={colors.primary} />
+            <Text style={styles.headerTitle}>AI Insights</Text>
+          </View>
+          <Text style={styles.headerSub}>Powered by SpendWise AI</Text>
         </View>
-        <View style={[styles.proBadge, { backgroundColor: colors.primary }]}>
-          <Text style={styles.proText}>PRO</Text>
+        <TouchableOpacity
+          style={styles.upgradeBtn}
+          activeOpacity={0.85}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <Text style={styles.upgradeCrown}>👑</Text>
+          <Text style={styles.upgradeBtnText}>Upgrade</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* ── Financial Health Card ── */}
+      <View style={[styles.healthCard, { backgroundColor: colors.secondary }]}>
+        <View style={styles.healthTop}>
+          <View style={[styles.healthIconWrap, { backgroundColor: colors.primary + "22" }]}>
+            <Ionicons name="sparkles" size={22} color={colors.primary} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.healthTitle}>Your Financial Health</Text>
+            <Text style={styles.healthBody}>
+              You're doing well! Your spending is 33% below your budget this month. Keep up the good work!
+            </Text>
+          </View>
+        </View>
+        <View style={styles.healthStatus}>
+          <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
+          <Text style={[styles.statusText, { color: colors.primary }]}>Good Standing</Text>
         </View>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.statsRow}>
-          {[
-            { label: "Avg Daily Spend", value: "$41.20", icon: "calendar-outline" as const, color: "#8B5CF6" },
-            { label: "Savings Rate", value: "22%", icon: "pie-chart-outline" as const, color: "#10B981" },
-            { label: "Top Category", value: "Food", icon: "restaurant-outline" as const, color: "#F59E0B" },
-          ].map((stat) => (
-            <View key={stat.label} style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: stat.color + "20" }]}>
-                <Ionicons name={stat.icon} size={18} color={stat.color} />
-              </View>
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
+      {/* ── Today's Insights ── */}
+      <Text style={styles.sectionTitle}>Today's Insights</Text>
+      {TODAY_INSIGHTS.map((item) => (
+        <TouchableOpacity
+          key={item.id}
+          style={styles.insightCard}
+          activeOpacity={0.7}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <View style={[styles.insightIcon, { backgroundColor: item.iconBg }]}>
+            <Ionicons name={item.iconName} size={20} color={item.iconColor} />
+          </View>
+          <View style={styles.insightBody}>
+            <Text style={styles.insightTitle}>{item.title}</Text>
+            <Text style={styles.insightText}>{item.body}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#D1D5DB" />
+        </TouchableOpacity>
+      ))}
+
+      {/* ── Pro Insights ── */}
+      <View style={styles.proHeaderRow}>
+        <Text style={styles.sectionTitle}>Pro Insights</Text>
+        <Text style={styles.crown}>👑</Text>
+      </View>
+
+      {/* Locked Pro cards */}
+      {[1, 2, 3].map((n) => (
+        <View key={n} style={styles.lockedCard}>
+          {/* Blurred content hint */}
+          <View style={styles.lockedContent}>
+            <View style={styles.lockedIconPlaceholder} />
+            <View style={styles.lockedLines}>
+              <View style={[styles.lockedLine, { width: "60%" }]} />
+              <View style={[styles.lockedLine, { width: "85%", marginTop: 6 }]} />
+            </View>
+          </View>
+          {/* Lock badge */}
+          <View style={styles.lockBadge}>
+            <Ionicons name="lock-closed" size={13} color="#6B7280" />
+            <Text style={styles.lockBadgeText}>Pro Feature</Text>
+          </View>
+        </View>
+      ))}
+
+      {/* ── Upgrade to Pro Card ── */}
+      <View style={styles.upgradeCard}>
+        <View style={styles.upgradeCardHeader}>
+          <Text style={styles.upgradeCardCrown}>👑</Text>
+          <Text style={styles.upgradeCardTitle}>Upgrade to Pro</Text>
+        </View>
+        <Text style={styles.upgradeCardSub}>
+          Unlock AI-powered insights and save more money every month.
+        </Text>
+
+        {/* Perk list */}
+        <View style={styles.perks}>
+          {PRO_PERKS.map((perk) => (
+            <View key={perk} style={styles.perkRow}>
+              <Ionicons name="checkmark" size={16} color={colors.primary} />
+              <Text style={styles.perkText}>{perk}</Text>
             </View>
           ))}
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recommendations</Text>
-        {INSIGHTS.map((insight) => (
-          <TouchableOpacity key={insight.id} style={styles.insightCard} activeOpacity={0.7}>
-            <View style={styles.insightHeader}>
-              <View style={[styles.insightIcon, { backgroundColor: insight.bgColor }]}>
-                <Ionicons name={insight.icon} size={20} color={insight.iconColor} />
-              </View>
-              <View style={styles.insightMeta}>
-                <Text style={styles.insightTitle}>{insight.title}</Text>
-                <View style={[styles.tag, { backgroundColor: insight.bgColor }]}>
-                  <Text style={[styles.tagText, { color: insight.tagColor }]}>{insight.tag}</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={18} color="#D1D5DB" />
-            </View>
-            <Text style={styles.insightBody}>{insight.body}</Text>
-          </TouchableOpacity>
-        ))}
+        {/* Price */}
+        <View style={styles.priceRow}>
+          <Text style={styles.price}>$4.99</Text>
+          <Text style={styles.priceUnit}> /month</Text>
+        </View>
+
+        {/* CTA button */}
+        <TouchableOpacity
+          style={styles.trialBtn}
+          activeOpacity={0.85}
+          onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
+        >
+          <Text style={styles.trialBtnText}>Start 7-Day Free Trial</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.trialFooter}>Cancel anytime • No credit card required</Text>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F6F9",
+  },
+  scroll: {
+    paddingHorizontal: 20,
+  },
+
+  // Header
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    marginBottom: 20,
   },
-  title: { fontSize: 24, fontFamily: "Inter_700Bold", color: "#111827" },
-  subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#6B7280", marginTop: 2 },
-  proBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  proText: { fontSize: 12, fontFamily: "Inter_700Bold", color: "#FFFFFF" },
-  section: { paddingHorizontal: 20, marginBottom: 20 },
-  statsRow: { flexDirection: "row", gap: 10 },
-  statCard: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    padding: 12,
+  headerLeft: { gap: 3 },
+  headerTitleRow: {
+    flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
   },
-  statIcon: {
-    width: 36,
-    height: 36,
+  headerTitle: {
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    color: "#111827",
+  },
+  headerSub: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#9CA3AF",
+  },
+  upgradeBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#F59E0B",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  upgradeCrown: {
+    fontSize: 12,
+    lineHeight: 14,
+  },
+  upgradeBtnText: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+    color: "#FFFFFF",
+  },
+
+  // Health card
+  healthCard: {
     borderRadius: 18,
+    padding: 18,
+    marginBottom: 24,
+  },
+  healthTop: {
+    flexDirection: "row",
+    gap: 14,
+    marginBottom: 14,
+    alignItems: "flex-start",
+  },
+  healthIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
-  statValue: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#111827" },
-  statLabel: { fontSize: 10, fontFamily: "Inter_400Regular", color: "#6B7280", textAlign: "center" },
-  sectionTitle: { fontSize: 17, fontFamily: "Inter_700Bold", color: "#111827", marginBottom: 12 },
+  healthTitle: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#111827",
+    marginBottom: 6,
+  },
+  healthBody: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#374151",
+    lineHeight: 19,
+  },
+  healthStatus: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  statusText: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+  },
+
+  // Section title
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: "Inter_700Bold",
+    color: "#111827",
+    marginBottom: 12,
+  },
+  proHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  crown: { fontSize: 16 },
+
+  // Insight card
   insightCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 1,
-    gap: 10,
   },
-  insightHeader: { flexDirection: "row", alignItems: "center", gap: 12 },
   insightIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
-  insightMeta: { flex: 1, gap: 4 },
-  insightTitle: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#111827" },
-  tag: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, alignSelf: "flex-start" },
-  tagText: { fontSize: 10, fontFamily: "Inter_500Medium" },
-  insightBody: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#6B7280", lineHeight: 19 },
+  insightBody: { flex: 1 },
+  insightTitle: {
+    fontSize: 14,
+    fontFamily: "Inter_600SemiBold",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  insightText: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#6B7280",
+    lineHeight: 17,
+  },
+
+  // Locked pro cards
+  lockedCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderStyle: "dashed",
+    padding: 16,
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 72,
+  },
+  lockedContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    width: "100%",
+    opacity: 0.18,
+  },
+  lockedIconPlaceholder: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#9CA3AF",
+  },
+  lockedLines: { flex: 1 },
+  lockedLine: {
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#9CA3AF",
+  },
+  lockBadge: {
+    position: "absolute",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  lockBadgeText: {
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
+    color: "#6B7280",
+  },
+
+  // Upgrade card
+  upgradeCard: {
+    backgroundColor: "#FFF7ED",
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 8,
+  },
+  upgradeCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  upgradeCardCrown: {
+    fontSize: 20,
+  },
+  upgradeCardTitle: {
+    fontSize: 17,
+    fontFamily: "Inter_700Bold",
+    color: "#111827",
+  },
+  upgradeCardSub: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#6B7280",
+    lineHeight: 19,
+    marginBottom: 16,
+  },
+  perks: { gap: 10, marginBottom: 20 },
+  perkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  perkText: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    color: "#374151",
+    flex: 1,
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    marginBottom: 16,
+  },
+  price: {
+    fontSize: 34,
+    fontFamily: "Inter_700Bold",
+    color: "#111827",
+  },
+  priceUnit: {
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+    color: "#9CA3AF",
+  },
+  trialBtn: {
+    backgroundColor: "#F59E0B",
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    shadowColor: "#F59E0B",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  trialBtnText: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+    color: "#FFFFFF",
+  },
+  trialFooter: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    color: "#9CA3AF",
+    textAlign: "center",
+  },
 });
