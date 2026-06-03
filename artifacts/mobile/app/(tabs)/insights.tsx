@@ -1,99 +1,122 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useMemo } from "react";
 import {
-  Platform,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BarChart } from "@/components/charts/BarChart";
+import { useDashboard, useInsights, useWeeklySpend } from "@/hooks/api";
+import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
-
-const INSIGHTS = [
-  {
-    id: "1",
-    type: "tip",
-    title: "Cut Food Spending",
-    body: "You spent 32% more on dining out this month. Cooking at home 3 more times a week could save you $120/month.",
-    icon: "restaurant-outline" as const,
-    iconColor: "#F59E0B",
-    bgColor: "#FEF3C7",
-    tag: "Savings",
-  },
-  {
-    id: "2",
-    type: "alert",
-    title: "Bills Budget Alert",
-    body: "You're at 95% of your Bills budget. Consider reviewing subscriptions — you may have unused services.",
-    icon: "warning-outline" as const,
-    iconColor: "#EF4444",
-    bgColor: "#FEE2E2",
-    tag: "Alert",
-  },
-  {
-    id: "3",
-    type: "positive",
-    title: "Great Saving Streak!",
-    body: "You saved $480 more than last month. Keep it up — you're on track to reach your emergency fund goal in 3 months.",
-    icon: "trending-up-outline" as const,
-    iconColor: "#10B981",
-    bgColor: "#D1FAE5",
-    tag: "Achievement",
-  },
-  {
-    id: "4",
-    type: "tip",
-    title: "Investment Opportunity",
-    body: "Based on your savings rate, investing $200/month in an index fund could grow to $48,000 in 10 years.",
-    icon: "analytics-outline" as const,
-    iconColor: "#3B82F6",
-    bgColor: "#DBEAFE",
-    tag: "Growth",
-  },
-];
-
-const MONTHLY_SUMMARY = [
-  { label: "Avg Daily Spend", value: "$41.20", icon: "calendar-outline" as const, color: "#8B5CF6" },
-  { label: "Savings Rate", value: "22%", icon: "pie-chart-outline" as const, color: "#10B981" },
-  { label: "Top Category", value: "Food", icon: "restaurant-outline" as const, color: "#F59E0B" },
-];
+import { useScreenInsets } from "@/hooks/useScreenInsets";
 
 export default function InsightsScreen() {
-  const insets = useSafeAreaInsets();
+  const router = useRouter();
   const colors = useColors();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const botPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const insets = useScreenInsets();
+  const { data: insights = [] } = useInsights();
+  const { data: weeklySpend = [] } = useWeeklySpend();
+  const { data: dashboard } = useDashboard();
+
+  const barData = useMemo(
+    () => weeklySpend.map((d) => ({ label: d.day, value: d.amount })),
+    [weeklySpend],
+  );
+
+  const topCategory = dashboard?.spendingByCategory?.[0];
+  const monthlyIncome = dashboard?.monthlyIncome ?? 0;
+  const monthlyExpenses = dashboard?.monthlyExpenses ?? 0;
+  const savingsRate =
+    monthlyIncome > 0
+      ? Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100)
+      : 0;
+  const weeklyTotal = weeklySpend.reduce((s, d) => s + d.amount, 0);
+  const avgDaily =
+    weeklySpend.length > 0 ? weeklyTotal / weeklySpend.length : 0;
+
+  const monthlySummary = [
+    {
+      label: "Avg Daily Spend",
+      value: formatCurrency(avgDaily),
+      icon: "calendar-outline" as const,
+      color: "#8B5CF6",
+    },
+    {
+      label: "Savings Rate",
+      value: `${savingsRate}%`,
+      icon: "pie-chart-outline" as const,
+      color: "#10B981",
+    },
+    {
+      label: "Top Category",
+      value: topCategory?.name ?? "—",
+      icon: "restaurant-outline" as const,
+      color: "#F59E0B",
+    },
+  ];
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={{ paddingBottom: botPad + 100 }}
+      contentContainerStyle={{ paddingBottom: insets.bottom + 110 }}
       showsVerticalScrollIndicator={false}
     >
-      <View style={[styles.header, { paddingTop: topPad + 16 }]}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Insights</Text>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <Text style={[styles.title, { color: colors.foreground }]}>
+          Insights
+        </Text>
         <View style={[styles.aiBadge, { backgroundColor: colors.secondary }]}>
           <Ionicons name="sparkles" size={14} color={colors.primary} />
-          <Text style={[styles.aiBadgeText, { color: colors.primary }]}>AI</Text>
+          <Text style={[styles.aiBadgeText, { color: colors.primary }]}>
+            AI
+          </Text>
         </View>
       </View>
 
       <View style={styles.statsRow}>
-        {MONTHLY_SUMMARY.map((stat) => (
+        {monthlySummary.map((stat) => (
           <View
             key={stat.label}
-            style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[
+              styles.statCard,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
           >
-            <View style={[styles.statIcon, { backgroundColor: stat.color + "20" }]}>
+            <View
+              style={[styles.statIcon, { backgroundColor: stat.color + "20" }]}
+            >
               <Ionicons name={stat.icon} size={18} color={stat.color} />
             </View>
-            <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
-            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
+            <Text style={[styles.statValue, { color: colors.foreground }]}>
+              {stat.value}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
+              {stat.label}
+            </Text>
           </View>
         ))}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+          Weekly Spending
+        </Text>
+        <View
+          style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+        >
+          <BarChart
+            data={barData}
+            barColor={colors.primary}
+            labelColor={colors.mutedForeground}
+            valueColor={colors.mutedForeground}
+          />
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -101,7 +124,7 @@ export default function InsightsScreen() {
           AI Recommendations
         </Text>
 
-        {INSIGHTS.map((insight) => (
+        {insights.map((insight) => (
           <TouchableOpacity
             key={insight.id}
             style={[
@@ -109,22 +132,45 @@ export default function InsightsScreen() {
               { backgroundColor: colors.card, borderColor: colors.border },
             ]}
             activeOpacity={0.7}
+            onPress={() =>
+              Alert.alert(insight.title, insight.body, [{ text: "OK" }])
+            }
           >
             <View style={styles.insightHeader}>
-              <View style={[styles.insightIconCircle, { backgroundColor: insight.bgColor }]}>
-                <Ionicons name={insight.icon} size={20} color={insight.iconColor} />
+              <View
+                style={[
+                  styles.insightIconCircle,
+                  { backgroundColor: insight.bgColor },
+                ]}
+              >
+                <Ionicons
+                  name={insight.icon}
+                  size={20}
+                  color={insight.iconColor}
+                />
               </View>
               <View style={styles.insightMeta}>
                 <Text style={[styles.insightTitle, { color: colors.foreground }]}>
                   {insight.title}
                 </Text>
-                <View style={[styles.insightTag, { backgroundColor: insight.bgColor }]}>
-                  <Text style={[styles.insightTagText, { color: insight.iconColor }]}>
+                <View
+                  style={[
+                    styles.insightTag,
+                    { backgroundColor: insight.bgColor },
+                  ]}
+                >
+                  <Text
+                    style={[styles.insightTagText, { color: insight.iconColor }]}
+                  >
                     {insight.tag}
                   </Text>
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} />
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color={colors.mutedForeground}
+              />
             </View>
             <Text style={[styles.insightBody, { color: colors.mutedForeground }]}>
               {insight.body}
@@ -132,6 +178,17 @@ export default function InsightsScreen() {
           </TouchableOpacity>
         ))}
       </View>
+
+      <TouchableOpacity
+        style={[styles.aiLink, { backgroundColor: colors.secondary }]}
+        onPress={() => router.push("/(tabs)/ai")}
+        activeOpacity={0.8}
+      >
+        <Ionicons name="sparkles" size={18} color={colors.primary} />
+        <Text style={[styles.aiLinkText, { color: colors.primary }]}>
+          View AI Insights
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -177,9 +234,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   statValue: { fontSize: 16, fontFamily: "Inter_700Bold" },
-  statLabel: { fontSize: 10, fontFamily: "Inter_400Regular", textAlign: "center" },
-  section: { paddingHorizontal: 20 },
-  sectionTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold", marginBottom: 12 },
+  statLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+  },
+  section: { paddingHorizontal: 20, marginBottom: 20 },
+  sectionTitle: {
+    fontSize: 17,
+    fontFamily: "Inter_600SemiBold",
+    marginBottom: 12,
+  },
+  chartCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+    alignItems: "center",
+  },
   insightCard: {
     borderRadius: 16,
     borderWidth: 1,
@@ -213,4 +284,14 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     lineHeight: 19,
   },
+  aiLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 14,
+  },
+  aiLinkText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
 });

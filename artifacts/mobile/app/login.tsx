@@ -1,8 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import React from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Platform,
@@ -13,46 +12,64 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useColors } from "@/hooks/useColors";
+import { isApiConfigured } from "@/lib/api";
 
-function GoogleIcon() {
-  return (
-    <View style={styles.googleIcon}>
-      <Text style={styles.googleG}>G</Text>
-    </View>
-  );
-}
-
-function AppleIcon({ color }: { color: string }) {
-  return <Ionicons name="logo-apple" size={20} color={color} />;
-}
-
-function EnvelopeIcon({ color }: { color: string }) {
-  return <Ionicons name="mail-outline" size={20} color={color} />;
-}
+const DEV_GOOGLE_TOKEN = "dev-google:mobile-user:test@gmail.com";
+const DEV_APPLE_TOKEN = "dev-apple:mobile-user:test@icloud.com";
 
 export default function LoginScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colors = useColors();
+  const { signInWithGoogle, signInWithApple } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const botPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const handleContinue = async (method: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (method === "email") {
-      Alert.alert("Email Sign In", "Email sign-in coming soon!", [
-        { text: "OK", onPress: () => continueToApp() },
-      ]);
-    } else {
-      await continueToApp();
+  const finishSignIn = async (action: () => Promise<void>) => {
+    if (!isApiConfigured()) {
+      Alert.alert(
+        "API not configured",
+        "Set EXPO_PUBLIC_API_URL in your environment (see .env.example).",
+      );
+      return;
+    }
+    setLoading(true);
+    try {
+      await action();
+      router.replace("/(tabs)");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Sign in failed";
+      Alert.alert("Sign in failed", message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const continueToApp = async () => {
-    await AsyncStorage.setItem("isLoggedIn", "true");
-    router.replace("/(tabs)");
+  const handleContinue = async (method: "google" | "apple" | "email") => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (method === "email") {
+      Alert.alert("Email Sign In", "Email sign-in coming soon!");
+      return;
+    }
+    if (method === "google") {
+      const token = __DEV__ ? DEV_GOOGLE_TOKEN : "";
+      if (!token) {
+        Alert.alert("Google Sign In", "Google sign-in is not configured for production builds yet.");
+        return;
+      }
+      await finishSignIn(() => signInWithGoogle(token));
+      return;
+    }
+    const token = __DEV__ ? DEV_APPLE_TOKEN : "";
+    if (!token) {
+      Alert.alert("Apple Sign In", "Apple sign-in is not configured for production builds yet.");
+      return;
+    }
+    await finishSignIn(() => signInWithApple(token));
   };
 
   return (
@@ -82,6 +99,8 @@ export default function LoginScreen() {
             style={[styles.authButton, styles.outlinedButton, { borderColor: colors.border, backgroundColor: colors.card }]}
             onPress={() => handleContinue("google")}
             activeOpacity={0.75}
+            disabled={loading}
+            testID="google-login-btn"
           >
             <View style={styles.googleG_wrapper}>
               <Text style={styles.googleG}>G</Text>
@@ -101,6 +120,8 @@ export default function LoginScreen() {
             style={[styles.authButton, styles.outlinedButton, { borderColor: colors.border, backgroundColor: colors.card }]}
             onPress={() => handleContinue("apple")}
             activeOpacity={0.75}
+            disabled={loading}
+            testID="apple-login-btn"
           >
             <Ionicons name="logo-apple" size={20} color={colors.foreground} />
             <Text style={[styles.authButtonText, { color: colors.foreground }]}>
@@ -112,6 +133,8 @@ export default function LoginScreen() {
             style={[styles.authButton, styles.filledButton, { backgroundColor: colors.secondary }]}
             onPress={() => handleContinue("email")}
             activeOpacity={0.75}
+            disabled={loading}
+            testID="email-login-btn"
           >
             <Ionicons name="mail-outline" size={20} color={colors.foreground} />
             <Text style={[styles.authButtonText, { color: colors.foreground }]}>

@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { useLocalSearchParams, useRouter, type Href } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -11,106 +14,310 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { z } from "zod";
 
+import {
+  useAccounts,
+  useCategories,
+  useCreateTransaction,
+} from "@/hooks/api";
+import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
-
-const CATEGORIES = [
-  { id: "food", label: "Food", icon: "restaurant-outline" as const },
-  { id: "transport", label: "Transport", icon: "car-outline" as const },
-  { id: "shopping", label: "Shopping", icon: "bag-outline" as const },
-  { id: "coffee", label: "Coffee", icon: "cafe-outline" as const },
-  { id: "home", label: "Home", icon: "home-outline" as const },
-  { id: "utilities", label: "Utilities", icon: "flash-outline" as const },
-  { id: "health", label: "Health", icon: "heart-outline" as const },
-  { id: "travel", label: "Travel", icon: "airplane-outline" as const },
-  { id: "fun", label: "Fun", icon: "game-controller-outline" as const },
-  { id: "education", label: "Education", icon: "school-outline" as const },
-];
+import { useScreenInsets } from "@/hooks/useScreenInsets";
 
 const QUICK_TAGS = ["Lunch", "Groceries", "Gas", "Subscription", "Gift"];
 
+const expenseSchema = z.object({
+  amount: z
+    .string()
+    .min(1, "Amount is required")
+    .refine((v) => !Number.isNaN(parseFloat(v)) && parseFloat(v) > 0, {
+      message: "Enter a valid amount greater than 0",
+    }),
+  categorySlug: z.string().min(1, "Select a category"),
+  accountId: z.string().min(1, "Select an account"),
+  note: z.string().optional(),
+});
+
 export default function AddExpenseScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const insets = useScreenInsets();
   const colors = useColors();
-  const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("food");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const { data: categories = [] } = useCategories("expense");
+  const { data: accounts = [] } = useAccounts();
+  const createTransaction = useCreateTransaction();
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const botPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const {
+    prefillAmount,
+    prefillCategory,
+    prefillNote,
+  } = useLocalSearchParams<{
+    prefillAmount?: string;
+    prefillCategory?: string;
+    prefillNote?: string;
+  }>();
+
+  const [amount, setAmount] = useState(prefillAmount ?? "");
+  const [note, setNote] = useState(prefillNote ?? "");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedAccountId, setSelectedAccountId] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [receiptUri, setReceiptUri] = useState<string | undefined>();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!categories.length) return;
+    if (prefillCategory) {
+      const match = categories.find(
+        (c) => c.id === prefillCategory || c.slug === prefillCategory,
+      );
+      if (match) {
+        setSelectedCategory(match.id);
+        return;
+      }
+    }
+    if (!selectedCategory) {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [categories, prefillCategory, selectedCategory]);
+
+  useEffect(() => {
+    if (accounts.length && !selectedAccountId) {
+      setSelectedAccountId(accounts[0].id);
+    }
+  }, [accounts, selectedAccountId]);
+
+  const selectedAccount = accounts.find((a) => a.id === selectedAccountId);
+
+  const displayNote = useMemo(() => {
+    const tagPart = selectedTags.length > 0 ? selectedTags.join(", ") : "";
+    if (note && tagPart) return `${note} (${tagPart})`;
+    return note || tagPart || undefined;
+  }, [note, selectedTags]);
 
   const toggleTag = (tag: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
-  const handleSave = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    router.back();
+  const handlePickReceipt = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert(
+        "Camera permission",
+        "Allow camera access to attach a receipt photo.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setReceiptUri(result.assets[0].uri);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
   };
 
+  const handleSave = async () => {
+    const parsed = expenseSchema.safeParse({
+      amount,
+      categorySlug: selectedCategory,
+      accountId: selectedAccountId,
+      note: displayNote,
+    });
+
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0]?.toString() ?? "form";
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
+    setSaving(true);
+
+    try {
+      const category = categories.find((c) => c.id === selectedCategory);
+      await createTransaction.mutateAsync({
+        accountId: selectedAccountId,
+        categorySlug: selectedCategory,
+        name: category?.label ?? "Expense",
+        amount: -Math.abs(parseFloat(amount)),
+        note: displayNote,
+        receiptUrl: receiptUri ?? null,
+      });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.back();
+    } catch (err) {
+      Alert.alert(
+        "Could not save",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const isValid =
+    amount.trim() !== "" &&
+    parseFloat(amount) > 0 &&
+    !!selectedCategory &&
+    !!selectedAccountId;
+
+  const isVoicePrefilled = !!prefillAmount || !!prefillCategory || !!prefillNote;
+
   return (
-    <View style={[styles.container, { paddingTop: topPad }]}>
-      {/* Header */}
+    <View
+      style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}
+    >
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.headerBtn}>
-          <Ionicons name="close" size={22} color="#111827" />
+        <TouchableOpacity
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+          style={styles.headerBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Close"
+        >
+          <Ionicons name="close" size={22} color={colors.foreground} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add Expense</Text>
-        <TouchableOpacity activeOpacity={0.7} style={styles.headerBtn}>
-          <Ionicons name="camera-outline" size={22} color="#111827" />
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+          Add Expense
+        </Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.headerBtn}
+          onPress={handlePickReceipt}
+          accessibilityRole="button"
+          accessibilityLabel="Attach receipt photo"
+        >
+          <Ionicons name="camera-outline" size={22} color={colors.foreground} />
         </TouchableOpacity>
       </View>
 
       <ScrollView
-        contentContainerStyle={[styles.scroll, { paddingBottom: botPad + 100 }]}
+        contentContainerStyle={[
+          styles.scroll,
+          { paddingBottom: insets.bottom + 100 },
+        ]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Amount */}
-        <Text style={styles.sectionLabel}>Amount</Text>
-        <View style={styles.amountField}>
-          <Text style={styles.currencySymbol}>$</Text>
+        {isVoicePrefilled && (
+          <View
+            style={[
+              styles.voiceBanner,
+              { backgroundColor: colors.secondary ?? colors.muted },
+            ]}
+          >
+            <Ionicons
+              name="mic"
+              size={15}
+              color={colors.primary}
+              style={{ marginRight: 6 }}
+            />
+            <Text style={[styles.voiceBannerText, { color: colors.primary }]}>
+              Pre-filled from voice — review and adjust as needed
+            </Text>
+          </View>
+        )}
+
+        <Text style={[styles.sectionLabel, { color: colors.foreground }]}>
+          Amount
+        </Text>
+        <View
+          style={[styles.amountField, { backgroundColor: colors.muted }]}
+        >
+          <Text style={[styles.currencySymbol, { color: colors.mutedForeground }]}>
+            $
+          </Text>
           <TextInput
-            style={styles.amountInput}
+            style={[styles.amountInput, { color: colors.foreground }]}
             value={amount}
             onChangeText={setAmount}
             placeholder="0.00"
-            placeholderTextColor="#C0C6CF"
+            placeholderTextColor={colors.mutedForeground}
             keyboardType="decimal-pad"
             autoFocus={Platform.OS !== "web"}
+            testID="amount-input"
           />
         </View>
+        {errors.amount ? (
+          <Text style={[styles.errorText, { color: colors.destructive }]}>
+            {errors.amount}
+          </Text>
+        ) : null}
 
-        {/* Pay From */}
-        <Text style={styles.sectionLabel}>Pay from</Text>
-        <TouchableOpacity style={styles.accountRow} activeOpacity={0.7}>
-          <View style={styles.accountIcon}>
-            <Ionicons name="business-outline" size={20} color="#3B82F6" />
+        {receiptUri ? (
+          <View style={styles.receiptPreview}>
+            <Image source={{ uri: receiptUri }} style={styles.receiptImage} />
+            <TouchableOpacity
+              onPress={() => setReceiptUri(undefined)}
+              style={styles.removeReceipt}
+            >
+              <Ionicons name="close-circle" size={24} color={colors.destructive} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.accountInfo}>
-            <Text style={styles.accountName}>Checking Account</Text>
-            <Text style={styles.accountBalance}>Balance: $8,500</Text>
-          </View>
-          <Ionicons name="chevron-down" size={18} color="#9CA3AF" />
-        </TouchableOpacity>
+        ) : null}
 
-        {/* Category */}
-        <Text style={styles.sectionLabel}>Category</Text>
+        <Text style={[styles.sectionLabel, { color: colors.foreground }]}>
+          Pay from
+        </Text>
+        {selectedAccount ? (
+          <TouchableOpacity
+            style={[styles.accountRow, { backgroundColor: colors.muted }]}
+            activeOpacity={0.7}
+            onPress={() => router.push("/accounts" as Href)}
+            testID="account-picker"
+          >
+            <View style={[styles.accountIcon, { backgroundColor: colors.secondary }]}>
+              <Ionicons
+                name={selectedAccount.icon}
+                size={20}
+                color={selectedAccount.iconColor}
+              />
+            </View>
+            <View style={styles.accountInfo}>
+              <Text style={[styles.accountName, { color: colors.foreground }]}>
+                {selectedAccount.name}
+              </Text>
+              <Text style={[styles.accountBalance, { color: colors.mutedForeground }]}>
+                Balance: {formatCurrency(selectedAccount.balance)}
+              </Text>
+            </View>
+            <Ionicons name="chevron-down" size={18} color={colors.mutedForeground} />
+          </TouchableOpacity>
+        ) : (
+          <Text style={{ color: colors.mutedForeground, marginBottom: 8 }}>
+            No accounts linked yet.
+          </Text>
+        )}
+
+        <Text style={[styles.sectionLabel, { color: colors.foreground }]}>
+          Category
+        </Text>
         <View style={styles.categoryGrid}>
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
               <TouchableOpacity
                 key={cat.id}
                 style={[
                   styles.categoryItem,
-                  isSelected && styles.categoryItemSelected,
+                  { backgroundColor: colors.muted },
+                  isSelected && {
+                    backgroundColor: colors.card,
+                    borderColor: colors.primary,
+                    borderWidth: 2,
+                  },
                 ]}
                 onPress={() => {
                   setSelectedCategory(cat.id);
@@ -121,12 +328,16 @@ export default function AddExpenseScreen() {
                 <Ionicons
                   name={cat.icon}
                   size={22}
-                  color={isSelected ? colors.primary : "#6B7280"}
+                  color={isSelected ? colors.primary : colors.mutedForeground}
                 />
                 <Text
                   style={[
                     styles.categoryLabel,
-                    isSelected && { color: colors.primary, fontFamily: "Inter_600SemiBold" },
+                    { color: colors.mutedForeground },
+                    isSelected && {
+                      color: colors.primary,
+                      fontFamily: "Inter_600SemiBold",
+                    },
                   ]}
                   numberOfLines={1}
                 >
@@ -137,19 +348,25 @@ export default function AddExpenseScreen() {
           })}
         </View>
 
-        {/* Note */}
-        <Text style={styles.sectionLabel}>Note (optional)</Text>
+        <Text style={[styles.sectionLabel, { color: colors.foreground }]}>
+          Note (optional)
+        </Text>
         <TextInput
-          style={styles.noteInput}
+          style={[
+            styles.noteInput,
+            { backgroundColor: colors.muted, color: colors.foreground },
+          ]}
           value={note}
           onChangeText={setNote}
           placeholder="Add a note..."
-          placeholderTextColor="#C0C6CF"
+          placeholderTextColor={colors.mutedForeground}
           multiline
+          testID="note-input"
         />
 
-        {/* Quick Tags */}
-        <Text style={styles.sectionLabel}>Quick Tags</Text>
+        <Text style={[styles.sectionLabel, { color: colors.foreground }]}>
+          Quick Tags
+        </Text>
         <View style={styles.tagsRow}>
           {QUICK_TAGS.map((tag) => {
             const isSelected = selectedTags.includes(tag);
@@ -158,7 +375,11 @@ export default function AddExpenseScreen() {
                 key={tag}
                 style={[
                   styles.tagChip,
-                  isSelected && { backgroundColor: colors.secondary, borderColor: colors.primary },
+                  { backgroundColor: colors.muted },
+                  isSelected && {
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.primary,
+                  },
                 ]}
                 onPress={() => toggleTag(tag)}
                 activeOpacity={0.7}
@@ -166,7 +387,11 @@ export default function AddExpenseScreen() {
                 <Text
                   style={[
                     styles.tagText,
-                    isSelected && { color: colors.primary, fontFamily: "Inter_500Medium" },
+                    { color: colors.foreground },
+                    isSelected && {
+                      color: colors.primary,
+                      fontFamily: "Inter_500Medium",
+                    },
                   ]}
                 >
                   {tag}
@@ -177,19 +402,30 @@ export default function AddExpenseScreen() {
         </View>
       </ScrollView>
 
-      {/* Add Expense Button */}
       <View
         style={[
           styles.footer,
-          { paddingBottom: botPad + 16 },
+          { paddingBottom: insets.bottom + 16, backgroundColor: colors.background },
         ]}
       >
         <TouchableOpacity
-          style={[styles.addBtn, { backgroundColor: colors.primary }]}
+          style={[
+            styles.addBtn,
+            {
+              backgroundColor: colors.primary,
+              opacity: isValid && !saving ? 1 : 0.5,
+            },
+          ]}
           onPress={handleSave}
           activeOpacity={0.85}
+          disabled={!isValid || saving}
+          accessibilityRole="button"
+          accessibilityLabel="Add expense"
+          testID="add-expense-submit-btn"
         >
-          <Text style={styles.addBtnText}>Add Expense</Text>
+          <Text style={styles.addBtnText}>
+            {saving ? "Saving..." : "Add Expense"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -197,17 +433,13 @@ export default function AddExpenseScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F6F9",
-  },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 14,
-    backgroundColor: "#F5F6F9",
   },
   headerBtn: {
     width: 36,
@@ -215,46 +447,52 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: {
-    fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
-    color: "#111827",
-  },
-  scroll: {
-    paddingHorizontal: 20,
-  },
+  headerTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold" },
+  scroll: { paddingHorizontal: 20 },
   sectionLabel: {
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
-    color: "#111827",
     marginBottom: 10,
     marginTop: 20,
   },
   amountField: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ECEEF3",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 6,
   },
-  currencySymbol: {
-    fontSize: 20,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-  },
+  currencySymbol: { fontSize: 20, fontFamily: "Inter_400Regular" },
   amountInput: {
     flex: 1,
     fontSize: 20,
     fontFamily: "Inter_400Regular",
-    color: "#111827",
     padding: 0,
+  },
+  errorText: {
+    fontSize: 12,
+    fontFamily: "Inter_400Regular",
+    marginTop: 6,
+  },
+  receiptPreview: {
+    marginTop: 12,
+    position: "relative",
+    alignSelf: "flex-start",
+  },
+  receiptImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  removeReceipt: {
+    position: "absolute",
+    top: -8,
+    right: -8,
   },
   accountRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ECEEF3",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -264,7 +502,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#DBEAFE",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -272,14 +509,9 @@ const styles = StyleSheet.create({
   accountName: {
     fontSize: 15,
     fontFamily: "Inter_600SemiBold",
-    color: "#111827",
     marginBottom: 2,
   },
-  accountBalance: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-  },
+  accountBalance: { fontSize: 12, fontFamily: "Inter_400Regular" },
   categoryGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -288,7 +520,6 @@ const styles = StyleSheet.create({
   categoryItem: {
     width: "18%",
     aspectRatio: 1,
-    backgroundColor: "#ECEEF3",
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
@@ -297,49 +528,29 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     maxWidth: "19%",
   },
-  categoryItemSelected: {
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
   categoryLabel: {
     fontSize: 10,
     fontFamily: "Inter_400Regular",
-    color: "#6B7280",
     textAlign: "center",
   },
   noteInput: {
-    backgroundColor: "#ECEEF3",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 14,
     fontFamily: "Inter_400Regular",
-    color: "#111827",
     minHeight: 70,
     textAlignVertical: "top",
   },
-  tagsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
+  tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   tagChip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "#ECEEF3",
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "transparent",
   },
-  tagText: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "#374151",
-  },
+  tagText: { fontSize: 13, fontFamily: "Inter_400Regular" },
   footer: {
     position: "absolute",
     bottom: 0,
@@ -347,22 +558,30 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: "#F5F6F9",
   },
   addBtn: {
     height: 54,
     borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#2E7D52",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
   },
   addBtnText: {
     fontSize: 16,
     fontFamily: "Inter_600SemiBold",
     color: "#FFFFFF",
+  },
+  voiceBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  voiceBannerText: {
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
+    flex: 1,
   },
 });

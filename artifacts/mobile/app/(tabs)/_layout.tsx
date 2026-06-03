@@ -1,21 +1,40 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
+import { Redirect, Tabs, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { Tabs, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import React from "react";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  useColorScheme,
 } from "react-native";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useColors } from "@/hooks/useColors";
+import { VoiceExpenseModal } from "@/components/VoiceExpenseModal";
 
 const TAB_BAR_HEIGHT = Platform.OS === "web" ? 84 : 64;
+
+function VoiceMicFAB({ onPress }: { onPress: () => void }) {
+  const colors = useColors();
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.85}
+      style={styles.voiceFabWrapper}
+      accessibilityRole="button"
+      accessibilityLabel="Log expense by voice"
+    >
+      <View style={[styles.voiceFab, { backgroundColor: colors.card }]}>
+        <Ionicons name="mic" size={24} color={colors.primary} />
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 function AddFAB({ onPress }: { onPress: () => void }) {
   const colors = useColors();
@@ -24,6 +43,8 @@ function AddFAB({ onPress }: { onPress: () => void }) {
       onPress={onPress}
       activeOpacity={0.85}
       style={styles.fabWrapper}
+      accessibilityRole="button"
+      accessibilityLabel="Add expense"
     >
       <View style={[styles.fab, { backgroundColor: colors.primary }]}>
         <Ionicons name="add" size={28} color="#FFFFFF" />
@@ -32,7 +53,7 @@ function AddFAB({ onPress }: { onPress: () => void }) {
   );
 }
 
-function ProBadgeIcon({ color, focused }: { color: string; focused: boolean }) {
+function ProBadgeIcon({ color }: { color: string }) {
   const isIOS = Platform.OS === "ios";
   return (
     <View style={styles.proIconWrapper}>
@@ -50,32 +71,51 @@ function ProBadgeIcon({ color, focused }: { color: string; focused: boolean }) {
 
 export default function TabLayout() {
   const colors = useColors();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const isIOS = Platform.OS === "ios";
-  const isWeb = Platform.OS === "web";
+  const { isDark } = colors;
+  const { isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+  const [voiceModalVisible, setVoiceModalVisible] = useState(false);
 
   const handleFABPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     router.push("/add-expense");
   };
 
+  const handleVoiceFABPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setVoiceModalVisible(true);
+  };
+
+  if (authLoading) {
+    return (
+      <View style={[styles.loading, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/login" />;
+  }
+
+  const isIOS = Platform.OS === "ios";
+
   return (
+    <View style={styles.root}>
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarInactiveTintColor: colors.mutedForeground,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : "#FFFFFF",
+          backgroundColor: isIOS ? "transparent" : colors.card,
           borderTopWidth: 0,
           elevation: 0,
           height: TAB_BAR_HEIGHT,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.06,
+          shadowOpacity: isDark ? 0.2 : 0.06,
           shadowRadius: 8,
         },
         tabBarLabelStyle: {
@@ -141,20 +181,12 @@ export default function TabLayout() {
           tabBarLabel: () => null,
           tabBarButton: () => <AddFAB onPress={handleFABPress} />,
         }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            handleFABPress();
-          },
-        }}
       />
       <Tabs.Screen
         name="ai"
         options={{
           title: "AI",
-          tabBarIcon: ({ color, focused }) => (
-            <ProBadgeIcon color={color} focused={focused} />
-          ),
+          tabBarIcon: ({ color }) => <ProBadgeIcon color={color} />,
         }}
       />
       <Tabs.Screen
@@ -177,21 +209,29 @@ export default function TabLayout() {
             ),
         }}
       />
-
-      {/* Hidden tabs — accessible via navigation but not shown in bar */}
-      <Tabs.Screen
-        name="expenses"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="insights"
-        options={{ href: null }}
-      />
+      <Tabs.Screen name="expenses" options={{ href: null }} />
+      <Tabs.Screen name="insights" options={{ href: null }} />
     </Tabs>
+
+      <VoiceMicFAB onPress={handleVoiceFABPress} />
+
+      <VoiceExpenseModal
+        visible={voiceModalVisible}
+        onClose={() => setVoiceModalVisible(false)}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  loading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   fabWrapper: {
     flex: 1,
     alignItems: "center",
@@ -225,5 +265,25 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_700Bold",
     color: "#FFFFFF",
     letterSpacing: 0.3,
+  },
+  voiceFabWrapper: {
+    position: "absolute",
+    bottom: TAB_BAR_HEIGHT + 16,
+    right: 20,
+    zIndex: 100,
+  },
+  voiceFab: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
   },
 });

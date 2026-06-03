@@ -1,0 +1,178 @@
+name: E2E Mobile Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "artifacts/mobile/**"
+  push:
+    branches: [main]
+    paths:
+      - "artifacts/mobile/**"
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Platform to test (ios | android | both)"
+        required: false
+        default: "ios"
+
+env:
+  NODE_VERSION: "22"
+  EXPO_PUBLIC_API_URL: "http://localhost:5157"
+
+jobs:
+  # ── iOS E2E Tests ───────────────────────────────────────────────────────────
+  e2e-ios:
+    name: "E2E — iOS Simulator"
+    runs-on: macos-15
+    timeout-minutes: 60
+    if: >
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'ios' ||
+      github.event.inputs.platform == 'both'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Appium globally
+        run: |
+          npm install -g appium
+          appium driver install xcuitest
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Start backend API server
+        run: |
+          cd api
+          dotnet run --project src/SpendWise.Api/SpendWise.Api.csproj &
+          # Wait for the API to be healthy
+          for i in {1..30}; do
+            curl -sf http://localhost:5157/health && break || sleep 2
+          done
+
+      - name: Build Expo app for iOS simulator
+        working-directory: artifacts/mobile
+        env:
+          EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
+        run: |
+          npx expo export --platform ios --output-dir build-export
+          # Locate the .app bundle from the export
+          APP_PATH=$(find build-export -name "*.app" | head -1)
+          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
+          mkdir -p build
+          cp -r "$APP_PATH" build/SpendWise.app
+
+      - name: Create log and report directories
+        working-directory: artifacts/mobile
+        run: mkdir -p e2e/logs e2e/reports
+
+      - name: Run iOS E2E tests
+        working-directory: artifacts/mobile
+        env:
+          EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
+        run: pnpm test:e2e:ios
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-e2e-reports
+          path: |
+            artifacts/mobile/e2e/reports/
+            artifacts/mobile/e2e/logs/
+
+  # ── Android E2E Tests ────────────────────────────────────────────────────────
+  e2e-android:
+    name: "E2E — Android Emulator"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.platform == 'android' ||
+       github.event.inputs.platform == 'both')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Appium globally
+        run: |
+          npm install -g appium
+          appium driver install uiautomator2
+
+      - name: Setup Android SDK and emulator
+        uses: android-actions/setup-android@v3
+
+      - name: Create Android emulator
+        run: |
+          echo "y" | sdkmanager "system-images;android-34;google_apis;x86_64"
+          avdmanager create avd -n "Pixel_7_API_34" -k "system-images;android-34;google_apis;x86_64" --device "pixel_7"
+
+      - name: Start Android emulator
+        run: |
+          emulator -avd Pixel_7_API_34 -no-window -no-audio -no-boot-anim &
+          adb wait-for-device
+          adb shell input keyevent 82
+
+      - name: Start backend API server
+        run: |
+          cd api
+          dotnet run --project src/SpendWise.Api/SpendWise.Api.csproj &
+          for i in {1..30}; do
+            curl -sf http://localhost:5157/health && break || sleep 2
+          done
+
+      - name: Build Expo app for Android
+        working-directory: artifacts/mobile
+        env:
+          EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
+        run: |
+          npx expo export --platform android --output-dir build-export
+          APK_PATH=$(find build-export -name "*.apk" | head -1)
+          mkdir -p build
+          cp "$APK_PATH" build/SpendWise.apk
+
+      - name: Create log and report directories
+        working-directory: artifacts/mobile
+        run: mkdir -p e2e/logs e2e/reports
+
+      - name: Run Android E2E tests
+        working-directory: artifacts/mobile
+        env:
+          EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
+        run: pnpm test:e2e:android
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-e2e-reports
+          path: |
+            artifacts/mobile/e2e/reports/
+            artifacts/mobile/e2e/logs/

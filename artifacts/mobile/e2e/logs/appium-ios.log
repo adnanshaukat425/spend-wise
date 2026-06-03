@@ -1,0 +1,1096 @@
+2026-06-03 23:10:10:043 [Appium] Welcome to Appium v3.5.0
+2026-06-03 23:10:10:045 [Appium] Non-default server args:
+2026-06-03 23:10:10:045 [Appium] { basePath: '/', relaxedSecurityEnabled: true }
+2026-06-03 23:10:10:045 [Appium] Enabling relaxed security. All insecure features will be enabled unless explicitly disabled by --deny-insecure
+2026-06-03 23:10:10:045 [Appium] The autodetected Appium home path: /Users/adnanshaukat/.appium
+2026-06-03 23:10:10:046 [Appium] Attempting to load driver xcuitest...
+2026-06-03 23:10:10:047 [Appium] Requiring driver at /Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/index.js
+2026-06-03 23:10:10:439 [Appium] XCUITestDriver has been successfully loaded in 0.393s
+2026-06-03 23:10:10:448 [Appium] Appium REST http interface listener started on http://0.0.0.0:4723
+2026-06-03 23:10:10:448 [Appium] You can provide the following URLs in your client code to connect to this server:
+	http://127.0.0.1:4723/ (only accessible from the same host)
+	http://192.168.0.78:4723/
+	http://169.254.148.118:4723/
+2026-06-03 23:10:10:448 [Appium] Available drivers:
+2026-06-03 23:10:10:449 [Appium]   - xcuitest@11.9.0 (automationName 'XCUITest')
+2026-06-03 23:10:10:449 [Appium] No plugins have been installed. Use the "appium plugin" command to install the one(s) you want to use.
+2026-06-03 23:10:11:075 [HTTP] --> POST /session {"capabilities":{"alwaysMatch":{"platformName":"iOS","appium:platformVersion":"26.0","appium:deviceName":"iPhone 17 Pro","appium:udid":"808879C2-A04B-457D-A994-3313C9DCA1B9","appium:automationName":"XCUITest","appium:app":"/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app","appium:bundleId":"org.name.SpendWise","appium:newCommandTimeout":300,"appium:noReset":false,"appium:fullReset":true,"appium:wdaLaunchTimeout":120000,"appium:wdaConnectionTimeout":120000},"firstMatch":[{}]}}
+2026-06-03 23:10:11:076 [AppiumDriver@d189] Calling AppiumDriver.createSession() with args: [{"alwaysMatch":{"platformName":"iOS","appium:platformVersion":"26.0","appium:deviceName":"iPhone 17 Pro","appium:udid":"808879C2-A04B-457D-A994-3313C9DCA1B9","appium:automationName":"XCUITest","appium:app":"/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app","appium:bundleId":"org.name.SpendWise","appium:newCommandTimeout":300,"appium:noReset":false,"appium:fullReset":true,"appium:wdaLaunchTimeout":120000,"appium:wdaConnectionTimeout":120000},"firstMatch":[{}]},{"alwaysMatch":{"platformName":"iOS","appium:platformVersion":"26.0","appium:deviceName":"iPhone 17 Pro","appium:udid":"808879C2-A04B-457D-A994-3313C9DCA1B9","appium:automationName":"XCUITest","appium:app":"/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app","appium:bundleId":"org.name.SpendWise","appium:newCommandTimeout":300,"appium:noReset":false,"appium:fullRe…
+2026-06-03 23:10:11:076 [AppiumDriver@d189] Event 'newSessionRequested' logged at 1780528211076 (00:10:11 GMT+0100 (British Summer Time))
+2026-06-03 23:10:11:077 [Appium] Attempting to find matching driver for automationName 'XCUITest' and platformName 'iOS'
+2026-06-03 23:10:11:077 [Appium] The 'xcuitest' driver was installed and matched caps.
+2026-06-03 23:10:11:077 [Appium] Will require it at /Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver
+2026-06-03 23:10:11:078 [Appium] Requiring driver at /Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/index.js
+2026-06-03 23:10:11:078 [AppiumDriver@d189] Appium v3.5.0 creating new XCUITestDriver (v11.9.0) session
+2026-06-03 23:10:11:078 [AppiumDriver@d189] Checking BaseDriver versions for Appium and XCUITestDriver
+2026-06-03 23:10:11:078 [AppiumDriver@d189] Appium's BaseDriver version is 10.6.0
+2026-06-03 23:10:11:078 [AppiumDriver@d189] XCUITestDriver's BaseDriver version is 10.6.0
+2026-06-03 23:10:11:079 [AppiumDriver@d189] Enabling relaxed security for this session as per the server configuration. All insecure features will be enabled unless explicitly disabled by --deny-insecure
+2026-06-03 23:10:11:079 [XCUITestDriver@4dbf] 
+2026-06-03 23:10:11:079 [XCUITestDriver@4dbf] Creating session with W3C capabilities: {
+  "alwaysMatch": {
+    "platformName": "iOS",
+    "appium:platformVersion": "26.0",
+    "appium:deviceName": "iPhone 17 Pro",
+    "appium:udid": "808879C2-A04B-457D-A994-3313C9DCA1B9",
+    "appium:automationName": "XCUITest",
+    "appium:app": "/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app",
+    "appium:bundleId": "org.name.SpendWise",
+    "appium:newCommandTimeout": 300,
+    "appium:noReset": false,
+    "appium:fullReset": true,
+    "appium:wdaLaunchTimeout": 120000,
+    "appium:wdaConnectionTimeout": 120000
+  },
+  "firstMatch": [
+    {}
+  ]
+}
+2026-06-03 23:10:11:080 [0561d82d][XCUITestDriver@4dbf] Session created with session id: 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:10:11:085 [0561d82d][XCUITest] Current user: 'adnanshaukat'
+2026-06-03 23:10:11:229 [0561d82d][XCUITest] RemoteXPC devices listing unavailable: Tunnel registry port not found. Please run the tunnel creation script first See https://appium.github.io/appium-xcuitest-driver/latest/guides/remotexpc-tunnels-real-devices/ Falling back to appium-ios-device.
+2026-06-03 23:10:11:229 [0561d82d][XCUITestDriver@4dbf] Available real devices: 00008130-000165043632001C
+2026-06-03 23:10:11:400 [0561d82d][XCUITestDriver@4dbf] Constructing iOS simulator for Xcode version 26.0.1 with udid '808879C2-A04B-457D-A994-3313C9DCA1B9'
+2026-06-03 23:10:11:401 [0561d82d][XCUITestDriver@4dbf] Determining device to run tests on: udid: '808879C2-A04B-457D-A994-3313C9DCA1B9', real device: false
+2026-06-03 23:10:11:402 [0561d82d][BaseDriver] Initialized new IPC object with max object size of 1048576 bytes and max topics of 1000
+2026-06-03 23:10:11:402 [0561d82d][BaseDriver] Subscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db to topic 'xcuitest:sessionUdidClaimed'
+2026-06-03 23:10:11:402 [0561d82d][BaseDriver] Subscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db to topic 'xcuitest:sessionUdidContended'
+2026-06-03 23:10:11:402 [0561d82d][BaseDriver] Subscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db to topic 'xcuitest:sessionUdidReleased'
+2026-06-03 23:10:11:402 [0561d82d][BaseDriver] 4dbf7f87-e72d-47fc-a6d4-4018b40017db is publishing a message to topic xcuitest:sessionUdidClaimed
+2026-06-03 23:10:11:415 [0561d82d][BaseDriver] Unsubscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db from topic 'xcuitest:sessionUdidContended'
+2026-06-03 23:10:11:415 [0561d82d][BaseDriver] Unsubscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db from topic 'xcuitest:sessionUdidReleased'
+2026-06-03 23:10:11:416 [0561d82d][XCUITestDriver@4dbf] Event 'xcodeDetailsRetrieved' logged at 1780528211416 (00:10:11 GMT+0100 (British Summer Time))
+2026-06-03 23:10:11:417 [0561d82d][BaseDriver] Using local app '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app'
+2026-06-03 23:10:11:419 [0561d82d][XCUITestDriver@4dbf] Caching the manifest for org.name.SpendWise app from a file source using the key '3d32da84cb970a5a161824f03166df7951df9b66'
+2026-06-03 23:10:11:419 [0561d82d][XCUITestDriver@4dbf] Event 'appConfigured' logged at 1780528211419 (00:10:11 GMT+0100 (British Summer Time))
+2026-06-03 23:10:11:419 [0561d82d][XCUITest] Checking whether app '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app' is actually present on file system
+2026-06-03 23:10:11:419 [0561d82d][XCUITest] App is present
+2026-06-03 23:10:11:419 [0561d82d][XCUITestDriver@4dbf] Event 'resetStarted' logged at 1780528211419 (00:10:11 GMT+0100 (British Summer Time))
+2026-06-03 23:10:11:419 [0561d82d][XCUITestDriver@4dbf] Reset: fullReset is on. Cleaning simulator
+2026-06-03 23:10:11:419 [0561d82d][WebDriverAgent] Killing running processes 'xcodebuild.*808879C2-A04B-457D-A994-3313C9DCA1B9, 808879C2-A04B-457D-A994-3313C9DCA1B9.*XCTRunner, xctest.*808879C2-A04B-457D-A994-3313C9DCA1B9' for the device 808879C2-A04B-457D-A994-3313C9DCA1B9...
+2026-06-03 23:10:11:460 [0561d82d][WebDriverAgent] 'pgrep -if 808879C2-A04B-457D-A994-3313C9DCA1B9.*XCTRunner' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:11:462 [0561d82d][WebDriverAgent] 'pgrep -if xcodebuild.*808879C2-A04B-457D-A994-3313C9DCA1B9' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:11:462 [0561d82d][WebDriverAgent] 'pgrep -if xctest.*808879C2-A04B-457D-A994-3313C9DCA1B9' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:14:763 [0561d82d][XCUITestDriver@4dbf] Cleaning simulator 808879C2-A04B-457D-A994-3313C9DCA1B9
+2026-06-03 23:10:14:982 [0561d82d][XCUITestDriver@4dbf] Event 'resetComplete' logged at 1780528214982 (00:10:14 GMT+0100 (British Summer Time))
+2026-06-03 23:10:14:982 [0561d82d][XCUITestDriver@4dbf] Using WDA path: '/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/node_modules/appium-webdriveragent'
+2026-06-03 23:10:14:982 [0561d82d][XCUITestDriver@4dbf] Using WDA agent: '/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/node_modules/appium-webdriveragent/WebDriverAgent.xcodeproj'
+2026-06-03 23:10:15:070 [0561d82d][XCUITestDriver@4dbf] Error: iOS Simulator with udid '808879C2-A04B-457D-A994-3313C9DCA1B9' is not running
+    at IOSSimulatorLog.startCapture (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/device/log/ios-simulator-log.js:42:19)
+    at async XCUITestDriver.startLogCapture (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/log.js:161:13)
+    at async startLogCapture (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/driver.js:1109:28)
+    at async XCUITestDriver.start (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/driver.js:1115:37)
+    at async XCUITestDriver.createSession (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/driver.js:696:13)
+    at async AppiumDriver.createSession (/usr/local/lib/node_modules/appium/build/lib/appium.js:274:44)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+    at async AppiumDriver.executeCommand (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:158:15)
+    at async defaultBehavior (/usr/local/lib/node_modules/appium/build/lib/appium.js:582:24)
+    at async AppiumDriver.executeWrappedCommand (/usr/local/lib/node_modules/appium/build/lib/appium.js:694:22)
+    at async AppiumDriver.executeCommand (/usr/local/lib/node_modules/appium/build/lib/appium.js:598:21)
+    at async asyncHandler (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/protocol/protocol.js:394:25)
+2026-06-03 23:10:15:070 [0561d82d][XCUITestDriver@4dbf] Continuing without capturing device logs: iOS Simulator with udid '808879C2-A04B-457D-A994-3313C9DCA1B9' is not running
+2026-06-03 23:10:15:079 [0561d82d][XCUITestDriver@4dbf] Setting up simulator
+2026-06-03 23:10:15:079 [0561d82d][XCUITestDriver@4dbf] Setting preferences of 808879C2-A04B-457D-A994-3313C9DCA1B9 Simulator to {"ConnectHardwareKeyboard":false}
+2026-06-03 23:10:15:079 [0561d82d][XCUITestDriver@4dbf] Setting common Simulator preferences to {"RotateWindowWhenSignaledByGuest":true,"StartLastDeviceOnLaunch":false,"DetachOnWindowClose":false,"AttachBootedOnStart":true,"ConnectHardwareKeyboard":false,"PasteboardAutomaticSync":false}
+2026-06-03 23:10:15:100 [0561d82d][XCUITestDriver@4dbf] Updated 808879C2-A04B-457D-A994-3313C9DCA1B9 Simulator preferences at '/Users/adnanshaukat/Library/Preferences/com.apple.iphonesimulator.plist' with {"RotateWindowWhenSignaledByGuest":true,"StartLastDeviceOnLaunch":false,"DetachOnWindowClose":false,"AttachBootedOnStart":true,"ConnectHardwareKeyboard":false,"PasteboardAutomaticSync":false,"DevicePreferences":{"808879C2-A04B-457D-A994-3313C9DCA1B9":{"ConnectHardwareKeyboard":false,"SimulatorExternalDisplay":2114,"SimulatorWindowRotationAngle":0,"SimulatorWindowOrientation":"Portrait","SimulatorWindowGeometry":{"32889DD8-0DA5-4B75-85F8-775CBADF5930":{"WindowCenter":"{307, 614}","WindowScale":1},"304CA38D-7B8C-4990-8D3B-8A22F90FC451":{"WindowCenter":"{201, 510.5}","WindowScale":0.8802197802197802}},"ChromeTint":""}}}
+2026-06-03 23:10:15:190 [0561d82d][XCUITestDriver@4dbf] Got Simulator UI client PID: 1382
+2026-06-03 23:10:17:496 [0561d82d][XCUITestDriver@4dbf] Parsed BUILD_DIR configuration value: '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/WebDriverAgent-axmvytknlvueuycapqgxnxmycxmp/Build/Products'
+2026-06-03 23:10:17:496 [0561d82d][XCUITestDriver@4dbf] Got derived data root: '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/WebDriverAgent-axmvytknlvueuycapqgxnxmycxmp'
+2026-06-03 23:10:40:243 [0561d82d][XCUITestDriver@4dbf] Simulator with UDID 808879C2-A04B-457D-A994-3313C9DCA1B9 booted in 25.140s
+2026-06-03 23:10:40:249 [0561d82d][XCUITestDriver@4dbf] Event 'simStarted' logged at 1780528240248 (00:10:40 GMT+0100 (British Summer Time))
+2026-06-03 23:10:40:484 [0561d82d][XCUITestDriver@4dbf] Starting log capture for iOS Simulator with udid '808879C2-A04B-457D-A994-3313C9DCA1B9' via simctl using the following arguments 'log stream --style compact'
+2026-06-03 23:10:41:691 [0561d82d][XCUITestDriver@4dbf] Event 'logCaptureStarted' logged at 1780528241691 (00:10:41 GMT+0100 (British Summer Time))
+2026-06-03 23:10:41:692 [0561d82d][XCUITestDriver@4dbf] Verifying application platform
+2026-06-03 23:10:41:692 [0561d82d][XCUITestDriver@4dbf] CFBundleSupportedPlatforms: ["iPhoneSimulator"]
+2026-06-03 23:10:41:693 [0561d82d][XCUITestDriver@4dbf] CFBundleExecutable: "SpendWise"
+2026-06-03 23:10:41:729 [0561d82d][XCUITestDriver@4dbf] Non-fat file: /Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app/SpendWise is architecture: arm64
+2026-06-03 23:10:41:729 [0561d82d][XCUITestDriver@4dbf] Current process architecture: arm64
+2026-06-03 23:10:41:729 [0561d82d][XCUITestDriver@4dbf] Is Apple Silicon CPU: true
+2026-06-03 23:10:41:942 [0561d82d][simctl] Error running 'get_app_container': An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=2):
+The operation couldn’t be completed. No such file or directory
+No such file or directory
+2026-06-03 23:10:42:404 [0561d82d][XCUITestDriver@4dbf] App 'org.name.SpendWise' is not installed yet or it has an offload and cannot be detected, which might keep the local data.
+2026-06-03 23:10:42:405 [0561d82d][XCUITestDriver@4dbf] Installing '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app' on Simulator with UUID '808879C2-A04B-457D-A994-3313C9DCA1B9'...
+2026-06-03 23:10:46:168 [0561d82d][XCUITestDriver@4dbf] The app has been successfully installed in 3763ms
+2026-06-03 23:10:46:169 [0561d82d][XCUITestDriver@4dbf] Event 'appInstalled' logged at 1780528246169 (00:10:46 GMT+0100 (British Summer Time))
+2026-06-03 23:10:46:240 [0561d82d][XCUITestDriver@4dbf] No obsolete cached processes from previous WDA sessions listening on port 8100 have been found
+2026-06-03 23:10:46:240 [0561d82d][XCUITestDriver@4dbf] Requesting connection for device 808879C2-A04B-457D-A994-3313C9DCA1B9 on local port 8100
+2026-06-03 23:10:46:240 [0561d82d][XCUITestDriver@4dbf] Cached connections count: 0
+2026-06-03 23:10:46:241 [0561d82d][XCUITestDriver@4dbf] Successfully requested the connection for 808879C2-A04B-457D-A994-3313C9DCA1B9:8100
+2026-06-03 23:10:46:241 [0561d82d][XCUITestDriver@4dbf] Starting WebDriverAgent initialization with the synchronization key '/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/WebDriverAgent-axmvytknlvueuycapqgxnxmycxmp'
+2026-06-03 23:10:46:243 [0561d82d][WD Proxy] NoSessionProxy options: {"scheme":"http","server":"127.0.0.1","port":8100,"base":"","reqBasePath":"","sessionId":null,"timeout":3000}
+2026-06-03 23:10:46:245 [0561d82d][WD Proxy] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:46:245 [0561d82d][WD Proxy] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:46:254 [0561d82d][WD Proxy] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:46:255 [0561d82d][XCUITestDriver@4dbf] WDA is not listening at 'http://127.0.0.1:8100/'. Original error:: Could not proxy command to the remote server. Original error: connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:46:255 [0561d82d][XCUITestDriver@4dbf] WDA is currently not running. There is nothing to cache
+2026-06-03 23:10:46:263 [0561d82d][XCUITestDriver@4dbf] Trying to start WebDriverAgent 2 times with 10000ms interval
+2026-06-03 23:10:46:264 [0561d82d][XCUITestDriver@4dbf] These values can be customized by changing wdaStartupRetries/wdaStartupRetryInterval capabilities
+2026-06-03 23:10:46:264 [0561d82d][XCUITestDriver@4dbf] Event 'wdaStartAttempted' logged at 1780528246264 (00:10:46 GMT+0100 (British Summer Time))
+2026-06-03 23:10:46:264 [0561d82d][XCUITestDriver@4dbf] Launching WebDriverAgent on the device
+2026-06-03 23:10:46:264 [0561d82d][XCUITestDriver@4dbf] JWProxy options: {"scheme":"http","server":"127.0.0.1","port":8100,"base":"","reqBasePath":"","sessionId":null,"timeout":120000,"keepAlive":true}
+2026-06-03 23:10:46:264 [0561d82d][XCUITestDriver@4dbf] NoSessionProxy options: {"scheme":"http","server":"127.0.0.1","port":8100,"base":"","reqBasePath":"","sessionId":null,"timeout":120000,"keepAlive":true}
+2026-06-03 23:10:46:266 [0561d82d][XCUITestDriver@4dbf] There is no need to perform the project cleanup. A fresh install has been detected
+2026-06-03 23:10:46:267 [0561d82d][WebDriverAgent] Killing running processes 'xcodebuild.*808879C2-A04B-457D-A994-3313C9DCA1B9, 808879C2-A04B-457D-A994-3313C9DCA1B9.*XCTRunner, xctest.*808879C2-A04B-457D-A994-3313C9DCA1B9' for the device 808879C2-A04B-457D-A994-3313C9DCA1B9...
+2026-06-03 23:10:46:324 [0561d82d][WebDriverAgent] 'pgrep -if 808879C2-A04B-457D-A994-3313C9DCA1B9.*XCTRunner' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:46:334 [0561d82d][WebDriverAgent] 'pgrep -if xcodebuild.*808879C2-A04B-457D-A994-3313C9DCA1B9' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:46:335 [0561d82d][WebDriverAgent] 'pgrep -if xctest.*808879C2-A04B-457D-A994-3313C9DCA1B9' didn't detect any matching processes. Return code: 1
+2026-06-03 23:10:46:336 [0561d82d][XCUITestDriver@4dbf] Beginning test with command 'xcodebuild build-for-testing test-without-building -project /Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/node_modules/appium-webdriveragent/WebDriverAgent.xcodeproj -scheme WebDriverAgentRunner -derivedDataPath /Users/adnanshaukat/Library/Developer/Xcode/DerivedData/WebDriverAgent-axmvytknlvueuycapqgxnxmycxmp -destination id=808879C2-A04B-457D-A994-3313C9DCA1B9 IPHONEOS_DEPLOYMENT_TARGET=26.0 GCC_TREAT_WARNINGS_AS_ERRORS=0 COMPILER_INDEX_STORE_ENABLE=NO' in directory '/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/node_modules/appium-webdriveragent'
+2026-06-03 23:10:46:337 [0561d82d][XCUITestDriver@4dbf] Output from xcodebuild will only be logged if any errors are present there. To change this, use 'showXcodeLog' desired capability
+2026-06-03 23:10:47:161 [0561d82d][XCUITestDriver@4dbf] Waiting up to 120000ms for WebDriverAgent to start
+2026-06-03 23:10:47:161 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:47:161 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:47:162 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:48:164 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:48:164 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:48:165 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:49:165 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:49:166 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:49:167 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:50:167 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:50:167 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:50:168 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:51:168 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:51:168 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:51:169 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:52:169 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:52:169 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:52:170 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:53:170 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:53:170 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:53:173 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:54:173 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:54:173 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:54:177 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:55:178 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:55:178 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:55:179 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:56:178 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:56:179 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:56:180 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:57:181 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:57:181 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:57:182 [0561d82d][XCUITestDriver@4dbf] connect ECONNREFUSED 127.0.0.1:8100
+2026-06-03 23:10:58:183 [0561d82d][XCUITestDriver@4dbf] Matched '/status' to command name 'getStatus'
+2026-06-03 23:10:58:183 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /status] to [GET http://127.0.0.1:8100/status] with no body
+2026-06-03 23:10:58:187 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"build":{"upgradedAt":"1780527288954","version":"13.2.0","time":"Jun  4 2026 00:08:56","productBundleIdentifier":"com.facebook.WebDriverAgentRunner"},"os":{"testmanagerdVersion":65535,"name":"iOS","sdkVersion":"26.0","version":"26.0"},"device":"iphone","ios":{"simulatorVersion":"26.0","ip":"192.168.0.78"},"message":"WebDriverAgent is ready to accept commands","state":"success","ready":true},"sessionId":null}
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] WebDriverAgent information:
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] {
+  "build": {
+    "upgradedAt": "1780527288954",
+    "version": "13.2.0",
+    "time": "Jun  4 2026 00:08:56",
+    "productBundleIdentifier": "com.facebook.WebDriverAgentRunner"
+  },
+  "os": {
+    "testmanagerdVersion": 65535,
+    "name": "iOS",
+    "sdkVersion": "26.0",
+    "version": "26.0"
+  },
+  "device": "iphone",
+  "ios": {
+    "simulatorVersion": "26.0",
+    "ip": "192.168.0.78"
+  },
+  "message": "WebDriverAgent is ready to accept commands",
+  "state": "success",
+  "ready": true
+}
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] WebDriverAgent successfully started after 11851ms
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] Event 'wdaSessionAttempted' logged at 1780528258188 (00:10:58 GMT+0100 (British Summer Time))
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] Sending createSession command to WDA
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] Matched '/session' to command name 'createSession'
+2026-06-03 23:10:58:188 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /session] to [POST http://127.0.0.1:8100/session] with body: {"capabilities":{"firstMatch":[{"bundleId":"org.name.SpendWise","arguments":[],"environment":{},"eventloopIdleDelaySec":0,"shouldWaitForQuiescence":true,"maxTypingFrequency":60,"shouldUseSingletonTestManager":true,"shouldTerminateApp":true,"forceAppLaunch":true,"useNativeCachingStrategy":true,"forceSimulatorSoftwareKeyboardPresence":true}],"alwaysMatch":{}}}
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53","capabilities":{"sdkVersion":"26.0","device":"iphone"}},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] Determined the downstream protocol as 'W3C'
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] WDA session startup took 1863ms
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] Event 'wdaSessionStarted' logged at 1780528260051 (00:11:00 GMT+0100 (British Summer Time))
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] WebDriverAgent version: '13.2.0'
+2026-06-03 23:11:00:051 [0561d82d][XCUITestDriver@4dbf] Event 'wdaStarted' logged at 1780528260051 (00:11:00 GMT+0100 (British Summer Time))
+2026-06-03 23:11:00:052 [0561d82d][BaseDriver] The value of 'elementResponseAttributes' setting did not change. Skipping the update for it
+2026-06-03 23:11:00:053 [0561d82d][BaseDriver] The value of 'shouldUseCompactResponses' setting did not change. Skipping the update for it
+2026-06-03 23:11:00:054 [0561d82d][XCUITestDriver@4dbf] Forwarding MJPEG server port 9100 to local port 9100
+2026-06-03 23:11:00:054 [0561d82d][XCUITestDriver@4dbf] Requesting connection for device 808879C2-A04B-457D-A994-3313C9DCA1B9 on local port 9100, device port 9100
+2026-06-03 23:11:00:055 [0561d82d][XCUITestDriver@4dbf] Cached connections count: 1
+2026-06-03 23:11:00:055 [0561d82d][XCUITestDriver@4dbf] Successfully requested the connection for 808879C2-A04B-457D-A994-3313C9DCA1B9:9100
+2026-06-03 23:11:00:055 [0561d82d][XCUITestDriver@4dbf] Initialized new IPC object with max object size of 1048576 bytes and max topics of 1000
+2026-06-03 23:11:00:056 [0561d82d][BaseDriver] Unsubscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db from topic 'xcuitest:sessionUdidClaimed'
+2026-06-03 23:11:00:056 [0561d82d][BaseDriver] Subscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db to topic 'xcuitest:sessionUdidClaimed'
+2026-06-03 23:11:00:056 [0561d82d][AppiumDriver@d189] New XCUITestDriver session created successfully, session 0561d82d-0639-4a98-afa4-36cb52c8bee8 added to master session list
+2026-06-03 23:11:00:056 [0561d82d][AppiumDriver@d189] Event 'newSessionStarted' logged at 1780528260056 (00:11:00 GMT+0100 (British Summer Time))
+2026-06-03 23:11:00:057 [0561d82d][XCUITestDriver@4dbf] Cached the protocol value 'W3C' for the new session 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:00:057 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.createSession() result: {"capabilities":{"webStorageEnabled":false,"locationContextEnabled":false,"browserName":"","platform":"MAC","javascriptEnabled":true,"databaseEnabled":false,"takesScreenshot":true,"networkConnectionEnabled":false,"platformName":"iOS","platformVersion":"26.0","deviceName":"iPhone 17 Pro","udid":"808879C2-A04B-457D-A994-3313C9DCA1B9","automationName":"XCUITest","app":"/Users/adnanshaukat/Library/Developer/Xcode/DerivedData/SpendWise-bqaioljonzxvgifjzannfohxhrtk/Build/Products/Debug-iphonesimulator/SpendWise.app","bundleId":"org.name.SpendWise","newCommandTimeout":300,"noReset":false,"fullReset":true,"wdaLaunchTimeout":120000,"wdaConnectionTimeout":120000}}
+2026-06-03 23:11:00:061 [0561d82d][HTTP] <-- POST /session 200 48985 ms - 723
+2026-06-03 23:11:00:163 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:166 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:167 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:168 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:168 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:171 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:172 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:255 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:255 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:255 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:256 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 93 ms - 1222
+2026-06-03 23:11:00:269 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:270 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:270 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:271 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:271 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:271 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:271 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:292 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:292 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:293 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:298 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 24 ms - 1222
+2026-06-03 23:11:00:369 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:369 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:369 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:369 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:369 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:370 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:370 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:391 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:391 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:392 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:392 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 24 ms - 1222
+2026-06-03 23:11:00:471 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:472 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:496 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:496 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:498 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:498 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 27 ms - 1222
+2026-06-03 23:11:00:571 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:571 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:572 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:572 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:572 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:573 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:573 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:588 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:589 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:589 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:589 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 20 ms - 1222
+2026-06-03 23:11:00:669 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:669 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:669 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:669 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:670 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:670 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:670 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:688 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:688 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:689 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:690 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 21 ms - 1222
+2026-06-03 23:11:00:766 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:766 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:784 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:784 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:784 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:784 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 18 ms - 1222
+2026-06-03 23:11:00:870 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:871 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:886 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:887 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:887 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:890 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 17 ms - 1222
+2026-06-03 23:11:00:968 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:968 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:00:968 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:00:968 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:00:968 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:00:968 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:00:969 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:00:987 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:00:987 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:00:988 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:00:988 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 21 ms - 1222
+2026-06-03 23:11:01:067 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:068 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:068 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:068 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:069 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:069 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:069 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:082 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:082 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:083 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:083 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 16 ms - 1222
+2026-06-03 23:11:01:165 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:165 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:165 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:165 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:165 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:165 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:166 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:177 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:177 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:177 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:177 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 12 ms - 1222
+2026-06-03 23:11:01:268 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:268 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:281 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:281 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:281 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:281 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 14 ms - 1222
+2026-06-03 23:11:01:367 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:367 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:380 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:380 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:381 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:381 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 14 ms - 1222
+2026-06-03 23:11:01:472 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:472 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:472 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:473 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:473 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:473 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:473 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:489 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:489 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:489 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:490 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 18 ms - 1222
+2026-06-03 23:11:01:566 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:566 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:566 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:566 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:566 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:567 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:567 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:581 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:581 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:582 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:582 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 16 ms - 1222
+2026-06-03 23:11:01:667 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:667 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:677 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:677 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:678 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:678 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 11 ms - 1222
+2026-06-03 23:11:01:767 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:767 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:779 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:779 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:779 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:780 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 13 ms - 1222
+2026-06-03 23:11:01:877 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:877 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:877 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:877 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:878 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:878 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:878 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:894 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:894 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:894 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:894 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 19 ms - 1222
+2026-06-03 23:11:01:966 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:01:966 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:01:980 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:01:981 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:01:981 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:01:982 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 16 ms - 1222
+2026-06-03 23:11:02:068 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:068 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:068 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:068 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:068 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:069 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:069 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:082 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:082 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:082 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:082 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 14 ms - 1222
+2026-06-03 23:11:02:167 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:167 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:181 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:181 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:181 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:182 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 15 ms - 1222
+2026-06-03 23:11:02:265 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:265 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:265 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:265 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:266 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:266 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:266 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:278 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:278 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:278 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:278 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 13 ms - 1222
+2026-06-03 23:11:02:367 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:367 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:368 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:368 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:368 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:368 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:368 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:382 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:382 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:382 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:382 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 15 ms - 1222
+2026-06-03 23:11:02:466 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:466 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:478 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:478 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:478 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:478 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 13 ms - 1222
+2026-06-03 23:11:02:567 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:567 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:568 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:568 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:568 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:568 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:568 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:583 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:583 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:584 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:584 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 17 ms - 1222
+2026-06-03 23:11:02:668 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:668 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:687 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:687 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:687 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:688 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 20 ms - 1222
+2026-06-03 23:11:02:767 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:767 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:781 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:02:781 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:02:781 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:02:781 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 15 ms - 1222
+2026-06-03 23:11:02:868 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:02:868 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:301 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:301 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:301 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:302 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 434 ms - 1222
+2026-06-03 23:11:03:309 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:309 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:332 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:332 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:333 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:333 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 24 ms - 1222
+2026-06-03 23:11:03:337 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:337 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:356 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:357 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:357 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:357 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 20 ms - 1222
+2026-06-03 23:11:03:360 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:361 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:376 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:376 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:376 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:377 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 16 ms - 1222
+2026-06-03 23:11:03:381 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:382 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:402 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:403 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:403 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:403 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 21 ms - 1222
+2026-06-03 23:11:03:409 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:410 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:410 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:410 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:410 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:410 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:411 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:430 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:431 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:431 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:432 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 22 ms - 1222
+2026-06-03 23:11:03:466 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:467 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:481 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:482 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:482 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:482 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 15 ms - 1222
+2026-06-03 23:11:03:568 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:568 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:568 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:569 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:569 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:569 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:569 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:587 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:587 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:587 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:587 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 19 ms - 1222
+2026-06-03 23:11:03:667 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:667 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:685 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:685 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:685 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:686 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 18 ms - 1222
+2026-06-03 23:11:03:769 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:769 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:791 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:03:791 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:03:791 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:03:791 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 23 ms - 1222
+2026-06-03 23:11:03:866 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:03:866 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:206 [0561d82d][XCUITestDriver@4dbf] Got response with status 404: {"value":{"error":"no such element","message":"unable to find an element using 'accessibility id', value 'onboarding-get-started-btn'","traceback":"(\n\t0   WebDriverAgentLib                   0x000000010dd359d0 FBNoSuchElementErrorResponseForRequest + 252\n\t1   WebDriverAgentLib                   0x000000010dd357f4 +[FBFindElementCommands handleFindElement:] + 344\n\t2   WebDriverAgentLib                   0x000000010dcf5254 -[FBRoute_TargetAction mountRequest:intoResponse:] + 168\n\t3   WebDriverAgentLib                   0x000000010dcddb58 __37-[FBWebServer registerRouteHandlers:]_block_invoke + 460\n\t4   WebDriverAgentLib                   0x000000010dd18700 -[RoutingHTTPServer handleRoute:withRequest:response:] + 168\n\t5   WebDriverAgentLib                   0x000000010dd191f4 __72-[RoutingHTTPServer routeMethod:withPath:parameters:request:connection:]_block_invoke + 64\n\t6   libdispatch.dylib                   0x00000001801d34b0 _dispatch_client_callout + 12\n\t7   libdispatch.dylib                …
+2026-06-03 23:11:04:206 [0561d82d][W3C] Matched W3C error code 'no such element' to NoSuchElementError
+2026-06-03 23:11:04:207 [0561d82d][XCUITestDriver@4dbf] Encountered internal error running command: NoSuchElementError: An element could not be located on the page using the given search parameters.
+    at XCUITestDriver.doNativeFind (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:103:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async XCUITestDriver.findNativeElementOrElements (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:62:11)
+    at async XCUITestDriver.findElOrEls (/Users/adnanshaukat/.appium/node_modules/appium-xcuitest-driver/build/lib/commands/find.js:19:11)
+    at async XCUITestDriver.findElOrElsWithProcessing (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:12:16)
+    at async XCUITestDriver.findElement (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/commands/find.js:27:16)
+    at async runCommandPromise (/usr/local/lib/node_modules/appium/node_modules/@appium/base-driver/build/lib/basedriver/driver.js:117:24)
+2026-06-03 23:11:04:207 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 404 341 ms - 1222
+2026-06-03 23:11:04:211 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:212 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:04:212 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:04:212 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:04:212 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:04:212 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:04:213 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:323 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"33000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:323 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000","ELEMENT":"33000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:04:324 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 112 ms - 137
+2026-06-03 23:11:04:330 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:04:331 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:04:331 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:04:332 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:04:332 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/33000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:04:376 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:376 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:04:377 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 200 47 ms - 14
+2026-06-03 23:11:04:380 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:04:380 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:442 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"33000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:442 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000","ELEMENT":"33000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:04:442 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 62 ms - 137
+2026-06-03 23:11:04:445 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:04:445 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:04:445 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:04:445 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:04:445 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/33000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:04:478 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:478 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:04:478 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 200 33 ms - 14
+2026-06-03 23:11:04:480 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:04:480 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:540 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"33000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:540 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000","ELEMENT":"33000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:04:540 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 60 ms - 137
+2026-06-03 23:11:04:543 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:04:543 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:04:543 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:04:543 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:04:543 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/33000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:04:579 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:579 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:04:580 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 200 37 ms - 14
+2026-06-03 23:11:04:581 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","onboarding-get-started-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:04:582 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"onboarding-get-started-btn"}
+2026-06-03 23:11:04:663 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"33000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:663 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"33000000-0000-0000-C23D-000000000000","ELEMENT":"33000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:04:664 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 82 ms - 137
+2026-06-03 23:11:04:666 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:04:666 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:04:666 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:04:666 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:04:666 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/33000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:04:703 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:04:703 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:04:704 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/displayed 200 38 ms - 14
+2026-06-03 23:11:04:705 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/click {}
+2026-06-03 23:11:04:706 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:04:706 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:04:706 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/click' to command name 'click'
+2026-06-03 23:11:04:706 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/click] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/33000000-0000-0000-C23D-000000000000/click] with body: {}
+2026-06-03 23:11:05:488 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":null,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:488 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:05:488 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/33000000-0000-0000-C23D-000000000000/click 200 783 ms - 14
+2026-06-03 23:11:05:490 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","google-login-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:05:490 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:540 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"2C000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:540 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000","ELEMENT":"2C000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:05:540 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 50 ms - 137
+2026-06-03 23:11:05:544 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:05:545 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:05:545 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:05:545 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:05:545 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/2C000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:05:577 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:577 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:05:577 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 200 33 ms - 14
+2026-06-03 23:11:05:580 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","google-login-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:05:580 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:630 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"2C000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:631 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000","ELEMENT":"2C000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:05:631 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 51 ms - 137
+2026-06-03 23:11:05:634 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:05:634 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:05:634 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:05:634 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:05:634 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/2C000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:05:661 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:661 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:05:661 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 200 27 ms - 14
+2026-06-03 23:11:05:663 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","google-login-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:05:663 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"google-login-btn"}
+2026-06-03 23:11:05:722 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"2C000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:722 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"2C000000-0000-0000-C23D-000000000000","ELEMENT":"2C000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:05:723 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 60 ms - 137
+2026-06-03 23:11:05:726 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:05:726 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:05:726 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:05:726 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:05:726 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/2C000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:05:748 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:748 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:05:749 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2C000000-0000-0000-C23D-000000000000/displayed 200 23 ms - 14
+2026-06-03 23:11:05:751 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"apple-login-btn"}
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","apple-login-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:05:751 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"apple-login-btn"}
+2026-06-03 23:11:05:906 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"2A000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"2A000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:906 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"2A000000-0000-0000-C23D-000000000000","ELEMENT":"2A000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:05:906 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 155 ms - 137
+2026-06-03 23:11:05:908 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2A000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:05:908 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:05:909 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:05:909 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2A000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:05:909 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2A000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/2A000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:05:946 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:946 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:05:947 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2A000000-0000-0000-C23D-000000000000/displayed 200 38 ms - 14
+2026-06-03 23:11:05:949 [0561d82d][HTTP] --> POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element {"using":"accessibility id","value":"email-login-btn"}
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.findElement() with args: ["accessibility id","email-login-btn","0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Executing command 'findElement'
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Valid locator strategies for this request: xpath, id, name, class name, -ios predicate string, -ios class chain, accessibility id, css selector
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Waiting up to 0 ms for condition
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Matched '/element' to command name 'findElement'
+2026-06-03 23:11:05:949 [0561d82d][XCUITestDriver@4dbf] Proxying [POST /element] to [POST http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element] with body: {"using":"accessibility id","value":"email-login-btn"}
+2026-06-03 23:11:05:993 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":{"ELEMENT":"2F000000-0000-0000-C23D-000000000000","element-6066-11e4-a52e-4f735466cecf":"2F000000-0000-0000-C23D-000000000000"},"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:05:993 [0561d82d][XCUITestDriver@4dbf] Responding to client with driver.findElement() result: {"element-6066-11e4-a52e-4f735466cecf":"2F000000-0000-0000-C23D-000000000000","ELEMENT":"2F000000-0000-0000-C23D-000000000000"}
+2026-06-03 23:11:05:993 [0561d82d][HTTP] <-- POST /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element 200 45 ms - 137
+2026-06-03 23:11:05:995 [0561d82d][HTTP] --> GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2F000000-0000-0000-C23D-000000000000/displayed 
+2026-06-03 23:11:05:996 [0561d82d][XCUITestDriver@4dbf] Driver proxy active, passing request on via HTTP proxy
+2026-06-03 23:11:05:996 [0561d82d][XCUITestDriver@4dbf] Executing command 'proxyReqRes'
+2026-06-03 23:11:05:996 [0561d82d][XCUITestDriver@4dbf] Matched '/session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2F000000-0000-0000-C23D-000000000000/displayed' to command name 'elementDisplayed'
+2026-06-03 23:11:05:996 [0561d82d][XCUITestDriver@4dbf] Proxying [GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2F000000-0000-0000-C23D-000000000000/displayed] to [GET http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53/element/2F000000-0000-0000-C23D-000000000000/displayed] with no body
+2026-06-03 23:11:06:023 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":true,"sessionId":"D906353B-1AF2-4320-A627-300D62B76F53"}
+2026-06-03 23:11:06:023 [0561d82d][XCUITestDriver@4dbf] Replacing sessionId D906353B-1AF2-4320-A627-300D62B76F53 with 0561d82d-0639-4a98-afa4-36cb52c8bee8
+2026-06-03 23:11:06:023 [0561d82d][HTTP] <-- GET /session/0561d82d-0639-4a98-afa4-36cb52c8bee8/element/2F000000-0000-0000-C23D-000000000000/displayed 200 28 ms - 14
+2026-06-03 23:11:06:027 [0561d82d][HTTP] --> DELETE /session/0561d82d-0639-4a98-afa4-36cb52c8bee8 
+2026-06-03 23:11:06:027 [0561d82d][XCUITestDriver@4dbf] Calling AppiumDriver.deleteSession() with args: ["0561d82d-0639-4a98-afa4-36cb52c8bee8"]
+2026-06-03 23:11:06:027 [0561d82d][AppiumDriver@d189] Event 'quitSessionRequested' logged at 1780528266027 (00:11:06 GMT+0100 (British Summer Time))
+2026-06-03 23:11:06:027 [0561d82d][BaseDriver] Unsubscribing 4dbf7f87-e72d-47fc-a6d4-4018b40017db from topic 'xcuitest:sessionUdidClaimed'
+2026-06-03 23:11:06:029 [0561d82d][XCUITestDriver@4dbf] Proxying [DELETE /session/0561d82d-0639-4a98-afa4-36cb52c8bee8] to [DELETE http://127.0.0.1:8100/session/D906353B-1AF2-4320-A627-300D62B76F53] with no body
+2026-06-03 23:11:07:096 [0561d82d][XCUITestDriver@4dbf] Got response with status 200: {"value":null,"sessionId":null}
+2026-06-03 23:11:07:097 [0561d82d][XCUITestDriver@4dbf] Not clearing log files. Use `clearSystemFiles` capability to turn on.
+2026-06-03 23:11:07:097 [0561d82d][XCUITestDriver@4dbf] Releasing connections for 808879C2-A04B-457D-A994-3313C9DCA1B9 device on any port number
+2026-06-03 23:11:07:097 [0561d82d][XCUITestDriver@4dbf] Found cached connections to release: ["808879C2-A04B-457D-A994-3313C9DCA1B9:8100","808879C2-A04B-457D-A994-3313C9DCA1B9:9100"]
+2026-06-03 23:11:07:097 [0561d82d][XCUITestDriver@4dbf] Cached connections count: 0
+2026-06-03 23:11:07:097 [0561d82d][XCUITestDriver@4dbf] Stopping iOS log capture
+2026-06-03 23:11:07:122 [0561d82d][AppiumDriver@d189] Removing session 0561d82d-0639-4a98-afa4-36cb52c8bee8 from our master session list
+2026-06-03 23:11:07:122 [0561d82d][AppiumDriver@d189] Event 'quitSessionFinished' logged at 1780528267122 (00:11:07 GMT+0100 (British Summer Time))
+2026-06-03 23:11:07:123 [0561d82d][AppiumDriver@d189] Received response: null
+2026-06-03 23:11:07:123 [0561d82d][AppiumDriver@d189] But deleting session, so not returning
+2026-06-03 23:11:07:123 [0561d82d][AppiumDriver@d189] Responding to client with driver.deleteSession() result: null
+2026-06-03 23:11:07:123 [0561d82d][HTTP] <-- DELETE /session/0561d82d-0639-4a98-afa4-36cb52c8bee8 200 1096 ms - 14
+2026-06-03 23:11:07:615 [Appium] Received SIGTERM - shutting down

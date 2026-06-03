@@ -14,9 +14,18 @@
       "backgroundColor": "#EEF9F2"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.adnanshaukat425.mobile",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "SpendWise uses the microphone to let you log expenses by voice.",
+        "NSSpeechRecognitionUsageDescription": "SpendWise uses speech recognition to convert your spoken expense into text."
+      }
     },
-    "android": {},
+    "android": {
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -27,8 +36,22 @@
           "origin": "https://replit.com/"
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow SpendWise to access your photos for receipt attachments.",
+          "cameraPermission": "Allow SpendWise to use the camera to scan receipts."
+        }
+      ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "SpendWise uses the microphone to let you log expenses by voice.",
+          "speechRecognitionPermission": "SpendWise uses speech recognition to convert your spoken expense into text."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

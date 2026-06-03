@@ -1,5 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import React, { useEffect } from "react";
@@ -20,6 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useColors } from "@/hooks/useColors";
 
 const FEATURES = [
@@ -57,9 +58,19 @@ function FeatureRow({ feature }: { feature: (typeof FEATURES)[number] }) {
     <View style={styles.featureRow}>
       <View style={[styles.featureIconCircle, { backgroundColor: feature.bg }]}>
         {feature.family === "Ionicons" ? (
-          <Ionicons name={feature.icon as any} size={22} color={feature.iconColor} />
+          <Ionicons
+            name={feature.icon as ComponentProps<typeof Ionicons>["name"]}
+            size={22}
+            color={feature.iconColor}
+          />
         ) : (
-          <MaterialCommunityIcons name={feature.icon as any} size={22} color={feature.iconColor} />
+          <MaterialCommunityIcons
+            name={
+              feature.icon as ComponentProps<typeof MaterialCommunityIcons>["name"]
+            }
+            size={22}
+            color={feature.iconColor}
+          />
         )}
       </View>
       <View style={styles.featureText}>
@@ -74,6 +85,7 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colors = useColors();
+  const { completeOnboarding } = useAuth();
   const pulse = useSharedValue(1);
 
   useEffect(() => {
@@ -90,7 +102,7 @@ export default function OnboardingScreen() {
 
   const handleGetStarted = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    await AsyncStorage.setItem("hasOnboarded", "true");
+    await completeOnboarding();
     router.replace("/login");
   };
 
@@ -160,6 +172,7 @@ export default function OnboardingScreen() {
         style={[styles.cta, { backgroundColor: colors.primary }]}
         onPress={handleGetStarted}
         activeOpacity={0.85}
+        testID="onboarding-get-started-btn"
       >
         <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
           Get Started

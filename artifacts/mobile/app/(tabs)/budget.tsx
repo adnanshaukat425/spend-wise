@@ -1,293 +1,738 @@
 import { Ionicons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import * as Haptics from "expo-haptics";
+import React, { useState, useMemo } from "react";
 import {
-  Platform,
+  Alert,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { Circle, Svg } from "react-native-svg";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { CircularProgress } from "@/components/charts/CircularProgress";
+import { ProgressBar } from "@/components/charts/ProgressBar";
+import { ScreenLoading } from "@/components/ui/ScreenLoading";
+import {
+  useBudget,
+  useCategories,
+  useUpdateBudgetTotal,
+  useUpdateBudgetLines,
+} from "@/hooks/api";
+import type { BudgetCategory } from "@/data/types";
+import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
+import { useScreenInsets } from "@/hooks/useScreenInsets";
 
-interface Category {
-  id: string;
-  name: string;
-  spent: number;
-  limit: number;
-  icon: keyof typeof Ionicons.glyphMap;
-  iconBg: string;
-  iconColor: string;
-}
+// ─── Category Card ────────────────────────────────────────────────────────────
 
-const CATEGORIES: Category[] = [
-  {
-    id: "food",
-    name: "Food & Dining",
-    spent: 420,
-    limit: 600,
-    icon: "restaurant-outline",
-    iconBg: "#FFF0E8",
-    iconColor: "#FF6B35",
-  },
-  {
-    id: "transport",
-    name: "Transportation",
-    spent: 180,
-    limit: 250,
-    icon: "car-outline",
-    iconBg: "#EFF6FF",
-    iconColor: "#3B82F6",
-  },
-  {
-    id: "shopping",
-    name: "Shopping",
-    spent: 95,
-    limit: 200,
-    icon: "bag-outline",
-    iconBg: "#F3EEFF",
-    iconColor: "#8B5CF6",
-  },
-  {
-    id: "coffee",
-    name: "Coffee & Drinks",
-    spent: 85,
-    limit: 100,
-    icon: "cafe-outline",
-    iconBg: "#FFF7E8",
-    iconColor: "#F59E0B",
-  },
-  {
-    id: "home",
-    name: "Home & Rent",
-    spent: 1200,
-    limit: 1200,
-    icon: "home-outline",
-    iconBg: "#ECFDF5",
-    iconColor: "#10B981",
-  },
-  {
-    id: "utilities",
-    name: "Utilities",
-    spent: 106,
-    limit: 150,
-    icon: "flash-outline",
-    iconBg: "#FEFCE8",
-    iconColor: "#EAB308",
-  },
-];
-
-const TOTAL_BUDGET = 2600;
-const TOTAL_SPENT = 2341;
-const DAYS_REMAINING = 12;
-
-function CircularProgress({ pct, size = 86 }: { pct: number; size?: number }) {
-  const colors = useColors();
-  const stroke = 9;
-  const r = (size - stroke) / 2;
-  const cx = size / 2;
-  const cy = size / 2;
-  const circumference = 2 * Math.PI * r;
-  const dashOffset = circumference * (1 - Math.min(pct, 100) / 100);
-
-  return (
-    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
-      <Svg width={size} height={size} style={{ position: "absolute" }}>
-        <Circle
-          cx={cx}
-          cy={cy}
-          r={r}
-          stroke="#D1FAE5"
-          strokeWidth={stroke}
-          fill="none"
-        />
-        <Circle
-          cx={cx}
-          cy={cy}
-          r={r}
-          stroke={colors.primary}
-          strokeWidth={stroke}
-          fill="none"
-          strokeDasharray={`${circumference}`}
-          strokeDashoffset={dashOffset}
-          strokeLinecap="round"
-          rotation="-90"
-          origin={`${cx}, ${cy}`}
-        />
-      </Svg>
-      <Text style={[styles.circleLabel, { color: colors.primary }]}>{pct}%</Text>
-    </View>
-  );
-}
-
-function CategoryCard({ cat }: { cat: Category }) {
+function CategoryCard({
+  cat,
+  onEdit,
+}: {
+  cat: BudgetCategory;
+  onEdit: (cat: BudgetCategory) => void;
+}) {
   const colors = useColors();
   const pct = Math.round((cat.spent / cat.limit) * 100);
   const isOver = pct >= 100;
-  const barColor = isOver ? "#EF4444" : colors.primary;
+  const barColor = isOver ? colors.expense : colors.primary;
 
   return (
-    <View style={styles.catCard}>
+    <View style={[styles.catCard, { backgroundColor: colors.card }]}>
       <View style={styles.catRow}>
         <View style={[styles.catIconWrap, { backgroundColor: cat.iconBg }]}>
           <Ionicons name={cat.icon} size={20} color={cat.iconColor} />
         </View>
         <View style={styles.catInfo}>
-          <Text style={styles.catName}>{cat.name}</Text>
-          <Text style={styles.catAmounts}>
-            ${cat.spent.toLocaleString()} / ${cat.limit.toLocaleString()}
+          <Text style={[styles.catName, { color: colors.foreground }]}>
+            {cat.name}
+          </Text>
+          <Text style={[styles.catAmounts, { color: colors.mutedForeground }]}>
+            {formatCurrency(cat.spent)} / {formatCurrency(cat.limit)}
           </Text>
         </View>
-        <Text style={[styles.catPct, isOver && { color: "#EF4444" }]}>
-          {pct}%
-        </Text>
+        <TouchableOpacity
+          onPress={() => onEdit(cat)}
+          activeOpacity={0.7}
+          style={styles.editCatBtn}
+          accessibilityLabel={`Edit ${cat.name} budget`}
+          testID={`edit-category-${cat.id}-btn`}
+        >
+          <Text
+            style={[
+              styles.catPct,
+              { color: colors.foreground },
+              isOver && { color: colors.expense },
+            ]}
+          >
+            {pct}%
+          </Text>
+          <Ionicons
+            name="pencil-outline"
+            size={14}
+            color={colors.mutedForeground}
+          />
+        </TouchableOpacity>
       </View>
-      {/* Progress bar */}
-      <View style={styles.barBg}>
-        <View
-          style={[
-            styles.barFill,
-            { width: `${Math.min(pct, 100)}%` as any, backgroundColor: barColor },
-          ]}
-        />
-      </View>
+      <ProgressBar
+        percent={pct}
+        color={barColor}
+        trackColor={colors.muted}
+        height={7}
+      />
     </View>
   );
 }
 
-export default function BudgetScreen() {
-  const insets = useSafeAreaInsets();
+// ─── Limit Modal ─────────────────────────────────────────────────────────────
+
+function LimitModal({
+  visible,
+  title,
+  subtitle,
+  initialValue,
+  saving,
+  onConfirm,
+  onClose,
+}: {
+  visible: boolean;
+  title: string;
+  subtitle?: string;
+  initialValue: string;
+  saving: boolean;
+  onConfirm: (value: string) => void;
+  onClose: () => void;
+}) {
   const colors = useColors();
-  const router = useRouter();
+  const [value, setValue] = useState(initialValue);
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const botPad = Platform.OS === "web" ? 34 : insets.bottom;
+  // Sync when modal opens with a new initialValue
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue, visible]);
 
-  const remaining = TOTAL_BUDGET - TOTAL_SPENT;
-  const pct = Math.round((TOTAL_SPENT / TOTAL_BUDGET) * 100);
-  const daysElapsed = 30 - DAYS_REMAINING;
-  const dailyAvg = daysElapsed > 0 ? (TOTAL_SPENT / daysElapsed).toFixed(2) : "0.00";
-  const safeToSpend = DAYS_REMAINING > 0 ? (remaining / DAYS_REMAINING).toFixed(2) : "0.00";
+  const isValid = value.trim() !== "" && !Number.isNaN(parseFloat(value)) && parseFloat(value) >= 0;
 
   return (
-    <View style={[styles.container, { paddingTop: topPad }]}>
-      {/* Header */}
-      <View style={styles.header}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.modalOverlay}
+      >
         <TouchableOpacity
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-          style={styles.iconBtn}
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+        <View
+          style={[styles.modalCard, { backgroundColor: colors.card }]}
         >
-          <Ionicons name="chevron-back" size={22} color="#111827" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Budget</Text>
+          <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+            {title}
+          </Text>
+          {subtitle ? (
+            <Text
+              style={[styles.modalSubtitle, { color: colors.mutedForeground }]}
+            >
+              {subtitle}
+            </Text>
+          ) : null}
+          <View
+            style={[styles.modalAmountField, { backgroundColor: colors.muted }]}
+          >
+            <Text
+              style={[styles.modalCurrency, { color: colors.mutedForeground }]}
+            >
+              $
+            </Text>
+            <TextInput
+              style={[styles.modalAmountInput, { color: colors.foreground }]}
+              value={value}
+              onChangeText={setValue}
+              keyboardType="decimal-pad"
+              autoFocus
+              selectTextOnFocus
+              placeholderTextColor={colors.mutedForeground}
+              placeholder="0.00"
+            />
+          </View>
+          <View style={styles.modalBtns}>
+            <TouchableOpacity
+              style={[
+                styles.modalCancelBtn,
+                { borderColor: colors.border },
+              ]}
+              onPress={onClose}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.modalCancelText,
+                  { color: colors.foreground },
+                ]}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.modalConfirmBtn,
+                {
+                  backgroundColor: colors.primary,
+                  opacity: isValid && !saving ? 1 : 0.5,
+                },
+              ]}
+              onPress={() => isValid && !saving && onConfirm(value)}
+              activeOpacity={0.85}
+              disabled={!isValid || saving}
+            >
+              <Text style={styles.modalConfirmText}>
+                {saving ? "Saving…" : "Save"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
+// ─── Add Category Modal ───────────────────────────────────────────────────────
+
+function AddCategoryModal({
+  visible,
+  existingCategorySlugs,
+  rawLines,
+  saving,
+  onConfirm,
+  onClose,
+}: {
+  visible: boolean;
+  existingCategorySlugs: string[];
+  rawLines: { categoryId: string; limitAmount: number }[];
+  saving: boolean;
+  onConfirm: (lines: { categoryId: string; limitAmount: number }[]) => void;
+  onClose: () => void;
+}) {
+  const colors = useColors();
+  const { data: allCategories = [] } = useCategories("expense");
+  const [selectedSlug, setSelectedSlug] = useState<string>("");
+  const [limit, setLimit] = useState("100");
+
+  const available = useMemo(
+    () => allCategories.filter((c) => !existingCategorySlugs.includes(c.id)),
+    [allCategories, existingCategorySlugs],
+  );
+
+  React.useEffect(() => {
+    if (visible) {
+      setSelectedSlug(available[0]?.id ?? "");
+      setLimit("100");
+    }
+  }, [visible, available]);
+
+  const selectedCat = useMemo(
+    () => available.find((c) => c.id === selectedSlug),
+    [available, selectedSlug],
+  );
+
+  const isValid =
+    selectedSlug !== "" &&
+    limit.trim() !== "" &&
+    !Number.isNaN(parseFloat(limit)) &&
+    parseFloat(limit) > 0 &&
+    selectedCat !== undefined;
+
+  const handleConfirm = () => {
+    if (!isValid || !selectedCat) return;
+    const newLines = [
+      ...rawLines,
+      { categoryId: selectedCat.categoryId, limitAmount: parseFloat(limit) },
+    ];
+    onConfirm(newLines);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.modalOverlay}
+      >
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+        <View style={[styles.modalCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+            Add Budget Category
+          </Text>
+
+          {available.length === 0 ? (
+            <Text
+              style={[styles.modalSubtitle, { color: colors.mutedForeground }]}
+            >
+              All expense categories are already in your budget.
+            </Text>
+          ) : (
+            <>
+              <Text
+                style={[styles.modalSubtitle, { color: colors.mutedForeground }]}
+              >
+                Select a category
+              </Text>
+              <ScrollView
+                style={styles.catPickerList}
+                showsVerticalScrollIndicator={false}
+              >
+                {available.map((cat) => (
+                  <TouchableOpacity
+                    key={cat.id}
+                    style={[
+                      styles.catPickerRow,
+                      {
+                        backgroundColor:
+                          selectedSlug === cat.id
+                            ? colors.secondary
+                            : "transparent",
+                      },
+                    ]}
+                    onPress={() => {
+                      setSelectedSlug(cat.id);
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons
+                      name={cat.icon}
+                      size={18}
+                      color={
+                        selectedSlug === cat.id
+                          ? colors.primary
+                          : colors.mutedForeground
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.catPickerLabel,
+                        {
+                          color:
+                            selectedSlug === cat.id
+                              ? colors.primary
+                              : colors.foreground,
+                          fontFamily:
+                            selectedSlug === cat.id
+                              ? "Inter_600SemiBold"
+                              : "Inter_400Regular",
+                        },
+                      ]}
+                    >
+                      {cat.label}
+                    </Text>
+                    {selectedSlug === cat.id && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={18}
+                        color={colors.primary}
+                        style={{ marginLeft: "auto" }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <Text
+                style={[
+                  styles.modalSubtitle,
+                  { color: colors.mutedForeground, marginTop: 12 },
+                ]}
+              >
+                Monthly limit
+              </Text>
+              <View
+                style={[
+                  styles.modalAmountField,
+                  { backgroundColor: colors.muted },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.modalCurrency,
+                    { color: colors.mutedForeground },
+                  ]}
+                >
+                  $
+                </Text>
+                <TextInput
+                  style={[
+                    styles.modalAmountInput,
+                    { color: colors.foreground },
+                  ]}
+                  value={limit}
+                  onChangeText={setLimit}
+                  keyboardType="decimal-pad"
+                  selectTextOnFocus
+                  placeholderTextColor={colors.mutedForeground}
+                  placeholder="0.00"
+                />
+              </View>
+            </>
+          )}
+
+          <View style={styles.modalBtns}>
+            <TouchableOpacity
+              style={[styles.modalCancelBtn, { borderColor: colors.border }]}
+              onPress={onClose}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[styles.modalCancelText, { color: colors.foreground }]}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            {available.length > 0 && (
+              <TouchableOpacity
+                style={[
+                  styles.modalConfirmBtn,
+                  {
+                    backgroundColor: colors.primary,
+                    opacity: isValid && !saving ? 1 : 0.5,
+                  },
+                ]}
+                onPress={handleConfirm}
+                activeOpacity={0.85}
+                disabled={!isValid || saving}
+              >
+                <Text style={styles.modalConfirmText}>
+                  {saving ? "Saving…" : "Add"}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
+// ─── Budget Screen ────────────────────────────────────────────────────────────
+
+export default function BudgetScreen() {
+  const colors = useColors();
+  const insets = useScreenInsets();
+  const router = useRouter();
+  const { data, isLoading } = useBudget();
+  const updateTotal = useUpdateBudgetTotal();
+  const updateLines = useUpdateBudgetLines();
+
+  const budgetCategories = data?.budgetCategories ?? [];
+  const budgetSummary = data?.budgetSummary ?? {
+    totalBudget: 0,
+    totalSpent: 0,
+    daysRemaining: 0,
+    monthLabel: "",
+  };
+  const rawLines = useMemo(
+    () =>
+      (data?.raw?.lines ?? []).map((l) => ({
+        categoryId: l.categoryId,
+        limitAmount: l.limitAmount,
+      })),
+    [data],
+  );
+
+  const existingCategorySlugs = useMemo(
+    () => (data?.raw?.lines ?? []).map((l) => l.categorySlug),
+    [data],
+  );
+
+  // Modal state
+  const [adjustVisible, setAdjustVisible] = useState(false);
+  const [editCat, setEditCat] = useState<BudgetCategory | null>(null);
+  const [addCatVisible, setAddCatVisible] = useState(false);
+  const [savingModal, setSavingModal] = useState(false);
+
+  if (isLoading) return <ScreenLoading />;
+
+  const remaining = budgetSummary.totalBudget - budgetSummary.totalSpent;
+  const pct = budgetSummary.totalBudget > 0
+    ? Math.round((budgetSummary.totalSpent / budgetSummary.totalBudget) * 100)
+    : 0;
+  const daysElapsed = 30 - budgetSummary.daysRemaining;
+  const dailyAvg =
+    daysElapsed > 0 ? budgetSummary.totalSpent / daysElapsed : 0;
+  const safeToSpend =
+    budgetSummary.daysRemaining > 0
+      ? remaining / budgetSummary.daysRemaining
+      : 0;
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
+
+  const handleAdjustConfirm = async (value: string) => {
+    setSavingModal(true);
+    try {
+      await updateTotal.mutateAsync(parseFloat(value));
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setAdjustVisible(false);
+    } catch (err) {
+      Alert.alert(
+        "Could not update budget",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
+    } finally {
+      setSavingModal(false);
+    }
+  };
+
+  const handleEditCatConfirm = async (value: string) => {
+    if (!editCat) return;
+    setSavingModal(true);
+    try {
+      const newLines = rawLines.map((l) =>
+        l.categoryId === editCat.id
+          ? { ...l, limitAmount: parseFloat(value) }
+          : l,
+      );
+      await updateLines.mutateAsync(newLines);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setEditCat(null);
+    } catch (err) {
+      Alert.alert(
+        "Could not update category",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
+    } finally {
+      setSavingModal(false);
+    }
+  };
+
+  const handleAddCategoryConfirm = async (
+    newLines: { categoryId: string; limitAmount: number }[],
+  ) => {
+    setSavingModal(true);
+    try {
+      await updateLines.mutateAsync(newLines);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setAddCatVisible(false);
+    } catch (err) {
+      Alert.alert(
+        "Could not add category",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
+    } finally {
+      setSavingModal(false);
+    }
+  };
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={styles.iconBtn} />
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+          Budget
+        </Text>
         <TouchableOpacity
           style={[styles.headerFab, { backgroundColor: colors.primary }]}
           activeOpacity={0.8}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          onPress={() => router.push("/add-expense")}
+          accessibilityRole="button"
+          accessibilityLabel="Add expense"
         >
           <Ionicons name="add" size={22} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: botPad + 40 }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingBottom: insets.bottom + 110,
+        }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero summary card */}
+        {/* Hero card */}
         <View style={[styles.heroCard, { backgroundColor: colors.secondary }]}>
-          {/* Month + badge */}
           <View style={styles.heroTopRow}>
-            <Text style={styles.heroMonth}>June 2024</Text>
-            <View style={styles.remainBadge}>
-              <Ionicons name="trending-down-outline" size={12} color={colors.primary} />
+            <Text style={[styles.heroMonth, { color: colors.mutedForeground }]}>
+              {budgetSummary.monthLabel}
+            </Text>
+            <View style={[styles.remainBadge, { backgroundColor: colors.card }]}>
+              <Ionicons
+                name="trending-down-outline"
+                size={12}
+                color={colors.primary}
+              />
               <Text style={[styles.remainText, { color: colors.primary }]}>
-                ${remaining.toLocaleString()} left
+                {formatCurrency(remaining)} left
               </Text>
             </View>
           </View>
 
-          {/* Spent / total */}
-          <Text style={styles.heroSpent}>
-            ${TOTAL_SPENT.toLocaleString()}
-            <Text style={styles.heroTotal}> / ${TOTAL_BUDGET.toLocaleString()}</Text>
+          <Text style={[styles.heroSpent, { color: colors.foreground }]} testID="budget-total-spent">
+            {formatCurrency(budgetSummary.totalSpent)}
+            <Text style={[styles.heroTotal, { color: colors.mutedForeground }]}>
+              {" "}
+              / {formatCurrency(budgetSummary.totalBudget)}
+            </Text>
           </Text>
 
-          {/* Circle + stats */}
           <View style={styles.heroBody}>
-            <CircularProgress pct={pct} size={86} />
+            <CircularProgress
+              percent={pct}
+              size={86}
+              trackColor={colors.circleOuter}
+              progressColor={colors.primary}
+              labelColor={colors.primary}
+            />
             <View style={styles.heroStats}>
               <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Daily Average</Text>
-                <Text style={styles.statValue}>${dailyAvg}</Text>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
+                  Daily Average
+                </Text>
+                <Text style={[styles.statValue, { color: colors.foreground }]}>
+                  {formatCurrency(dailyAvg)}
+                </Text>
               </View>
               <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Days Remaining</Text>
-                <Text style={styles.statValue}>{DAYS_REMAINING} days</Text>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
+                  Days Remaining
+                </Text>
+                <Text style={[styles.statValue, { color: colors.foreground }]}>
+                  {budgetSummary.daysRemaining} days
+                </Text>
               </View>
               <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Safe to Spend</Text>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
+                  Safe to Spend
+                </Text>
                 <Text style={[styles.statValue, { color: colors.primary }]}>
-                  ${safeToSpend}/day
+                  {formatCurrency(safeToSpend)}/day
                 </Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* Categories header */}
+        {/* Categories section */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Categories</Text>
+          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+            Categories
+          </Text>
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (budgetCategories.length > 0) {
+                setEditCat(budgetCategories[0]);
+              }
+            }}
           >
-            <Text style={[styles.editLink, { color: colors.primary }]}>Edit</Text>
+            <Text style={[styles.editLink, { color: colors.primary }]}>
+              Edit
+            </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Category list */}
-        {CATEGORIES.map((cat) => (
-          <CategoryCard key={cat.id} cat={cat} />
+        {budgetCategories.map((cat) => (
+          <CategoryCard
+            key={cat.id}
+            cat={cat}
+            onEdit={(c) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setEditCat(c);
+            }}
+          />
         ))}
 
-        {/* Quick Actions */}
-        <View style={styles.quickCard}>
-          <Text style={styles.quickTitle}>Quick Actions</Text>
+        {/* Quick actions */}
+        <View style={[styles.quickCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.quickTitle, { color: colors.foreground }]}>
+            Quick Actions
+          </Text>
           <View style={styles.quickRow}>
             <TouchableOpacity
-              style={styles.adjustBtn}
+              style={[styles.adjustBtn, { borderColor: colors.border }]}
               activeOpacity={0.8}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setAdjustVisible(true);
+              }}
+              testID="adjust-budget-btn"
             >
-              <Text style={styles.adjustText}>Adjust Budget</Text>
+              <Text style={[styles.adjustText, { color: colors.foreground }]}>
+                Adjust Budget
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.addCatBtn, { backgroundColor: colors.primary }]}
               activeOpacity={0.8}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setAddCatVisible(true);
+              }}
+              testID="add-category-btn"
             >
               <Text style={styles.addCatText}>Add Category</Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
+
+      {/* Adjust total budget modal */}
+      <LimitModal
+        visible={adjustVisible}
+        title="Adjust Monthly Budget"
+        subtitle="Set your total spending limit for this month"
+        initialValue={String(budgetSummary.totalBudget)}
+        saving={savingModal}
+        onConfirm={handleAdjustConfirm}
+        onClose={() => setAdjustVisible(false)}
+      />
+
+      {/* Edit category limit modal */}
+      <LimitModal
+        visible={editCat !== null}
+        title={editCat ? `Edit ${editCat.name}` : ""}
+        subtitle="Set the monthly limit for this category"
+        initialValue={editCat ? String(editCat.limit) : ""}
+        saving={savingModal}
+        onConfirm={handleEditCatConfirm}
+        onClose={() => setEditCat(null)}
+      />
+
+      {/* Add category modal */}
+      <AddCategoryModal
+        visible={addCatVisible}
+        existingCategorySlugs={existingCategorySlugs}
+        rawLines={rawLines}
+        saving={savingModal}
+        onConfirm={handleAddCategoryConfirm}
+        onClose={() => setAddCatVisible(false)}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F6F9",
-  },
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
-  // Header
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -295,17 +740,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
-    color: "#111827",
-  },
+  iconBtn: { width: 36, height: 36 },
+  headerTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold" },
   headerFab: {
     width: 36,
     height: 36,
@@ -313,111 +749,54 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // Hero card
-  heroCard: {
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 24,
-  },
+  heroCard: { borderRadius: 20, padding: 20, marginBottom: 24 },
   heroTopRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 8,
   },
-  heroMonth: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-  },
+  heroMonth: { fontSize: 13, fontFamily: "Inter_400Regular" },
   remainBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  remainText: {
-    fontSize: 12,
-    fontFamily: "Inter_600SemiBold",
-  },
-  heroSpent: {
-    fontSize: 30,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-    marginBottom: 18,
-  },
-  heroTotal: {
-    fontSize: 18,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
-  heroBody: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-  },
-  circleLabel: {
-    fontSize: 14,
-    fontFamily: "Inter_700Bold",
-  },
-  heroStats: {
-    flex: 1,
-    gap: 10,
-  },
+  remainText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  heroSpent: { fontSize: 30, fontFamily: "Inter_700Bold", marginBottom: 18 },
+  heroTotal: { fontSize: 18, fontFamily: "Inter_400Regular" },
+  heroBody: { flexDirection: "row", alignItems: "center", gap: 20 },
+  heroStats: { flex: 1, gap: 10 },
   statRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  statLabel: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-  },
-  statValue: {
-    fontSize: 12,
-    fontFamily: "Inter_600SemiBold",
-    color: "#111827",
-  },
-
-  // Section header
+  statLabel: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  statValue: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-  editLink: {
-    fontSize: 14,
-    fontFamily: "Inter_500Medium",
-  },
-
-  // Category card
+  sectionTitle: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  editLink: { fontSize: 14, fontFamily: "Inter_500Medium" },
   catCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     marginBottom: 10,
+    gap: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 1,
   },
-  catRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
+  catRow: { flexDirection: "row", alignItems: "center" },
   catIconWrap: {
     width: 44,
     height: 44,
@@ -427,36 +806,15 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   catInfo: { flex: 1 },
-  catName: {
-    fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
-    color: "#111827",
-    marginBottom: 3,
+  catName: { fontSize: 14, fontFamily: "Inter_600SemiBold", marginBottom: 3 },
+  catAmounts: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  editCatBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
-  catAmounts: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
-  catPct: {
-    fontSize: 16,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-  barBg: {
-    height: 7,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 4,
-    overflow: "hidden",
-  },
-  barFill: {
-    height: 7,
-    borderRadius: 4,
-  },
-
-  // Quick actions
+  catPct: { fontSize: 16, fontFamily: "Inter_700Bold" },
   quickCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     marginTop: 6,
@@ -466,16 +824,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  quickTitle: {
-    fontSize: 15,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-    marginBottom: 14,
-  },
-  quickRow: {
-    flexDirection: "row",
-    gap: 10,
-  },
+  quickTitle: { fontSize: 15, fontFamily: "Inter_700Bold", marginBottom: 14 },
+  quickRow: { flexDirection: "row", gap: 10 },
   adjustBtn: {
     flex: 1,
     height: 46,
@@ -483,14 +833,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
   },
-  adjustText: {
-    fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
-    color: "#374151",
-  },
+  adjustText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
   addCatBtn: {
     flex: 1,
     height: 46,
@@ -502,5 +846,88 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
     color: "#FFFFFF",
+  },
+  // Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  modalCard: {
+    width: "100%",
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 17,
+    fontFamily: "Inter_700Bold",
+    marginBottom: 6,
+  },
+  modalSubtitle: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    marginBottom: 16,
+  },
+  modalAmountField: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 6,
+    marginBottom: 20,
+  },
+  modalCurrency: { fontSize: 18, fontFamily: "Inter_400Regular" },
+  modalAmountInput: {
+    flex: 1,
+    fontSize: 18,
+    fontFamily: "Inter_400Regular",
+    padding: 0,
+  },
+  modalBtns: { flexDirection: "row", gap: 10 },
+  modalCancelBtn: {
+    flex: 1,
+    height: 46,
+    borderRadius: 23,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+  },
+  modalCancelText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  modalConfirmBtn: {
+    flex: 1,
+    height: 46,
+    borderRadius: 23,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalConfirmText: {
+    fontSize: 14,
+    fontFamily: "Inter_600SemiBold",
+    color: "#FFFFFF",
+  },
+  // Add category picker
+  catPickerList: {
+    maxHeight: 180,
+    marginBottom: 4,
+  },
+  catPickerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 4,
+  },
+  catPickerLabel: {
+    fontSize: 14,
   },
 });

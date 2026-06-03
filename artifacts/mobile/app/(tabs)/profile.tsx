@@ -1,8 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import {
   Alert,
   Platform,
@@ -13,50 +12,153 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  useAccounts,
+  useDashboard,
+  usePreferences,
+  useUpdatePreferences,
+} from "@/hooks/api";
+import { useTheme } from "@/contexts/ThemeContext";
+import { mapUserProfile } from "@/lib/mappers";
+import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
+import { useScreenInsets } from "@/hooks/useScreenInsets";
 
-// ── Reusable row types ────────────────────────────────────────────
-type RowBase = { id: string; label: string; icon: keyof typeof Ionicons.glyphMap };
-type ChevronRow = RowBase & { kind: "chevron"; value?: string };
-type ToggleRow = RowBase & { kind: "toggle"; stateKey: "notifications" | "darkMode" };
+type RowBase = {
+  id: string;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+};
+type ChevronRow = RowBase & {
+  kind: "chevron";
+  value?: string;
+  route?: string;
+  settingsSlug?: string;
+};
+type ToggleRow = RowBase & {
+  kind: "toggle";
+  stateKey: "notifications" | "darkMode";
+};
 type MenuRow = ChevronRow | ToggleRow;
 
-const PREFERENCES: MenuRow[] = [
-  { id: "notif", kind: "toggle", label: "Notifications", icon: "notifications-outline", stateKey: "notifications" },
-  { id: "dark", kind: "toggle", label: "Dark Mode", icon: "moon-outline", stateKey: "darkMode" },
-  { id: "currency", kind: "chevron", label: "Currency", icon: "card-outline", value: "USD" },
-];
-
-const ACCOUNT: MenuRow[] = [
-  { id: "accounts", kind: "chevron", label: "Manage Accounts", icon: "wallet-outline", value: "3" },
-  { id: "subscription", kind: "chevron", label: "Subscription", icon: "ribbon-outline", value: "Free Plan", route: "/subscription" } as ChevronRow & { route: string },
-  { id: "security", kind: "chevron", label: "Security", icon: "shield-outline" },
-  { id: "export", kind: "chevron", label: "Export Data", icon: "document-text-outline" },
-];
-
-const SUPPORT: MenuRow[] = [
-  { id: "help", kind: "chevron", label: "Help Center", icon: "help-circle-outline" },
-  { id: "share", kind: "chevron", label: "Share App", icon: "share-social-outline" },
-  { id: "settings", kind: "chevron", label: "App Settings", icon: "settings-outline" },
-];
-
 export default function ProfileScreen() {
-  const insets = useSafeAreaInsets();
+  const insets = useScreenInsets();
   const colors = useColors();
   const router = useRouter();
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const { signOut, user: authUser } = useAuth();
+  const { isDark, toggleDarkMode } = useTheme();
+  const { data: preferences } = usePreferences();
+  const updatePreferencesMutation = useUpdatePreferences();
+  const { data: accounts = [] } = useAccounts();
+  const { data: dashboard } = useDashboard();
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const botPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const prefs = preferences ?? { notifications: true, currency: "USD" };
+  const displayUser = useMemo(
+    () =>
+      authUser
+        ? mapUserProfile(authUser, dashboard?.raw)
+        : {
+            name: "",
+            email: "",
+            initials: "?",
+            plan: "Free Plan",
+            balance: 0,
+            balanceChangePct: 0,
+            accountsConnected: 0,
+            stats: { transactions: 0, categories: 0, saved: 0 },
+          },
+    [authUser, dashboard?.raw],
+  );
 
-  const toggleState = { notifications, darkMode };
-  const setters = {
-    notifications: setNotifications,
-    darkMode: setDarkMode,
-  };
+  const preferencesRows: MenuRow[] = useMemo(
+    () => [
+      {
+        id: "notif",
+        kind: "toggle",
+        label: "Notifications",
+        icon: "notifications-outline",
+        stateKey: "notifications",
+      },
+      {
+        id: "dark",
+        kind: "toggle",
+        label: "Dark Mode",
+        icon: "moon-outline",
+        stateKey: "darkMode",
+      },
+      {
+        id: "currency",
+        kind: "chevron",
+        label: "Currency",
+        icon: "card-outline",
+        value: prefs.currency,
+        settingsSlug: "currency",
+      },
+    ],
+    [prefs.currency],
+  );
+
+  const accountRows: MenuRow[] = useMemo(
+    () => [
+      {
+        id: "accounts",
+        kind: "chevron",
+        label: "Manage Accounts",
+        icon: "wallet-outline",
+        value: String(accounts.length),
+        route: "/accounts",
+      },
+      {
+        id: "subscription",
+        kind: "chevron",
+        label: "Subscription",
+        icon: "ribbon-outline",
+        value: displayUser.plan,
+        route: "/subscription",
+      },
+      {
+        id: "security",
+        kind: "chevron",
+        label: "Security",
+        icon: "shield-outline",
+        settingsSlug: "security",
+      },
+      {
+        id: "export",
+        kind: "chevron",
+        label: "Export Data",
+        icon: "document-text-outline",
+        settingsSlug: "export",
+      },
+    ],
+    [accounts.length, displayUser.plan],
+  );
+
+  const supportRows: MenuRow[] = [
+    {
+      id: "help",
+      kind: "chevron",
+      label: "Help Center",
+      icon: "help-circle-outline",
+      settingsSlug: "help",
+    },
+    {
+      id: "share",
+      kind: "chevron",
+      label: "Share App",
+      icon: "share-social-outline",
+      settingsSlug: "share",
+    },
+    {
+      id: "settings",
+      kind: "chevron",
+      label: "App Settings",
+      icon: "settings-outline",
+      settingsSlug: "settings",
+    },
+  ];
 
   const handleSignOut = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -66,57 +168,95 @@ export default function ProfileScreen() {
         text: "Sign Out",
         style: "destructive",
         onPress: async () => {
-          await AsyncStorage.multiRemove(["isLoggedIn", "hasOnboarded"]);
+          await signOut();
           router.replace("/login");
         },
       },
     ]);
   };
 
+  const handleRowPress = (row: ChevronRow) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (row.route) {
+      router.push(row.route as never);
+    } else if (row.settingsSlug) {
+      router.push(`/settings/${row.settingsSlug}` as never);
+    }
+  };
+
   function SettingsSection({ label, rows }: { label: string; rows: MenuRow[] }) {
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>{label}</Text>
-        <View style={styles.card}>
+        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
+          {label}
+        </Text>
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
           {rows.map((row, idx) => (
             <View key={row.id}>
               <TouchableOpacity
                 style={styles.row}
                 activeOpacity={row.kind === "toggle" ? 1 : 0.7}
                 onPress={() => {
-                  if (row.kind !== "toggle") {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    const route = (row as ChevronRow & { route?: string }).route;
-                    if (route) router.push(route as any);
-                  }
+                  if (row.kind === "chevron") handleRowPress(row);
                 }}
               >
-                <View style={styles.rowIcon}>
-                  <Ionicons name={row.icon} size={18} color="#6B7280" />
+                <View
+                  style={[styles.rowIcon, { backgroundColor: colors.muted }]}
+                >
+                  <Ionicons name={row.icon} size={18} color={colors.mutedForeground} />
                 </View>
-                <Text style={styles.rowLabel}>{row.label}</Text>
+                <Text style={[styles.rowLabel, { color: colors.foreground }]}>
+                  {row.label}
+                </Text>
 
                 {row.kind === "toggle" ? (
                   <Switch
-                    value={toggleState[row.stateKey]}
-                    onValueChange={(v) => {
+                    value={
+                      row.stateKey === "darkMode"
+                        ? isDark
+                        : prefs.notifications
+                    }
+                    onValueChange={async (v) => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      setters[row.stateKey](v);
+                      if (row.stateKey === "darkMode") {
+                        await toggleDarkMode(v);
+                      } else {
+                        updatePreferencesMutation.mutate({
+                          notificationsEnabled: v,
+                        });
+                      }
                     }}
-                    trackColor={{ false: "#E5E7EB", true: colors.primary }}
+                    trackColor={{ false: colors.border, true: colors.primary }}
                     thumbColor="#FFFFFF"
-                    style={Platform.OS === "android" ? { transform: [{ scale: 0.9 }] } : undefined}
+                    style={
+                      Platform.OS === "android"
+                        ? { transform: [{ scale: 0.9 }] }
+                        : undefined
+                    }
+                    testID={row.stateKey === "darkMode" ? "dark-mode-toggle" : "notifications-toggle"}
                   />
                 ) : (
                   <View style={styles.rowRight}>
                     {row.value ? (
-                      <Text style={styles.rowValue}>{row.value}</Text>
+                      <Text
+                        style={[styles.rowValue, { color: colors.mutedForeground }]}
+                      >
+                        {row.value}
+                      </Text>
                     ) : null}
-                    <Ionicons name="chevron-forward" size={16} color="#D1D5DB" />
+                    <Ionicons
+                      name="chevron-forward"
+                      size={16}
+                      color={colors.mutedForeground}
+                    />
                   </View>
                 )}
               </TouchableOpacity>
-              {idx < rows.length - 1 && <View style={styles.divider} />}
+              {idx < rows.length - 1 && (
+                <View
+                  style={[styles.divider, { backgroundColor: colors.border }]}
+                />
+              )}
             </View>
           ))}
         </View>
@@ -126,109 +266,138 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingTop: topPad + 4, paddingBottom: botPad + 110 }}
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={{
+        paddingTop: insets.top + 4,
+        paddingBottom: insets.bottom + 110,
+      }}
       showsVerticalScrollIndicator={false}
     >
-      {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+          Profile
+        </Text>
       </View>
 
-      {/* ── User card ── */}
-      <TouchableOpacity style={styles.userCard} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={[styles.userCard, { backgroundColor: colors.card }]}
+        activeOpacity={0.7}
+        onPress={() => router.push("/settings/profile" as never)}
+      >
         <View style={[styles.avatar, { backgroundColor: colors.secondary }]}>
-          <Text style={[styles.avatarText, { color: colors.primary }]}>JD</Text>
+          <Text style={[styles.avatarText, { color: colors.primary }]}>
+            {displayUser.initials}
+          </Text>
         </View>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>John Doe</Text>
-          <Text style={styles.userEmail}>john.doe@gmail.com</Text>
-          <View style={styles.planBadge}>
-            <Text style={styles.planBadgeText}>Free Plan</Text>
+          <Text style={[styles.userName, { color: colors.foreground }]}>
+            {displayUser.name}
+          </Text>
+          <Text style={[styles.userEmail, { color: colors.mutedForeground }]}>
+            {displayUser.email}
+          </Text>
+          <View style={[styles.planBadge, { backgroundColor: colors.muted }]}>
+            <Text style={[styles.planBadgeText, { color: colors.mutedForeground }]}>
+              {displayUser.plan}
+            </Text>
           </View>
         </View>
-        <Ionicons name="chevron-forward" size={18} color="#D1D5DB" />
+        <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} />
       </TouchableOpacity>
 
-      {/* ── Upgrade banner ── */}
       <TouchableOpacity
         style={[styles.upgradeBanner, { backgroundColor: colors.secondary }]}
         activeOpacity={0.85}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        onPress={() => router.push("/subscription")}
+        testID="upgrade-to-pro-btn"
       >
-        <View style={[styles.upgradeIconWrap, { backgroundColor: colors.primary + "25" }]}>
+        <View
+          style={[styles.upgradeIconWrap, { backgroundColor: colors.primary + "25" }]}
+        >
           <Text style={styles.upgradeIconEmoji}>👑</Text>
         </View>
         <View style={styles.upgradeInfo}>
-          <Text style={styles.upgradeTitle}>Upgrade to Pro</Text>
-          <Text style={styles.upgradeSub}>Unlock all AI features</Text>
+          <Text style={[styles.upgradeTitle, { color: colors.foreground }]}>
+            Upgrade to Pro
+          </Text>
+          <Text style={[styles.upgradeSub, { color: colors.mutedForeground }]}>
+            Unlock all AI features
+          </Text>
         </View>
         <View style={[styles.upgradePriceBtn, { backgroundColor: colors.primary }]}>
           <Text style={styles.upgradePriceText}>$4.99/mo</Text>
         </View>
       </TouchableOpacity>
 
-      {/* ── Stats row ── */}
-      <View style={styles.statsRow}>
+      <View style={[styles.statsRow, { backgroundColor: colors.card }]}>
         {[
-          { label: "Transactions", value: "156", color: "#111827" },
-          { label: "Categories", value: "6", color: "#111827" },
-          { label: "Saved", value: "$840", color: colors.primary },
+          { label: "Transactions", value: String(displayUser.stats.transactions) },
+          { label: "Categories", value: String(displayUser.stats.categories) },
+          {
+            label: "Saved",
+            value: formatCurrency(displayUser.stats.saved, { compact: true }),
+            highlight: true,
+          },
         ].map((stat, i) => (
           <View
             key={stat.label}
             style={[
               styles.statCard,
-              i === 1 && styles.statCardMiddle,
+              i === 1 && {
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
+                borderColor: colors.border,
+              },
             ]}
           >
-            <Text style={[styles.statValue, { color: stat.color }]}>{stat.value}</Text>
-            <Text style={styles.statLabel}>{stat.label}</Text>
+            <Text
+              style={[
+                styles.statValue,
+                {
+                  color: stat.highlight ? colors.primary : colors.foreground,
+                },
+              ]}
+            >
+              {stat.value}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
+              {stat.label}
+            </Text>
           </View>
         ))}
       </View>
 
-      {/* ── Settings sections ── */}
-      <SettingsSection label="PREFERENCES" rows={PREFERENCES} />
-      <SettingsSection label="ACCOUNT" rows={ACCOUNT} />
-      <SettingsSection label="SUPPORT" rows={SUPPORT} />
+      <SettingsSection label="PREFERENCES" rows={preferencesRows} />
+      <SettingsSection label="ACCOUNT" rows={accountRows} />
+      <SettingsSection label="SUPPORT" rows={supportRows} />
 
-      {/* ── Sign Out ── */}
       <View style={styles.signOutWrap}>
         <TouchableOpacity
-          style={styles.signOutBtn}
+          style={[styles.signOutBtn, { backgroundColor: "#FEF2F2" }]}
           onPress={handleSignOut}
           activeOpacity={0.8}
+          accessibilityRole="button"
+          accessibilityLabel="Sign out"
+          testID="sign-out-btn"
         >
           <Ionicons name="log-out-outline" size={18} color="#EF4444" />
           <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
-        <Text style={styles.version}>SpendWise v1.0.0</Text>
+        <Text style={[styles.version, { color: colors.mutedForeground }]}>
+          SpendWise v1.0.0
+        </Text>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F6F9",
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 14,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-
-  // User card
+  container: { flex: 1 },
+  header: { paddingHorizontal: 20, paddingBottom: 14 },
+  headerTitle: { fontSize: 22, fontFamily: "Inter_700Bold" },
   userCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
     marginHorizontal: 20,
     borderRadius: 16,
     padding: 16,
@@ -246,38 +415,18 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
   },
-  avatarText: {
-    fontSize: 18,
-    fontFamily: "Inter_700Bold",
-  },
+  avatarText: { fontSize: 18, fontFamily: "Inter_700Bold" },
   userInfo: { flex: 1, gap: 2 },
-  userName: {
-    fontSize: 16,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-  userEmail: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-    marginBottom: 4,
-  },
+  userName: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  userEmail: { fontSize: 13, fontFamily: "Inter_400Regular", marginBottom: 4 },
   planBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "#F3F4F6",
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 10,
   },
-  planBadgeText: {
-    fontSize: 11,
-    fontFamily: "Inter_500Medium",
-    color: "#6B7280",
-  },
-
-  // Upgrade banner
+  planBadgeText: { fontSize: 11, fontFamily: "Inter_500Medium" },
   upgradeBanner: {
     flexDirection: "row",
     alignItems: "center",
@@ -293,21 +442,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
   },
   upgradeIconEmoji: { fontSize: 20 },
   upgradeInfo: { flex: 1 },
-  upgradeTitle: {
-    fontSize: 14,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-    marginBottom: 2,
-  },
-  upgradeSub: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "#6B7280",
-  },
+  upgradeTitle: { fontSize: 14, fontFamily: "Inter_700Bold", marginBottom: 2 },
+  upgradeSub: { fontSize: 12, fontFamily: "Inter_400Regular" },
   upgradePriceBtn: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -318,12 +457,9 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_600SemiBold",
     color: "#FFFFFF",
   },
-
-  // Stats row
   statsRow: {
     flexDirection: "row",
     marginHorizontal: 20,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     marginBottom: 20,
     overflow: "hidden",
@@ -339,36 +475,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
   },
-  statCardMiddle: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: "#F3F4F6",
-  },
-  statValue: {
-    fontSize: 20,
-    fontFamily: "Inter_700Bold",
-  },
-  statLabel: {
-    fontSize: 11,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
-
-  // Settings sections
-  section: {
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
+  statValue: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  statLabel: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  section: { paddingHorizontal: 20, marginBottom: 16 },
   sectionLabel: {
     fontSize: 11,
     fontFamily: "Inter_600SemiBold",
-    color: "#9CA3AF",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     marginBottom: 8,
   },
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     overflow: "hidden",
     shadowColor: "#000",
@@ -388,42 +505,19 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
-  rowLabel: {
-    flex: 1,
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    color: "#111827",
-  },
-  rowRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  rowValue: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#F3F4F6",
-    marginHorizontal: 16,
-  },
-
-  // Sign out
-  signOutWrap: {
-    paddingHorizontal: 20,
-  },
+  rowLabel: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular" },
+  rowRight: { flexDirection: "row", alignItems: "center", gap: 6 },
+  rowValue: { fontSize: 13, fontFamily: "Inter_400Regular" },
+  divider: { height: 1, marginHorizontal: 16 },
+  signOutWrap: { paddingHorizontal: 20 },
   signOutBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "#FEF2F2",
     borderRadius: 16,
     paddingVertical: 16,
     marginBottom: 14,
@@ -436,7 +530,6 @@ const styles = StyleSheet.create({
   version: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
-    color: "#C9CDD4",
     textAlign: "center",
     marginBottom: 8,
   },

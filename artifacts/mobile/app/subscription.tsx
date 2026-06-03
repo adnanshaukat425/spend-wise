@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -12,45 +13,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useStartTrial, useSubscriptionPlans } from "@/hooks/api";
+import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
-
-type Plan = "monthly" | "yearly" | "lifetime";
-
-const PLANS: {
-  id: Plan;
-  label: string;
-  price: string;
-  period: string;
-  badge?: string;
-  tag?: string;
-  tagColor?: string;
-  popular?: boolean;
-}[] = [
-  {
-    id: "monthly",
-    label: "Monthly",
-    price: "$4.99",
-    period: "/month",
-  },
-  {
-    id: "yearly",
-    label: "Yearly",
-    price: "$39.99",
-    period: "/year",
-    badge: "MOST POPULAR",
-    tag: "33% off",
-    tagColor: "#2E7D52",
-    popular: true,
-  },
-  {
-    id: "lifetime",
-    label: "Lifetime",
-    price: "$99.99",
-    period: "/one-time",
-    tag: "Best value",
-    tagColor: "#2E7D52",
-  },
-];
 
 const PRO_FEATURES = [
   "Unlimited AI-powered insights",
@@ -65,18 +30,46 @@ const PRO_FEATURES = [
   "Bill reminders & alerts",
 ];
 
+function formatPlanPeriod(billingPeriod: string): string {
+  if (billingPeriod === "month") return "/month";
+  if (billingPeriod === "year") return "/year";
+  if (billingPeriod === "lifetime") return "/one-time";
+  return billingPeriod ? `/${billingPeriod}` : "";
+}
+
 export default function SubscriptionScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colors = useColors();
-  const [selected, setSelected] = useState<Plan>("yearly");
+  const { data: plans = [] } = useSubscriptionPlans();
+  const startTrial = useStartTrial();
+  const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    if (plans.length && !selected) {
+      const popular = plans.find((p) => p.isPopular);
+      setSelected(popular?.slug ?? plans[0].slug);
+    }
+  }, [plans, selected]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const botPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const handleStartTrial = async () => {
+    try {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await startTrial.mutateAsync();
+      Alert.alert("Trial Started", "Your free trial has started.", [
+        { text: "OK", onPress: () => router.back() },
+      ]);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Could not start trial";
+      Alert.alert("Error", message);
+    }
+  };
+
   return (
     <View style={[styles.container, { paddingTop: topPad }]}>
-      {/* ── Navbar ── */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.closeBtn}>
           <Ionicons name="close" size={22} color="#111827" />
@@ -90,7 +83,6 @@ export default function SubscriptionScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: botPad + 120 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Crown hero ── */}
         <View style={styles.heroSection}>
           <View style={styles.crownWrap}>
             <Text style={styles.crownEmoji}>👑</Text>
@@ -101,17 +93,16 @@ export default function SubscriptionScreen() {
           </Text>
         </View>
 
-        {/* ── Plan cards ── */}
         <View style={styles.plansSection}>
-          {PLANS.map((plan) => {
-            const isSelected = selected === plan.id;
+          {plans.map((plan) => {
+            const isSelected = selected === plan.slug;
             return (
-              <View key={plan.id} style={styles.planOuter}>
-                {plan.badge && (
+              <View key={plan.slug} style={styles.planOuter}>
+                {plan.badge ? (
                   <View style={[styles.popularBadge, { backgroundColor: colors.primary }]}>
                     <Text style={styles.popularBadgeText}>{plan.badge}</Text>
                   </View>
-                )}
+                ) : null}
                 <TouchableOpacity
                   style={[
                     styles.planCard,
@@ -123,22 +114,21 @@ export default function SubscriptionScreen() {
                     !isSelected && { backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", borderWidth: 1.5 },
                   ]}
                   onPress={() => {
-                    setSelected(plan.id);
+                    setSelected(plan.slug);
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   }}
                   activeOpacity={0.8}
                 >
                   <View style={styles.planLeft}>
-                    <Text style={styles.planLabel}>{plan.label}</Text>
+                    <Text style={styles.planLabel}>{plan.name}</Text>
                     <View style={styles.planPriceRow}>
-                      <Text style={styles.planPrice}>{plan.price}</Text>
-                      <Text style={styles.planPeriod}> {plan.period}</Text>
+                      <Text style={styles.planPrice}>{formatCurrency(plan.price)}</Text>
+                      <Text style={styles.planPeriod}>{formatPlanPeriod(plan.billingPeriod)}</Text>
                     </View>
-                    {plan.tag && (
-                      <Text style={[styles.planTag, { color: plan.tagColor }]}>{plan.tag}</Text>
-                    )}
+                    {plan.tag ? (
+                      <Text style={[styles.planTag, { color: "#2E7D52" }]}>{plan.tag}</Text>
+                    ) : null}
                   </View>
-                  {/* Radio / check */}
                   {isSelected ? (
                     <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
                       <Ionicons name="checkmark" size={14} color="#FFFFFF" />
@@ -151,8 +141,7 @@ export default function SubscriptionScreen() {
             );
           })}
         </View>
-
-        {/* ── Pro Features card ── */}
+{/* ── Pro Features card ── */}
         <View style={[styles.featuresCard, { backgroundColor: "#F5F6F9" }]}>
           <View style={styles.featuresHeader}>
             <Ionicons name="sparkles" size={18} color={colors.primary} />
@@ -184,7 +173,7 @@ export default function SubscriptionScreen() {
         <TouchableOpacity
           style={styles.trialBtn}
           activeOpacity={0.85}
-          onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
+          onPress={handleStartTrial}
         >
           <Text style={styles.trialBtnText}>Start 7-Day Free Trial</Text>
         </TouchableOpacity>

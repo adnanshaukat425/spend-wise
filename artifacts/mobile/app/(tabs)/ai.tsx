@@ -1,36 +1,19 @@
+import { useInsights } from "@/hooks/api";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import React from "react";
 import {
-  Platform,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
-
-const TODAY_INSIGHTS = [
-  {
-    id: "1",
-    title: "Shopping Overspend Alert",
-    body: "You've exceeded your shopping budget by $50 this month.",
-    iconName: "warning-outline" as const,
-    iconBg: "#FFF7E8",
-    iconColor: "#F59E0B",
-  },
-  {
-    id: "2",
-    title: "Coffee Spending Pattern",
-    body: "You spend ~$5.40 on coffee daily. That's $162/month!",
-    iconName: "bulb-outline" as const,
-    iconBg: "#EFF6FF",
-    iconColor: "#3B82F6",
-  },
-];
+import { useScreenInsets } from "@/hooks/useScreenInsets";
 
 const PRO_PERKS = [
   "Unlimited AI-powered insights",
@@ -40,154 +23,186 @@ const PRO_PERKS = [
 ];
 
 export default function AIScreen() {
-  const insets = useSafeAreaInsets();
+  const router = useRouter();
   const colors = useColors();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const botPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const insets = useScreenInsets();
+  const { data: insights = [] } = useInsights();
+  const todayInsights = insights.slice(0, 3);
+
+  const goToSubscription = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push("/subscription");
+  };
 
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={[
-        styles.scroll,
-        { paddingTop: topPad + 4, paddingBottom: botPad + 110 },
-      ]}
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={{
+        paddingTop: insets.top + 4,
+        paddingBottom: insets.bottom + 110,
+        paddingHorizontal: 20,
+      }}
       showsVerticalScrollIndicator={false}
     >
-      {/* ── Header ── */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <View style={styles.headerTitleRow}>
             <Ionicons name="sparkles" size={20} color={colors.primary} />
-            <Text style={styles.headerTitle}>AI Insights</Text>
+            <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+              AI Insights
+            </Text>
           </View>
-          <Text style={styles.headerSub}>Powered by SpendWise AI</Text>
+          <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>
+            Powered by SpendWise AI
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.upgradeBtn}
           activeOpacity={0.85}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+          onPress={goToSubscription}
         >
           <Text style={styles.upgradeCrown}>👑</Text>
           <Text style={styles.upgradeBtnText}>Upgrade</Text>
         </TouchableOpacity>
       </View>
 
-      {/* ── Financial Health Card ── */}
       <View style={[styles.healthCard, { backgroundColor: colors.secondary }]}>
         <View style={styles.healthTop}>
-          <View style={[styles.healthIconWrap, { backgroundColor: colors.primary + "22" }]}>
+          <View
+            style={[
+              styles.healthIconWrap,
+              { backgroundColor: colors.primary + "22" },
+            ]}
+          >
             <Ionicons name="sparkles" size={22} color={colors.primary} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.healthTitle}>Your Financial Health</Text>
-            <Text style={styles.healthBody}>
-              You're doing well! Your spending is 33% below your budget this month. Keep up the good work!
+            <Text style={[styles.healthTitle, { color: colors.foreground }]}>
+              Your Financial Health
+            </Text>
+            <Text style={[styles.healthBody, { color: colors.mutedForeground }]}>
+              You're doing well! Your spending is 33% below your budget this
+              month. Keep up the good work!
             </Text>
           </View>
         </View>
         <View style={styles.healthStatus}>
-          <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
-          <Text style={[styles.statusText, { color: colors.primary }]}>Good Standing</Text>
+          <View
+            style={[styles.statusDot, { backgroundColor: colors.primary }]}
+          />
+          <Text style={[styles.statusText, { color: colors.primary }]}>
+            Good Standing
+          </Text>
         </View>
       </View>
 
-      {/* ── Today's Insights ── */}
-      <Text style={styles.sectionTitle}>Today's Insights</Text>
-      {TODAY_INSIGHTS.map((item) => (
+      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+        Today's Insights
+      </Text>
+      {todayInsights.map((item) => (
         <TouchableOpacity
           key={item.id}
-          style={styles.insightCard}
+          style={[styles.insightCard, { backgroundColor: colors.card }]}
           activeOpacity={0.7}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          onPress={() => Alert.alert(item.title, item.body, [{ text: "OK" }])}
         >
-          <View style={[styles.insightIcon, { backgroundColor: item.iconBg }]}>
-            <Ionicons name={item.iconName} size={20} color={item.iconColor} />
+          <View style={[styles.insightIcon, { backgroundColor: item.bgColor }]}>
+            <Ionicons name={item.icon} size={20} color={item.iconColor} />
           </View>
           <View style={styles.insightBody}>
-            <Text style={styles.insightTitle}>{item.title}</Text>
-            <Text style={styles.insightText}>{item.body}</Text>
+            <Text style={[styles.insightTitle, { color: colors.foreground }]}>
+              {item.title}
+            </Text>
+            <Text style={[styles.insightText, { color: colors.mutedForeground }]}>
+              {item.body}
+            </Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#D1D5DB" />
+          <Ionicons
+            name="chevron-forward"
+            size={18}
+            color={colors.mutedForeground}
+          />
         </TouchableOpacity>
       ))}
 
-      {/* ── Pro Insights ── */}
       <View style={styles.proHeaderRow}>
-        <Text style={styles.sectionTitle}>Pro Insights</Text>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+          Pro Insights
+        </Text>
         <Text style={styles.crown}>👑</Text>
       </View>
 
-      {/* Locked Pro cards */}
       {[1, 2, 3].map((n) => (
-        <View key={n} style={styles.lockedCard}>
-          {/* Blurred content hint */}
+        <View
+          key={n}
+          style={[styles.lockedCard, { borderColor: colors.border }]}
+        >
           <View style={styles.lockedContent}>
             <View style={styles.lockedIconPlaceholder} />
             <View style={styles.lockedLines}>
               <View style={[styles.lockedLine, { width: "60%" }]} />
-              <View style={[styles.lockedLine, { width: "85%", marginTop: 6 }]} />
+              <View
+                style={[styles.lockedLine, { width: "85%", marginTop: 6 }]}
+              />
             </View>
           </View>
-          {/* Lock badge */}
-          <View style={styles.lockBadge}>
-            <Ionicons name="lock-closed" size={13} color="#6B7280" />
-            <Text style={styles.lockBadgeText}>Pro Feature</Text>
+          <View style={[styles.lockBadge, { backgroundColor: colors.muted }]}>
+            <Ionicons name="lock-closed" size={13} color={colors.mutedForeground} />
+            <Text style={[styles.lockBadgeText, { color: colors.mutedForeground }]}>
+              Pro Feature
+            </Text>
           </View>
         </View>
       ))}
 
-      {/* ── Upgrade to Pro Card ── */}
-      <View style={styles.upgradeCard}>
+      <View style={[styles.upgradeCard, { backgroundColor: colors.warningLight }]}>
         <View style={styles.upgradeCardHeader}>
           <Text style={styles.upgradeCardCrown}>👑</Text>
-          <Text style={styles.upgradeCardTitle}>Upgrade to Pro</Text>
+          <Text style={[styles.upgradeCardTitle, { color: colors.foreground }]}>
+            Upgrade to Pro
+          </Text>
         </View>
-        <Text style={styles.upgradeCardSub}>
+        <Text style={[styles.upgradeCardSub, { color: colors.mutedForeground }]}>
           Unlock AI-powered insights and save more money every month.
         </Text>
 
-        {/* Perk list */}
         <View style={styles.perks}>
           {PRO_PERKS.map((perk) => (
             <View key={perk} style={styles.perkRow}>
               <Ionicons name="checkmark" size={16} color={colors.primary} />
-              <Text style={styles.perkText}>{perk}</Text>
+              <Text style={[styles.perkText, { color: colors.foreground }]}>
+                {perk}
+              </Text>
             </View>
           ))}
         </View>
 
-        {/* Price */}
         <View style={styles.priceRow}>
-          <Text style={styles.price}>$4.99</Text>
-          <Text style={styles.priceUnit}> /month</Text>
+          <Text style={[styles.price, { color: colors.foreground }]}>$4.99</Text>
+          <Text style={[styles.priceUnit, { color: colors.mutedForeground }]}>
+            {" "}
+            /month
+          </Text>
         </View>
 
-        {/* CTA button */}
         <TouchableOpacity
           style={styles.trialBtn}
           activeOpacity={0.85}
-          onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
+          onPress={goToSubscription}
         >
           <Text style={styles.trialBtnText}>Start 7-Day Free Trial</Text>
         </TouchableOpacity>
 
-        <Text style={styles.trialFooter}>Cancel anytime • No credit card required</Text>
+        <Text style={[styles.trialFooter, { color: colors.mutedForeground }]}>
+          Cancel anytime • No credit card required
+        </Text>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F6F9",
-  },
-  scroll: {
-    paddingHorizontal: 20,
-  },
-
-  // Header
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -195,21 +210,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerLeft: { gap: 3 },
-  headerTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-  headerSub: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
+  headerTitleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  headerTitle: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  headerSub: { fontSize: 12, fontFamily: "Inter_400Regular" },
   upgradeBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -219,22 +222,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
   },
-  upgradeCrown: {
-    fontSize: 12,
-    lineHeight: 14,
-  },
+  upgradeCrown: { fontSize: 12, lineHeight: 14 },
   upgradeBtnText: {
     fontSize: 13,
     fontFamily: "Inter_600SemiBold",
     color: "#FFFFFF",
   },
-
-  // Health card
-  healthCard: {
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 24,
-  },
+  healthCard: { borderRadius: 18, padding: 18, marginBottom: 24 },
   healthTop: {
     flexDirection: "row",
     gap: 14,
@@ -252,35 +246,19 @@ const styles = StyleSheet.create({
   healthTitle: {
     fontSize: 15,
     fontFamily: "Inter_700Bold",
-    color: "#111827",
     marginBottom: 6,
   },
   healthBody: {
     fontSize: 13,
     fontFamily: "Inter_400Regular",
-    color: "#374151",
     lineHeight: 19,
   },
-  healthStatus: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  statusText: {
-    fontSize: 13,
-    fontFamily: "Inter_600SemiBold",
-  },
-
-  // Section title
+  healthStatus: { flexDirection: "row", alignItems: "center", gap: 7 },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  statusText: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
   sectionTitle: {
     fontSize: 16,
     fontFamily: "Inter_700Bold",
-    color: "#111827",
     marginBottom: 12,
   },
   proHeaderRow: {
@@ -291,10 +269,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   crown: { fontSize: 16 },
-
-  // Insight card
   insightCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     marginBottom: 10,
@@ -319,22 +294,17 @@ const styles = StyleSheet.create({
   insightTitle: {
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
-    color: "#111827",
     marginBottom: 4,
   },
   insightText: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
-    color: "#6B7280",
     lineHeight: 17,
   },
-
-  // Locked pro cards
   lockedCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: "#E5E7EB",
     borderStyle: "dashed",
     padding: 16,
     marginBottom: 10,
@@ -366,74 +336,34 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#F3F4F6",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
-  lockBadgeText: {
-    fontSize: 13,
-    fontFamily: "Inter_500Medium",
-    color: "#6B7280",
-  },
-
-  // Upgrade card
-  upgradeCard: {
-    backgroundColor: "#FFF7ED",
-    borderRadius: 20,
-    padding: 20,
-    marginTop: 8,
-  },
+  lockBadgeText: { fontSize: 13, fontFamily: "Inter_500Medium" },
+  upgradeCard: { borderRadius: 20, padding: 20, marginTop: 8 },
   upgradeCardHeader: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     marginBottom: 8,
   },
-  upgradeCardCrown: {
-    fontSize: 20,
-  },
-  upgradeCardTitle: {
-    fontSize: 17,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
+  upgradeCardCrown: { fontSize: 20 },
+  upgradeCardTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
   upgradeCardSub: {
     fontSize: 13,
     fontFamily: "Inter_400Regular",
-    color: "#6B7280",
     lineHeight: 19,
     marginBottom: 16,
   },
   perks: { gap: 10, marginBottom: 20 },
-  perkRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  perkText: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    color: "#374151",
-    flex: 1,
-  },
-  priceRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    marginBottom: 16,
-  },
-  price: {
-    fontSize: 34,
-    fontFamily: "Inter_700Bold",
-    color: "#111827",
-  },
-  priceUnit: {
-    fontSize: 15,
-    fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
-  },
+  perkRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  perkText: { fontSize: 13, fontFamily: "Inter_400Regular", flex: 1 },
+  priceRow: { flexDirection: "row", alignItems: "baseline", marginBottom: 16 },
+  price: { fontSize: 34, fontFamily: "Inter_700Bold" },
+  priceUnit: { fontSize: 15, fontFamily: "Inter_400Regular" },
   trialBtn: {
     backgroundColor: "#F59E0B",
     height: 52,
@@ -441,11 +371,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
-    shadowColor: "#F59E0B",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
   },
   trialBtnText: {
     fontSize: 15,
@@ -455,7 +380,6 @@ const styles = StyleSheet.create({
   trialFooter: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
-    color: "#9CA3AF",
     textAlign: "center",
   },
 });

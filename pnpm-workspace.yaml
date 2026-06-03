@@ -74,7 +74,14 @@ onlyBuiltDependencies:
   - msw
   - unrs-resolver
 
+neverBuiltDependencies:
+  - edgedriver
+  - geckodriver
+
 overrides:
+  # Pin native esbuild binary to match the JS package version lock
+  "@esbuild/darwin-arm64": "0.27.3"
+  "@esbuild/darwin-x64": "0.27.3"
   # replit uses linux-x64 only, we can exclude all other platforms
   "esbuild>@esbuild/darwin-arm64": "-"
   "esbuild>@esbuild/darwin-x64": "-"
@@ -158,3 +165,8 @@ overrides:
   # drizzle-kit uses esbuild internally on an older version that's vulnerable, this overrides it
   "@esbuild-kit/esm-loader": "npm:tsx@^4.21.0"
   esbuild: "0.27.3"
+
+allowBuilds:
+  edgedriver: set this to true or false
+  esbuild: set this to true or false
+  geckodriver: set this to true or false
