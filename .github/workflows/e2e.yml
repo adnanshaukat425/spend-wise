@@ -4,11 +4,15 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "artifacts/mobile/**"
+      - "MobileUI/**"
+      - "UITests/**"
+      - "API/**"
   push:
     branches: [main]
     paths:
-      - "artifacts/mobile/**"
+      - "MobileUI/**"
+      - "UITests/**"
+      - "API/**"
   workflow_dispatch:
     inputs:
       platform:
@@ -21,7 +25,6 @@ env:
   EXPO_PUBLIC_API_URL: "http://localhost:5157"
 
 jobs:
-  # ── iOS E2E Tests ───────────────────────────────────────────────────────────
   e2e-ios:
     name: "E2E — iOS Simulator"
     runs-on: macos-15
@@ -57,34 +60,33 @@ jobs:
 
       - name: Start backend API server
         run: |
-          cd api
+          cd API
           dotnet run --project src/SpendWise.Api/SpendWise.Api.csproj &
-          # Wait for the API to be healthy
           for i in {1..30}; do
-            curl -sf http://localhost:5157/health && break || sleep 2
+            curl -sf http://localhost:5157/api/healthz && break || sleep 2
           done
 
       - name: Build Expo app for iOS simulator
-        working-directory: artifacts/mobile
+        working-directory: MobileUI
         env:
           EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
         run: |
           npx expo export --platform ios --output-dir build-export
-          # Locate the .app bundle from the export
           APP_PATH=$(find build-export -name "*.app" | head -1)
           echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
           mkdir -p build
           cp -r "$APP_PATH" build/SpendWise.app
 
       - name: Create log and report directories
-        working-directory: artifacts/mobile
-        run: mkdir -p e2e/logs e2e/reports
+        working-directory: UITests
+        run: mkdir -p logs reports
 
       - name: Run iOS E2E tests
-        working-directory: artifacts/mobile
+        working-directory: UITests
         env:
           EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
-        run: pnpm test:e2e:ios
+          APP_PATH: ${{ github.workspace }}/MobileUI/build/SpendWise.app
+        run: pnpm test:ios
 
       - name: Upload test reports on failure
         if: failure()
@@ -92,10 +94,9 @@ jobs:
         with:
           name: ios-e2e-reports
           path: |
-            artifacts/mobile/e2e/reports/
-            artifacts/mobile/e2e/logs/
+            UITests/reports/
+            UITests/logs/
 
-  # ── Android E2E Tests ────────────────────────────────────────────────────────
   e2e-android:
     name: "E2E — Android Emulator"
     runs-on: ubuntu-latest
@@ -142,14 +143,14 @@ jobs:
 
       - name: Start backend API server
         run: |
-          cd api
+          cd API
           dotnet run --project src/SpendWise.Api/SpendWise.Api.csproj &
           for i in {1..30}; do
-            curl -sf http://localhost:5157/health && break || sleep 2
+            curl -sf http://localhost:5157/api/healthz && break || sleep 2
           done
 
       - name: Build Expo app for Android
-        working-directory: artifacts/mobile
+        working-directory: MobileUI
         env:
           EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
         run: |
@@ -159,14 +160,14 @@ jobs:
           cp "$APK_PATH" build/SpendWise.apk
 
       - name: Create log and report directories
-        working-directory: artifacts/mobile
-        run: mkdir -p e2e/logs e2e/reports
+        working-directory: UITests
+        run: mkdir -p logs reports
 
       - name: Run Android E2E tests
-        working-directory: artifacts/mobile
+        working-directory: UITests
         env:
           EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
-        run: pnpm test:e2e:android
+        run: pnpm test:android
 
       - name: Upload test reports on failure
         if: failure()
@@ -174,5 +175,5 @@ jobs:
         with:
           name: android-e2e-reports
           path: |
-            artifacts/mobile/e2e/reports/
-            artifacts/mobile/e2e/logs/
+            UITests/reports/
+            UITests/logs/

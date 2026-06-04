@@ -44,6 +44,11 @@ Thumbs.db
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
-# Replit
+# Replit / IDE extras (not part of SpendWise)
 .cache/
 .local/
+attached_assets/
+.agents/
+.canvas/
+.replit
+.replitignore

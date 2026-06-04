@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "SpendWise",
+    "slug": "mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "mobile",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EEF9F2"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.adnanshaukat425.mobile",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "SpendWise uses the microphone to let you log expenses by voice.",
+        "NSSpeechRecognitionUsageDescription": "SpendWise uses speech recognition to convert your spoken expense into text."
+      },
+      "appleTeamId": "29G838ZMC2",
+      "deploymentTarget": "16.4"
+    },
+    "android": {
+      "package": "com.adnanshaukat.spendwise",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow SpendWise to access your photos for receipt attachments.",
+          "cameraPermission": "Allow SpendWise to use the camera to scan receipts."
+        }
+      ],
+      "expo-font",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "SpendWise uses the microphone to let you log expenses by voice.",
+          "speechRecognitionPermission": "SpendWise uses speech recognition to convert your spoken expense into text."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

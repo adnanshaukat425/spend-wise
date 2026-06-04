@@ -1,0 +1,23 @@
+## .NET build output
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+.vs/
+
+## Rider
+.idea/
+
+## Logs
+*.log
+logs/
+
+## Environment
+.env
+.env.local
+*.env
+
+## Published output
+publish/
