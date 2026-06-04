@@ -4,6 +4,8 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -108,11 +110,12 @@ export default function AddAccountScreen() {
   const isValid = name.trim().length > 0 && accountType.length > 0;
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={[
         styles.container,
         { backgroundColor: colors.background, paddingTop: insets.top },
       ]}
+      behavior={Platform.OS === "ios" ? "height" : "height"}
     >
       <View style={styles.header}>
         <TouchableOpacity
@@ -121,6 +124,7 @@ export default function AddAccountScreen() {
           style={styles.headerBtn}
           accessibilityRole="button"
           accessibilityLabel="Go back"
+          testID="screen-back-btn"
         >
           <Ionicons name="chevron-back" size={22} color={colors.foreground} />
         </TouchableOpacity>
@@ -309,7 +313,7 @@ export default function AddAccountScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

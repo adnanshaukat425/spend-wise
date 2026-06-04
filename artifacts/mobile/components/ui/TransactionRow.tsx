@@ -28,6 +28,7 @@ export function TransactionRow({
       disabled={!onPress}
       accessibilityRole="button"
       accessibilityLabel={`${transaction.name}, ${transaction.category}`}
+      testID={`transaction-row-${transaction.id}`}
     >
       <View style={[styles.icon, { backgroundColor: transaction.iconBg }]}>
         <Ionicons

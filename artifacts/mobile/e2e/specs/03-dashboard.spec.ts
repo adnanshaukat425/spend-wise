@@ -8,6 +8,7 @@ import DashboardPage from "../pages/DashboardPage";
 import AccountsPage from "../pages/AccountsPage";
 import NotificationsPage from "../pages/NotificationsPage";
 import { loginWithGoogle } from "../helpers/auth.helper";
+import { goBack } from "../helpers/wait.helper";
 
 describe("Dashboard", () => {
   before(async () => {
@@ -28,7 +29,7 @@ describe("Dashboard", () => {
     await DashboardPage.tapNotifications();
     await NotificationsPage.waitForLoad();
     expect(await NotificationsPage.isOnScreen()).toBe(true);
-    await driver.back();
+    await goBack();
     await DashboardPage.waitForLoad();
   });
 
@@ -36,11 +37,15 @@ describe("Dashboard", () => {
     await DashboardPage.tapAccounts();
     await AccountsPage.waitForLoad();
     expect(await AccountsPage.isOnScreen()).toBe(true);
-    await driver.back();
+    await goBack();
     await DashboardPage.waitForLoad();
   });
 
   it("should show the See All transactions button", async () => {
+    const visible = await DashboardPage.seeAllTransactionsBtn.isDisplayed().catch(() => false);
+    if (!visible) {
+      await DashboardPage.scrollDown();
+    }
     expect(await DashboardPage.seeAllTransactionsBtn.isDisplayed()).toBe(true);
   });
 

@@ -19,9 +19,13 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "SpendWise uses the microphone to let you log expenses by voice.",
         "NSSpeechRecognitionUsageDescription": "SpendWise uses speech recognition to convert your spoken expense into text."
-      }
+      },
+      "appleTeamId": "29G838ZMC2",
+      "deploymentTarget": "16.4"
     },
     "android": {
+      "package": "com.adnanshaukat.spendwise",
+      "versionCode": 1,
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ]

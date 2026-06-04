@@ -31,7 +31,7 @@ class AccountsPage extends BasePage {
   }
 
   async getAccountRows() {
-    return $$('[testID*="account-row-"]');
+    return $$('-ios predicate string:name BEGINSWITH "account-row-"');
   }
 
   async tapAccount(id: string) {

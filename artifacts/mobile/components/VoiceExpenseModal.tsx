@@ -1,8 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from "expo-speech-recognition";
+
+// expo-speech-recognition requires native module linking — guard against missing native module
+let ExpoSpeechRecognitionModule: any = null;
+let useSpeechRecognitionEvent: ((event: string, handler: (e: any) => void) => void) = () => {};
+try {
+  const speechModule = require("expo-speech-recognition");
+  ExpoSpeechRecognitionModule = speechModule.ExpoSpeechRecognitionModule;
+  useSpeechRecognitionEvent = speechModule.useSpeechRecognitionEvent;
+} catch {
+  // Native module not available — voice features will be disabled
+}
+
+/** True only when the speech-recognition native module is linked (i.e. dev/prod build, not Expo Go) */
+export const isSpeechRecognitionAvailable = ExpoSpeechRecognitionModule !== null;
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -119,6 +129,11 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
   });
 
   const startListening = useCallback(() => {
+    if (!ExpoSpeechRecognitionModule) {
+      setErrorMsg("Voice recognition is not available on this device.");
+      setVoiceState("error");
+      return;
+    }
     setTranscript("");
     setErrorMsg("");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -131,7 +146,7 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
   }, []);
 
   const stopListening = useCallback(() => {
-    ExpoSpeechRecognitionModule.stop();
+    ExpoSpeechRecognitionModule?.stop();
   }, []);
 
   const handleAnalyse = useCallback(async () => {
@@ -162,7 +177,7 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
 
   const handleClose = useCallback(() => {
     if (voiceState === "listening") {
-      ExpoSpeechRecognitionModule.abort();
+      ExpoSpeechRecognitionModule?.abort();
     }
     setVoiceState("idle");
     setTranscript("");

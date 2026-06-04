@@ -10,7 +10,8 @@ import LoginPage from "../pages/LoginPage";
 
 describe("Onboarding Flow", () => {
   it("should display the onboarding screen on first launch", async () => {
-    const isShown = await OnboardingPage.isOnScreen();
+    // Wait for app to boot and the React Native bundle to load (up to 30s)
+    const isShown = await OnboardingPage.isVisible("onboarding-get-started-btn", 30000);
     expect(isShown).toBe(true);
   });
 

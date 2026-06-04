@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ThemeContext } from "@/contexts/ThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 export type ErrorFallbackProps = {
@@ -19,17 +20,18 @@ export type ErrorFallbackProps = {
   resetError: () => void;
 };
 
-export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
+/**
+ * Inner component — only renders when ThemeProvider is available.
+ */
+function SafeErrorContent({ error, resetError }: ErrorFallbackProps) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleRestart = async () => {
     try {
       await reloadAppAsync();
-    } catch (restartError) {
-      console.error("Failed to restart app:", restartError);
+    } catch {
       resetError();
     }
   };
@@ -72,11 +74,9 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
         <Text style={[styles.title, { color: colors.foreground }]}>
           Something went wrong
         </Text>
-
         <Text style={[styles.message, { color: colors.mutedForeground }]}>
           Please reload the app to continue.
         </Text>
-
         <Pressable
           onPress={handleRestart}
           style={({ pressed }) => [
@@ -88,12 +88,7 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
             },
           ]}
         >
-          <Text
-            style={[
-              styles.buttonText,
-              { color: colors.primaryForeground },
-            ]}
-          >
+          <Text style={[styles.buttonText, { color: colors.primaryForeground }]}>
             Try Again
           </Text>
         </Pressable>
@@ -107,18 +102,8 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
           onRequestClose={() => setIsModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
-            <View
-              style={[
-                styles.modalContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <View
-                style={[
-                  styles.modalHeader,
-                  { borderBottomColor: colors.border },
-                ]}
-              >
+            <View style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+              <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
                   Error Details
                 </Text>
@@ -126,15 +111,11 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
                   onPress={() => setIsModalVisible(false)}
                   accessibilityLabel="Close error details"
                   accessibilityRole="button"
-                  style={({ pressed }) => [
-                    styles.closeButton,
-                    { opacity: pressed ? 0.6 : 1 },
-                  ]}
+                  style={({ pressed }) => [styles.closeButton, { opacity: pressed ? 0.6 : 1 }]}
                 >
                   <Feather name="x" size={24} color={colors.foreground} />
                 </Pressable>
               </View>
-
               <ScrollView
                 style={styles.modalScrollView}
                 contentContainerStyle={[
@@ -143,20 +124,9 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
                 ]}
                 showsVerticalScrollIndicator
               >
-                <View
-                  style={[
-                    styles.errorContainer,
-                    { backgroundColor: colors.card },
-                  ]}
-                >
+                <View style={[styles.errorContainer, { backgroundColor: colors.card }]}>
                   <Text
-                    style={[
-                      styles.errorText,
-                      {
-                        color: colors.foreground,
-                        fontFamily: monoFont,
-                      },
-                    ]}
+                    style={[styles.errorText, { color: colors.foreground, fontFamily: monoFont }]}
                     selectable
                   >
                     {formatErrorDetails()}
@@ -169,6 +139,35 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
       ) : null}
     </View>
   );
+}
+
+/**
+ * Outer component — checks if ThemeProvider is in the tree before calling useColors.
+ * Falls back to hardcoded colors if not (edge-case: error thrown above ThemeProvider).
+ */
+export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
+  const themeCtx = React.useContext(ThemeContext);
+
+  if (!themeCtx) {
+    return (
+      <View style={[styles.container, { backgroundColor: "#FFFFFF" }]}>
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: "#111827" }]}>Something went wrong</Text>
+          <Text style={[styles.message, { color: "#6B7280" }]}>
+            Please restart the app to continue.
+          </Text>
+          <Pressable
+            onPress={resetError}
+            style={[styles.button, { backgroundColor: "#2E7D52" }]}
+          >
+            <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>Try Again</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  return <SafeErrorContent error={error} resetError={resetError} />;
 }
 
 const styles = StyleSheet.create({
@@ -215,10 +214,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     minWidth: 200,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -248,31 +244,20 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomWidth: 1,
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-  },
+  modalTitle: { fontSize: 20, fontWeight: "600" },
   closeButton: {
     width: 44,
     height: 44,
     alignItems: "center",
     justifyContent: "center",
   },
-  modalScrollView: {
-    flex: 1,
-  },
-  modalScrollContent: {
-    padding: 16,
-  },
+  modalScrollView: { flex: 1 },
+  modalScrollContent: { padding: 16 },
   errorContainer: {
     width: "100%",
     borderRadius: 8,
     overflow: "hidden",
     padding: 16,
   },
-  errorText: {
-    fontSize: 12,
-    lineHeight: 18,
-    width: "100%",
-  },
+  errorText: { fontSize: 12, lineHeight: 18, width: "100%" },
 });

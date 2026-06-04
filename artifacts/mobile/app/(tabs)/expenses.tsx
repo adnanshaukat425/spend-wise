@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, type Href } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,21 +17,28 @@ import { useCategories, useTransactions } from "@/hooks/api";
 import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ExpensesScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
+  const qc = useQueryClient();
   const { data: categoriesData } = useCategories();
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categorySlug =
     selectedCategory === "all" ? undefined : selectedCategory;
-  const { data } = useTransactions({ categorySlug });
+  const { data, isFetching } = useTransactions({ categorySlug });
 
   const transactions = data?.items ?? [];
   const totalIncome = data?.totalIncome ?? 0;
   const totalExpenses = data?.totalExpenses ?? 0;
+
+  const handleRefresh = useCallback(() => {
+    qc.invalidateQueries({ queryKey: ["transactions"] });
+  }, [qc]);
 
   const filterOptions = useMemo(() => {
     const cats = categoriesData ?? [];
@@ -39,7 +48,16 @@ export default function ExpensesScreen() {
     ];
   }, [categoriesData]);
 
-  const filtered = transactions;
+  const filtered = useMemo(() => {
+    if (!searchQuery.trim()) return transactions;
+    const q = searchQuery.toLowerCase();
+    return transactions.filter(
+      (t) =>
+        t.name.toLowerCase().includes(q) ||
+        t.category.toLowerCase().includes(q) ||
+        t.note?.toLowerCase().includes(q),
+    );
+  }, [transactions, searchQuery]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -56,6 +74,26 @@ export default function ExpensesScreen() {
         >
           <Ionicons name="add" size={22} color="#FFFFFF" />
         </TouchableOpacity>
+      </View>
+
+      {/* Search bar */}
+      <View style={[styles.searchBar, { backgroundColor: colors.muted }]}>
+        <Ionicons name="search-outline" size={18} color={colors.mutedForeground} />
+        <TextInput
+          testID="transaction-search-input"
+          style={[styles.searchInput, { color: colors.foreground }]}
+          placeholder="Search transactions..."
+          placeholderTextColor={colors.mutedForeground}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <Ionicons name="close-circle" size={18} color={colors.mutedForeground} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.summaryRow}>
@@ -121,6 +159,13 @@ export default function ExpensesScreen() {
         style={styles.list}
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={handleRefresh}
+            tintColor={colors.primary}
+          />
+        }
       >
         {filtered.length === 0 ? (
           <EmptyState
@@ -186,6 +231,22 @@ const styles = StyleSheet.create({
   },
   summaryLabel: { fontSize: 12, fontFamily: "Inter_500Medium" },
   summaryValue: { fontSize: 18, fontFamily: "Inter_700Bold" },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20,
+    marginBottom: 12,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    padding: 0,
+  },
   categoriesScroll: { flexGrow: 0 },
   categories: {
     paddingHorizontal: 20,

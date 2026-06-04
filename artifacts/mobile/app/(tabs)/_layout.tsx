@@ -45,6 +45,7 @@ function AddFAB({ onPress }: { onPress: () => void }) {
       style={styles.fabWrapper}
       accessibilityRole="button"
       accessibilityLabel="Add expense"
+      testID="add-expense"
     >
       <View style={[styles.fab, { backgroundColor: colors.primary }]}>
         <Ionicons name="add" size={28} color="#FFFFFF" />
@@ -102,117 +103,136 @@ export default function TabLayout() {
 
   return (
     <View style={styles.root}>
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.mutedForeground,
-        tabBarStyle: {
-          position: "absolute",
-          backgroundColor: isIOS ? "transparent" : colors.card,
-          borderTopWidth: 0,
-          elevation: 0,
-          height: TAB_BAR_HEIGHT,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: isDark ? 0.2 : 0.06,
-          shadowRadius: 8,
-        },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontFamily: "Inter_500Medium",
-          marginTop: 2,
-        },
-        tabBarBackground: () =>
-          isIOS ? (
-            <BlurView
-              intensity={80}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : null,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, focused }) =>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.mutedForeground,
+          tabBarStyle: {
+            position: "absolute",
+            backgroundColor: isIOS ? "transparent" : colors.card,
+            borderTopWidth: 0,
+            elevation: 0,
+            height: TAB_BAR_HEIGHT,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: isDark ? 0.2 : 0.06,
+            shadowRadius: 8,
+          },
+          tabBarLabelStyle: {
+            fontSize: 11,
+            fontFamily: "Inter_500Medium",
+            marginTop: 2,
+          },
+          tabBarBackground: () =>
             isIOS ? (
-              <SymbolView
-                name={focused ? "house.fill" : "house"}
-                tintColor={color}
-                size={24}
+              <BlurView
+                intensity={80}
+                tint={isDark ? "dark" : "light"}
+                style={StyleSheet.absoluteFill}
               />
-            ) : (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                size={24}
-                color={color}
-              />
+            ) : null,
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarAccessibilityLabel: "Home",
+            tabBarIcon: ({ color, focused }) =>
+              isIOS ? (
+                <SymbolView
+                  name={focused ? "house.fill" : "house"}
+                  tintColor={color}
+                  size={24}
+                />
+              ) : (
+                <Ionicons
+                  name={focused ? "home" : "home-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} testID="tab-home" />
             ),
-        }}
-      />
-      <Tabs.Screen
-        name="budget"
-        options={{
-          title: "Budget",
-          tabBarIcon: ({ color, focused }) =>
-            isIOS ? (
-              <SymbolView
-                name={focused ? "chart.pie.fill" : "chart.pie"}
-                tintColor={color}
-                size={24}
-              />
-            ) : (
-              <Ionicons
-                name={focused ? "pie-chart" : "pie-chart-outline"}
-                size={24}
-                color={color}
-              />
+          }}
+        />
+        <Tabs.Screen
+          name="budget"
+          options={{
+            title: "Budget",
+            tabBarAccessibilityLabel: "Budget",
+            tabBarIcon: ({ color, focused }) =>
+              isIOS ? (
+                <SymbolView
+                  name={focused ? "chart.pie.fill" : "chart.pie"}
+                  tintColor={color}
+                  size={24}
+                />
+              ) : (
+                <Ionicons
+                  name={focused ? "pie-chart" : "pie-chart-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} testID="tab-budget" />
             ),
-        }}
-      />
-      <Tabs.Screen
-        name="add-expense"
-        options={{
-          title: "",
-          tabBarIcon: () => null,
-          tabBarLabel: () => null,
-          tabBarButton: () => <AddFAB onPress={handleFABPress} />,
-        }}
-      />
-      <Tabs.Screen
-        name="ai"
-        options={{
-          title: "AI",
-          tabBarIcon: ({ color }) => <ProBadgeIcon color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, focused }) =>
-            isIOS ? (
-              <SymbolView
-                name={focused ? "person.fill" : "person"}
-                tintColor={color}
-                size={24}
-              />
-            ) : (
-              <Ionicons
-                name={focused ? "person" : "person-outline"}
-                size={24}
-                color={color}
-              />
+          }}
+        />
+        <Tabs.Screen
+          name="ai"
+          options={{
+            title: "AI",
+            tabBarAccessibilityLabel: "AI",
+            tabBarIcon: ({ color }) => <ProBadgeIcon color={color} />,
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} testID="tab-ai" />
             ),
-        }}
-      />
-      <Tabs.Screen name="expenses" options={{ href: null }} />
-      <Tabs.Screen name="insights" options={{ href: null }} />
-    </Tabs>
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            tabBarAccessibilityLabel: "Profile",
+            tabBarIcon: ({ color, focused }) =>
+              isIOS ? (
+                <SymbolView
+                  name={focused ? "person.fill" : "person"}
+                  tintColor={color}
+                  size={24}
+                />
+              ) : (
+                <Ionicons
+                  name={focused ? "person" : "person-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} testID="tab-profile" />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="expenses"
+          options={{ tabBarButton: () => null, tabBarItemStyle: { display: "none" } }}
+        />
+        <Tabs.Screen
+          name="insights"
+          options={{ tabBarButton: () => null, tabBarItemStyle: { display: "none" } }}
+        />
+      </Tabs>
 
+      {/* AddExpense FAB — centered over tab bar, avoids expo-router href+tabBarButton conflict */}
+      <View style={styles.fabOverlay} pointerEvents="box-none">
+        <AddFAB onPress={handleFABPress} />
+      </View>
+
+      {/* Voice mic FAB — bottom-right corner */}
       <VoiceMicFAB onPress={handleVoiceFABPress} />
 
       <VoiceExpenseModal
@@ -265,6 +285,17 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_700Bold",
     color: "#FFFFFF",
     letterSpacing: 0.3,
+  },
+  fabOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: TAB_BAR_HEIGHT + 20,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 4,
+    pointerEvents: "box-none",
   },
   voiceFabWrapper: {
     position: "absolute",

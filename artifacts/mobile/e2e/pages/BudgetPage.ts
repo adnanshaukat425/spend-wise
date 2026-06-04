@@ -30,12 +30,51 @@ class BudgetPage extends BasePage {
     return elem.getText();
   }
 
+  private async scrollUntilVisible(testId: string): Promise<boolean> {
+    const btn = this.el(testId);
+
+    // Phase 1: gentle swipes until element enters the accessibility tree
+    let exists = await btn.isExisting().catch(() => false);
+    for (let i = 0; i < 12 && !exists; i++) {
+      // velocity=200 is gentle enough to not overshoot but still makes progress
+      await driver.execute("mobile: swipe", { direction: "up", velocity: 200 });
+      await new Promise((r) => setTimeout(r, 400));
+      exists = await btn.isExisting().catch(() => false);
+    }
+
+    if (!exists) return false;
+
+    // Phase 2: fine-tune - if element exists but not visible, do micro-swipes
+    let displayed = await btn.isDisplayed().catch(() => false);
+    for (let i = 0; i < 6 && !displayed; i++) {
+      const existsNow = await btn.isExisting().catch(() => false);
+      if (!existsNow) {
+        // Overshot - scroll back up a little
+        await driver.execute("mobile: swipe", { direction: "down", velocity: 150 });
+        await new Promise((r) => setTimeout(r, 400));
+      } else {
+        await driver.execute("mobile: swipe", { direction: "up", velocity: 150 });
+        await new Promise((r) => setTimeout(r, 400));
+      }
+      displayed = await btn.isDisplayed().catch(() => false);
+    }
+
+    return exists;
+  }
+
   async tapAdjustBudget() {
-    await this.tap("adjust-budget-btn");
+    await this.scrollUntilVisible("adjust-budget-btn");
+    // click() triggers XCUITest auto-scroll into view if element is in tree
+    const btn = this.el("adjust-budget-btn");
+    await btn.waitForExist({ timeout: 5000 });
+    await btn.click();
   }
 
   async tapAddCategory() {
-    await this.tap("add-category-btn");
+    await this.scrollUntilVisible("add-category-btn");
+    const btn = this.el("add-category-btn");
+    await btn.waitForExist({ timeout: 5000 });
+    await btn.click();
   }
 
   async tapEditCategory(categoryId: string) {

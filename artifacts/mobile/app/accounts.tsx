@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   ActivityIndicator,
+  Alert,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,16 +12,38 @@ import {
   View,
 } from "react-native";
 
-import { useAccounts } from "@/hooks/api";
+import { useAccounts, useDeleteAccount } from "@/hooks/api";
 import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AccountsScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
-  const { data: accounts = [], isLoading } = useAccounts();
+  const qc = useQueryClient();
+  const { data: accounts = [], isLoading, isFetching } = useAccounts();
+  const deleteAccount = useDeleteAccount();
+
+  const handleRefresh = useCallback(() => {
+    qc.invalidateQueries({ queryKey: ["accounts"] });
+  }, [qc]);
+
+  const handleDeleteAccount = useCallback((id: string, name: string) => {
+    Alert.alert(
+      "Delete Account",
+      `Remove "${name}"? All associated data will be lost.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteAccount.mutate(id),
+        },
+      ],
+    );
+  }, [deleteAccount]);
 
   const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
 
@@ -37,6 +61,7 @@ export default function AccountsScreen() {
           style={styles.headerBtn}
           accessibilityRole="button"
           accessibilityLabel="Go back"
+          testID="screen-back-btn"
         >
           <Ionicons name="chevron-back" size={22} color={colors.foreground} />
         </TouchableOpacity>
@@ -56,6 +81,13 @@ export default function AccountsScreen() {
             paddingHorizontal: 20,
             paddingBottom: insets.bottom + 24,
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching && !isLoading}
+              onRefresh={handleRefresh}
+              tintColor={colors.primary}
+            />
+          }
         >
           <View style={[styles.summary, { backgroundColor: colors.secondary }]}>
             <Text style={[styles.summaryLabel, { color: colors.mutedForeground }]}>
@@ -72,6 +104,9 @@ export default function AccountsScreen() {
               style={[styles.card, { backgroundColor: colors.card }]}
               activeOpacity={0.7}
               testID={`account-row-${account.id}`}
+              onLongPress={() => handleDeleteAccount(account.id, account.name)}
+              delayLongPress={600}
+              accessibilityHint="Long press to delete"
             >
               <View
                 style={[styles.iconWrap, { backgroundColor: colors.secondary }]}
@@ -101,6 +136,15 @@ export default function AccountsScreen() {
               >
                 {formatCurrency(account.balance)}
               </Text>
+              <TouchableOpacity
+                testID={`delete-account-btn-${account.id}`}
+                onPress={() => handleDeleteAccount(account.id, account.name)}
+                style={styles.deleteBtn}
+                accessibilityRole="button"
+                accessibilityLabel={`Delete ${account.name}`}
+              >
+                <Ionicons name="trash-outline" size={18} color={colors.destructive} />
+              </TouchableOpacity>
             </TouchableOpacity>
           ))}
 
@@ -173,6 +217,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   info: { flex: 1 },
+  deleteBtn: {
+    padding: 6,
+    marginLeft: 4,
+  },
   name: {
     fontSize: 15,
     fontFamily: "Inter_600SemiBold",

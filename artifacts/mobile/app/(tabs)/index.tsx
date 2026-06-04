@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter, type Href } from "expo-router";
 import React, { useMemo } from "react";
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,23 +15,40 @@ import { ProgressBar } from "@/components/charts/ProgressBar";
 import { ScreenLoading } from "@/components/ui/ScreenLoading";
 import { TransactionRow } from "@/components/ui/TransactionRow";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDashboard } from "@/hooks/api";
+import { useDashboard, useNotifications } from "@/hooks/api";
+import { useQueryClient } from "@tanstack/react-query";
 import type { BudgetSummary } from "@/data/types";
 import { defaultBudgetSummary, mapUserProfile } from "@/lib/mappers";
 import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
   const { user: authUser } = useAuth();
-  const { data, isLoading } = useDashboard();
+  const qc = useQueryClient();
+  const { data, isLoading, isFetching } = useDashboard();
+  const { data: notifications = [] } = useNotifications();
+
+  const handleRefresh = React.useCallback(() => {
+    qc.invalidateQueries({ queryKey: ["dashboard"] });
+    qc.invalidateQueries({ queryKey: ["notifications"] });
+  }, [qc]);
 
   const user = authUser ? mapUserProfile(authUser, data?.raw) : null;
   const spendingByCategory = data?.spendingByCategory ?? [];
   const recentTransactions = data?.recentTransactions ?? [];
+  const hasUnreadNotifications = notifications.some((n) => !n.read);
+  const greeting = getGreeting();
   const totalIncome = data?.monthlyIncome ?? 0;
   const totalExpenses = data?.monthlyExpenses ?? 0;
   const budgetSummary: BudgetSummary =
@@ -59,6 +77,13 @@ export default function HomeScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={{ paddingBottom: insets.bottom + 110 }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={isFetching && !isLoading}
+          onRefresh={handleRefresh}
+          tintColor={colors.primary}
+        />
+      }
     >
       <View style={[styles.heroCard, { paddingTop: insets.top + 12 }]}>
         <View style={styles.headerRow}>
@@ -67,7 +92,7 @@ export default function HomeScreen() {
               <Text style={styles.avatarText}>{user.initials}</Text>
             </View>
             <View>
-              <Text style={styles.greeting}>Good morning</Text>
+              <Text style={styles.greeting}>{greeting}</Text>
               <Text style={styles.userName}>{user.name}</Text>
             </View>
           </View>
@@ -80,7 +105,7 @@ export default function HomeScreen() {
             testID="notifications-btn"
           >
             <Ionicons name="notifications-outline" size={20} color="#FFFFFF" />
-            <View style={styles.bellDot} />
+            {hasUnreadNotifications && <View style={styles.bellDot} />}
           </TouchableOpacity>
         </View>
 
@@ -224,6 +249,13 @@ export default function HomeScreen() {
         </View>
 
         <View style={[styles.listCard, { backgroundColor: colors.card }]}>
+          {recentTransactions.length === 0 && (
+            <View style={styles.emptyRow}>
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                No transactions yet. Tap + to add one.
+              </Text>
+            </View>
+          )}
           {recentTransactions.map((tx, i) => (
             <View key={tx.id}>
               <TransactionRow
@@ -478,6 +510,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   divider: { height: 1, marginHorizontal: 16 },
+  emptyRow: { padding: 20, alignItems: "center" },
+  emptyText: { fontSize: 14, fontFamily: "Inter_400Regular", textAlign: "center" },
   budgetCard: {
     borderRadius: 16,
     padding: 16,

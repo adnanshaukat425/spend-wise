@@ -57,7 +57,7 @@ describe("Authentication", () => {
 
     it("should show a confirmation dialog when tapping Sign Out", async () => {
       // Navigate to Profile tab
-      const profileTab = await $("~Profile");
+      const profileTab = await $("~tab-profile");
       await profileTab.click();
       await ProfilePage.waitForLoad();
 

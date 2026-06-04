@@ -138,7 +138,7 @@ function LimitModal({
         <View
           style={[styles.modalCard, { backgroundColor: colors.card }]}
         >
-          <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+          <Text style={[styles.modalTitle, { color: colors.foreground }]} testID="budget-modal-title">
             {title}
           </Text>
           {subtitle ? (
@@ -175,6 +175,7 @@ function LimitModal({
               ]}
               onPress={onClose}
               activeOpacity={0.7}
+              testID="budget-modal-cancel-btn"
             >
               <Text
                 style={[
@@ -280,7 +281,7 @@ function AddCategoryModal({
           onPress={onClose}
         />
         <View style={[styles.modalCard, { backgroundColor: colors.card }]}>
-          <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+          <Text style={[styles.modalTitle, { color: colors.foreground }]} testID="add-category-modal-title">
             Add Budget Category
           </Text>
 
@@ -400,6 +401,7 @@ function AddCategoryModal({
               style={[styles.modalCancelBtn, { borderColor: colors.border }]}
               onPress={onClose}
               activeOpacity={0.7}
+              testID="add-category-cancel-btn"
             >
               <Text
                 style={[styles.modalCancelText, { color: colors.foreground }]}

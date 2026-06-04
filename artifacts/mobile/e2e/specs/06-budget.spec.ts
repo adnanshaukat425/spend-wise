@@ -15,7 +15,7 @@ describe("Budget", () => {
     await loginWithGoogle();
     await DashboardPage.waitForLoad();
     // Navigate to the Budget tab
-    const budgetTab = await $("~Budget");
+    const budgetTab = await $("~tab-budget");
     await budgetTab.click();
     await BudgetPage.waitForLoad();
   });
@@ -27,29 +27,25 @@ describe("Budget", () => {
   });
 
   it("should show the Adjust Budget button", async () => {
-    // May need to scroll down to reach the Quick Actions card
-    const visible = await BudgetPage.isVisible("adjust-budget-btn", 5000);
-    if (!visible) {
-      await BudgetPage.scrollDown();
+    // Gentle swipes (low velocity) until the button enters the accessibility tree
+    const btn = $("~adjust-budget-btn");
+    let exists = await btn.isExisting().catch(() => false);
+    for (let i = 0; i < 12 && !exists; i++) {
+      await driver.execute("mobile: swipe", { direction: "up", velocity: 200 });
+      await driver.pause(400);
+      exists = await btn.isExisting().catch(() => false);
     }
-    expect(await BudgetPage.adjustBudgetBtn.isDisplayed()).toBe(true);
+    expect(exists).toBe(true);
   });
 
   it("should open the Adjust Budget modal when tapping the button", async () => {
     await BudgetPage.tapAdjustBudget();
     // Modal title should appear
-    const title = await $("~Adjust Monthly Budget");
-    const fallback = await driver.waitUntil(
-      async () => {
-        const elems = await $$('[text="Adjust Monthly Budget"]');
-        return elems.length > 0;
-      },
-      { timeout: 8000, timeoutMsg: "Adjust Budget modal did not open" },
-    );
-    expect(fallback).toBeTruthy();
+    await $("~budget-modal-title").waitForDisplayed({ timeout: 8000 });
+    const titleText = await $("~budget-modal-title").getText();
+    expect(titleText).toBe("Adjust Monthly Budget");
     // Close the modal
-    const cancelBtn = await $("~Cancel");
-    await cancelBtn.click();
+    await $("~budget-modal-cancel-btn").click();
     await waitForDataRefresh(500);
   });
 
@@ -63,15 +59,10 @@ describe("Budget", () => {
 
   it("should open the Add Category modal", async () => {
     await BudgetPage.tapAddCategory();
-    await driver.waitUntil(
-      async () => {
-        const elems = await $$('[text="Add Budget Category"]');
-        return elems.length > 0;
-      },
-      { timeout: 8000, timeoutMsg: "Add Budget Category modal did not open" },
-    );
-    const cancelBtn = await $("~Cancel");
-    await cancelBtn.click();
+    await $("~add-category-modal-title").waitForDisplayed({ timeout: 8000 });
+    const titleText = await $("~add-category-modal-title").getText();
+    expect(titleText).toBe("Add Budget Category");
+    await $("~add-category-cancel-btn").click();
     await waitForDataRefresh(500);
   });
 });

@@ -1,4 +1,4 @@
-import { useInsights } from "@/hooks/api";
+import { useDashboard, useInsights } from "@/hooks/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -27,7 +27,32 @@ export default function AIScreen() {
   const colors = useColors();
   const insets = useScreenInsets();
   const { data: insights = [] } = useInsights();
+  const { data: dashboard } = useDashboard();
   const todayInsights = insights.slice(0, 3);
+
+  const budgetPct = dashboard?.budgetSummary
+    ? Math.round((dashboard.budgetSummary.totalSpent / dashboard.budgetSummary.totalBudget) * 100)
+    : null;
+  const budgetHealthText =
+    budgetPct === null
+      ? "Connect your accounts and set a budget to see personalized health insights."
+      : budgetPct >= 90
+        ? `You've used ${budgetPct}% of your monthly budget. Consider reviewing your spending.`
+        : budgetPct >= 70
+          ? `You've used ${budgetPct}% of your monthly budget this month — keep an eye on it.`
+          : `Your spending is ${100 - budgetPct}% below your monthly budget. Great work!`;
+  const healthStatus =
+    budgetPct === null || budgetPct < 70
+      ? "Good Standing"
+      : budgetPct < 90
+        ? "On Track"
+        : "Over Budget";
+  const healthStatusColor =
+    budgetPct === null || budgetPct < 70
+      ? colors.primary
+      : budgetPct < 90
+        ? colors.warning
+        : colors.destructive;
 
   const goToSubscription = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -81,17 +106,16 @@ export default function AIScreen() {
               Your Financial Health
             </Text>
             <Text style={[styles.healthBody, { color: colors.mutedForeground }]}>
-              You're doing well! Your spending is 33% below your budget this
-              month. Keep up the good work!
+              {budgetHealthText}
             </Text>
           </View>
         </View>
         <View style={styles.healthStatus}>
           <View
-            style={[styles.statusDot, { backgroundColor: colors.primary }]}
+            style={[styles.statusDot, { backgroundColor: healthStatusColor }]}
           />
-          <Text style={[styles.statusText, { color: colors.primary }]}>
-            Good Standing
+          <Text style={[styles.statusText, { color: healthStatusColor }]}>
+            {healthStatus}
           </Text>
         </View>
       </View>

@@ -18,6 +18,8 @@ import { isApiConfigured } from "@/lib/api";
 
 const DEV_GOOGLE_TOKEN = "dev-google:mobile-user:test@gmail.com";
 const DEV_APPLE_TOKEN = "dev-apple:mobile-user:test@icloud.com";
+// Allow dev token bypass in E2E builds (EXPO_PUBLIC_E2E_ENABLED=1) even when __DEV__ is false
+const IS_E2E_OR_DEV = __DEV__ || process.env.EXPO_PUBLIC_E2E_ENABLED === "1";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -56,7 +58,7 @@ export default function LoginScreen() {
       return;
     }
     if (method === "google") {
-      const token = __DEV__ ? DEV_GOOGLE_TOKEN : "";
+      const token = IS_E2E_OR_DEV ? DEV_GOOGLE_TOKEN : "";
       if (!token) {
         Alert.alert("Google Sign In", "Google sign-in is not configured for production builds yet.");
         return;
@@ -64,7 +66,7 @@ export default function LoginScreen() {
       await finishSignIn(() => signInWithGoogle(token));
       return;
     }
-    const token = __DEV__ ? DEV_APPLE_TOKEN : "";
+    const token = IS_E2E_OR_DEV ? DEV_APPLE_TOKEN : "";
     if (!token) {
       Alert.alert("Apple Sign In", "Apple sign-in is not configured for production builds yet.");
       return;

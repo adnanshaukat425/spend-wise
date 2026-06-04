@@ -168,6 +168,13 @@ export interface CreateTransactionRequest {
   occurredAt?: string | null;
 }
 
+export interface UpdateTransactionRequest {
+  name?: string | null;
+  amount?: number | null;
+  note?: string | null;
+  receiptUrl?: string | null;
+}
+
 export interface CreateAccountRequest {
   name: string;
   accountType: string;

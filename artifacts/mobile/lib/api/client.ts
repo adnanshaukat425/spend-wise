@@ -13,6 +13,7 @@ import type {
   ParseVoiceResponse,
   SubscriptionPlanDto,
   TransactionDto,
+  UpdateTransactionRequest,
   UserPreferencesDto,
   UserProfileDto,
   UserSubscriptionDto,
@@ -173,6 +174,9 @@ export const transactionsApi = {
   get: (id: string) => request<TransactionDto>("GET", `/transactions/${id}`),
   create: (body: CreateTransactionRequest) =>
     request<TransactionDto>("POST", "/transactions", { body }),
+  update: (id: string, body: UpdateTransactionRequest) =>
+    request<TransactionDto>("PATCH", `/transactions/${id}`, { body }),
+  remove: (id: string) => request<void>("DELETE", `/transactions/${id}`),
 };
 
 export const budgetApi = {

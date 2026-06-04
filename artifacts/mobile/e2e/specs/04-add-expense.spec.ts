@@ -8,7 +8,7 @@
 import DashboardPage from "../pages/DashboardPage";
 import AddExpensePage from "../pages/AddExpensePage";
 import { loginWithGoogle } from "../helpers/auth.helper";
-import { waitForDataRefresh } from "../helpers/wait.helper";
+import { waitForDataRefresh, goBack } from "../helpers/wait.helper";
 
 describe("Add Expense", () => {
   before(async () => {
@@ -17,10 +17,11 @@ describe("Add Expense", () => {
   });
 
   beforeEach(async () => {
-    // Ensure we are on the dashboard before each test
+    // Only navigate back if we're on neither the dashboard nor the add-expense screen
     const onDashboard = await DashboardPage.isOnScreen();
-    if (!onDashboard) {
-      await driver.back();
+    const onAddExpense = await AddExpensePage.isOnScreen();
+    if (!onDashboard && !onAddExpense) {
+      await goBack();
       await DashboardPage.waitForLoad();
     }
   });

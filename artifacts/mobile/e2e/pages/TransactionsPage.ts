@@ -10,10 +10,9 @@ class TransactionsPage extends BasePage {
   }
 
   async waitForLoad(timeout = 20000) {
-    // Wait for at least the screen container to appear
     await driver.waitUntil(
       async () => {
-        const elems = await $$('[testID*="transaction-row"]');
+        const elems = await $$('-ios predicate string:name BEGINSWITH "transaction-row"');
         return elems.length > 0;
       },
       { timeout, timeoutMsg: "No transaction rows found within timeout" },
@@ -21,12 +20,12 @@ class TransactionsPage extends BasePage {
   }
 
   async isOnScreen() {
-    const elems = await $$('[testID*="transaction-row"]');
+    const elems = await $$('-ios predicate string:name BEGINSWITH "transaction-row"');
     return elems.length > 0;
   }
 
   async getTransactionRows() {
-    return $$('[testID*="transaction-row"]');
+    return $$('-ios predicate string:name BEGINSWITH "transaction-row"');
   }
 
   async tapTransaction(id: string) {

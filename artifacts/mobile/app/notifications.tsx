@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useCallback } from "react";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import {
@@ -9,6 +9,7 @@ import {
   useMarkNotificationRead,
   useNotifications,
 } from "@/hooks/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 
@@ -16,13 +17,18 @@ export default function NotificationsScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
-  const { data: notifications = [] } = useNotifications();
+  const qc = useQueryClient();
+  const { data: notifications = [], isFetching } = useNotifications();
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
   const hasUnread = notifications.some((n) => !n.read);
 
+  const handleRefresh = React.useCallback(() => {
+    qc.invalidateQueries({ queryKey: ["notifications"] });
+  }, [qc]);
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]} testID="notifications-screen">
       <ScreenHeader
         title="Notifications"
         onBack={() => router.back()}
@@ -39,6 +45,13 @@ export default function NotificationsScreen() {
           paddingHorizontal: 20,
           paddingBottom: insets.bottom + 24,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={handleRefresh}
+            tintColor={colors.primary}
+          />
+        }
       >
         {notifications.map((n) => (
           <TouchableOpacity

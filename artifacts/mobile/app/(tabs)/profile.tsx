@@ -195,9 +195,21 @@ export default function ProfileScreen() {
             <View key={row.id}>
               <TouchableOpacity
                 style={styles.row}
-                activeOpacity={row.kind === "toggle" ? 1 : 0.7}
-                onPress={() => {
-                  if (row.kind === "chevron") handleRowPress(row);
+                activeOpacity={0.7}
+                testID={`profile-row-${row.id}`}
+                onPress={async () => {
+                  if (row.kind === "chevron") {
+                    handleRowPress(row);
+                  } else if (row.kind === "toggle") {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    if (row.stateKey === "darkMode") {
+                      await toggleDarkMode(!isDark);
+                    } else {
+                      updatePreferencesMutation.mutate({
+                        notificationsEnabled: !prefs.notifications,
+                      });
+                    }
+                  }
                 }}
               >
                 <View
@@ -234,6 +246,7 @@ export default function ProfileScreen() {
                         : undefined
                     }
                     testID={row.stateKey === "darkMode" ? "dark-mode-toggle" : "notifications-toggle"}
+                    accessibilityLabel={row.stateKey === "darkMode" ? "Dark Mode" : "Notifications"}
                   />
                 ) : (
                   <View style={styles.rowRight}>
@@ -274,7 +287,7 @@ export default function ProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+        <Text style={[styles.headerTitle, { color: colors.foreground }]} testID="profile-header-title">
           Profile
         </Text>
       </View>

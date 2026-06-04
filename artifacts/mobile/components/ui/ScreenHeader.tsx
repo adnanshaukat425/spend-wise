@@ -32,6 +32,7 @@ export function ScreenHeader({
           style={styles.iconBtn}
           accessibilityRole="button"
           accessibilityLabel="Go back"
+          testID="screen-back-btn"
         >
           <Ionicons name="chevron-back" size={22} color={colors.foreground} />
         </TouchableOpacity>
@@ -39,7 +40,7 @@ export function ScreenHeader({
         <View style={styles.iconBtn} />
       )}
       <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
-      <View style={styles.iconBtn}>{rightAction}</View>
+      <View style={[styles.iconBtn, rightAction ? styles.iconBtnRight : null]}>{rightAction}</View>
     </View>
   );
 }
@@ -57,6 +58,10 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: "center",
     justifyContent: "center",
+  },
+  iconBtnRight: {
+    width: "auto",
+    minWidth: 36,
   },
   title: {
     fontSize: 17,

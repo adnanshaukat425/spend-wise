@@ -16,7 +16,7 @@ import {
   usersApi,
   voiceApi,
 } from "@/lib/api";
-import type { CreateAccountRequest, CreateTransactionRequest } from "@/lib/api/types";
+import type { CreateAccountRequest, CreateTransactionRequest, UpdateTransactionRequest } from "@/lib/api/types";
 import { isApiConfigured } from "@/lib/api";
 import {
   mapAccount,
@@ -134,6 +134,32 @@ export function useCreateTransaction() {
   });
 }
 
+export function useUpdateTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: UpdateTransactionRequest }) =>
+      transactionsApi.update(id, body),
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.transaction(id) });
+      qc.invalidateQueries({ queryKey: ["transactions"] });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+      qc.invalidateQueries({ queryKey: ["budget"] });
+    },
+  });
+}
+
+export function useDeleteTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => transactionsApi.remove(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["transactions"] });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+      qc.invalidateQueries({ queryKey: ["budget"] });
+    },
+  });
+}
+
 export function useBudget() {
   const enabled = useApiEnabled();
   return useQuery({
@@ -236,6 +262,29 @@ export function useCreateAccount() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: CreateAccountRequest) => accountsApi.create(body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.accounts });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
+export function useUpdateAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: Partial<CreateAccountRequest> }) =>
+      accountsApi.update(id, body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.accounts });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
+export function useDeleteAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => accountsApi.remove(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.accounts });
       qc.invalidateQueries({ queryKey: ["dashboard"] });

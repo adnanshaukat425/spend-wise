@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -43,7 +44,8 @@ export default function AddExpenseScreen() {
   const router = useRouter();
   const insets = useScreenInsets();
   const colors = useColors();
-  const { data: categories = [] } = useCategories("expense");
+  const [transactionType, setTransactionType] = useState<"expense" | "income">("expense");
+  const { data: categories = [] } = useCategories(transactionType);
   const { data: accounts = [] } = useAccounts();
   const createTransaction = useCreateTransaction();
 
@@ -60,6 +62,7 @@ export default function AddExpenseScreen() {
   const [amount, setAmount] = useState(prefillAmount ?? "");
   const [note, setNote] = useState(prefillNote ?? "");
   const [selectedCategory, setSelectedCategory] = useState("");
+  // Reset category when transaction type changes
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [receiptUri, setReceiptUri] = useState<string | undefined>();
@@ -147,11 +150,14 @@ export default function AddExpenseScreen() {
 
     try {
       const category = categories.find((c) => c.id === selectedCategory);
+      const signedAmount = transactionType === "income"
+        ? Math.abs(parseFloat(amount))
+        : -Math.abs(parseFloat(amount));
       await createTransaction.mutateAsync({
         accountId: selectedAccountId,
         categorySlug: selectedCategory,
-        name: category?.label ?? "Expense",
-        amount: -Math.abs(parseFloat(amount)),
+        name: category?.label ?? (transactionType === "income" ? "Income" : "Expense"),
+        amount: signedAmount,
         note: displayNote,
         receiptUrl: receiptUri ?? null,
       });
@@ -176,8 +182,9 @@ export default function AddExpenseScreen() {
   const isVoicePrefilled = !!prefillAmount || !!prefillCategory || !!prefillNote;
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.header}>
         <TouchableOpacity
@@ -186,11 +193,12 @@ export default function AddExpenseScreen() {
           style={styles.headerBtn}
           accessibilityRole="button"
           accessibilityLabel="Close"
+          testID="screen-back-btn"
         >
           <Ionicons name="close" size={22} color={colors.foreground} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-          Add Expense
+        <Text style={[styles.headerTitle, { color: colors.foreground }]} testID="add-expense-modal-title">
+          {transactionType === "income" ? "Add Income" : "Add Expense"}
         </Text>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -203,13 +211,47 @@ export default function AddExpenseScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Income / Expense type toggle */}
+      <View style={[styles.typeToggle, { backgroundColor: colors.muted }]}>
+        {(["expense", "income"] as const).map((type) => (
+          <TouchableOpacity
+            key={type}
+            testID={`transaction-type-${type}`}
+            style={[
+              styles.typeBtn,
+              transactionType === type && {
+                backgroundColor: type === "income" ? colors.success : colors.destructive,
+              },
+            ]}
+            onPress={() => {
+              setTransactionType(type);
+              setSelectedCategory("");
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name={type === "income" ? "arrow-down-circle-outline" : "arrow-up-circle-outline"}
+              size={16}
+              color={transactionType === type ? "#FFFFFF" : colors.mutedForeground}
+            />
+            <Text
+              style={[
+                styles.typeBtnText,
+                { color: transactionType === type ? "#FFFFFF" : colors.mutedForeground },
+              ]}
+            >
+              {type === "income" ? "Income" : "Expense"}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <ScrollView
-        contentContainerStyle={[
-          styles.scroll,
-          { paddingBottom: insets.bottom + 100 },
-        ]}
+        contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        style={styles.scrollFlex}
       >
         {isVoicePrefilled && (
           <View
@@ -405,7 +447,7 @@ export default function AddExpenseScreen() {
       <View
         style={[
           styles.footer,
-          { paddingBottom: insets.bottom + 16, backgroundColor: colors.background },
+          { paddingBottom: insets.bottom + 8, backgroundColor: colors.background },
         ]}
       >
         <TouchableOpacity
@@ -424,11 +466,11 @@ export default function AddExpenseScreen() {
           testID="add-expense-submit-btn"
         >
           <Text style={styles.addBtnText}>
-            {saving ? "Saving..." : "Add Expense"}
+            {saving ? "Saving..." : transactionType === "income" ? "Add Income" : "Add Expense"}
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -448,7 +490,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: { fontSize: 17, fontFamily: "Inter_600SemiBold" },
-  scroll: { paddingHorizontal: 20 },
+  typeToggle: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+    marginBottom: 4,
+    borderRadius: 12,
+    padding: 4,
+    gap: 4,
+  },
+  typeBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  typeBtnText: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+  },
+  scrollFlex: { flex: 1 },
+  scroll: { paddingHorizontal: 20, paddingBottom: 12 },
   sectionLabel: {
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
@@ -552,10 +616,6 @@ const styles = StyleSheet.create({
   },
   tagText: { fontSize: 13, fontFamily: "Inter_400Regular" },
   footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
   },

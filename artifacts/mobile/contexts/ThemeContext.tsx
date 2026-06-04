@@ -18,7 +18,7 @@ interface ThemeContextValue {
   toggleDarkMode: (enabled: boolean) => Promise<void>;
 }
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({
   children,

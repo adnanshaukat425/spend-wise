@@ -79,6 +79,21 @@ export async function waitForDataRefresh(pause = 1500): Promise<void> {
 }
 
 /**
+ * Navigate back on iOS using the ScreenHeader back button (testID="screen-back-btn").
+ * Falls back to driver.back() for native modals.
+ */
+export async function goBack(): Promise<void> {
+  try {
+    const backBtn = await $("~screen-back-btn");
+    if (await backBtn.isDisplayed()) {
+      await backBtn.click();
+      return;
+    }
+  } catch {}
+  await driver.back();
+}
+
+/**
  * Retry a flaky assertion up to `attempts` times with a `delay` ms pause
  * between attempts. Returns the result of the last successful call or throws
  * the last error if all attempts fail.

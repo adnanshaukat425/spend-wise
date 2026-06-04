@@ -181,7 +181,7 @@ export function mapUserProfile(
     accountsConnected: dto.accountCount,
     stats: {
       transactions: dto.transactionCount,
-      categories: 0,
+      categories: dashboard?.spendingByCategory?.length ?? 0,
       saved: Math.max(
         0,
         (dashboard?.monthlyIncome ?? 0) - (dashboard?.monthlyExpenses ?? 0),

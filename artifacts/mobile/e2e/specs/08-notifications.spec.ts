@@ -8,7 +8,7 @@
 import DashboardPage from "../pages/DashboardPage";
 import NotificationsPage from "../pages/NotificationsPage";
 import { loginWithGoogle } from "../helpers/auth.helper";
-import { waitForDataRefresh } from "../helpers/wait.helper";
+import { waitForDataRefresh, goBack } from "../helpers/wait.helper";
 
 describe("Notifications", () => {
   before(async () => {
@@ -68,7 +68,7 @@ describe("Notifications", () => {
   });
 
   it("should navigate back to the dashboard", async () => {
-    await driver.back();
+    await goBack();
     await DashboardPage.waitForLoad();
     expect(await DashboardPage.isOnScreen()).toBe(true);
   });

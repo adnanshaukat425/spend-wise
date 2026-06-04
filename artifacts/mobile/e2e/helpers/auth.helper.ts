@@ -14,15 +14,43 @@ import ProfilePage from "../pages/ProfilePage";
 
 /**
  * Complete the first-run onboarding and sign in with the dev Google token.
- * Handles both fresh installs (shows onboarding) and already-onboarded state.
+ * Handles all three states:
+ *   - Fresh install: shows onboarding → login
+ *   - Onboarded but not authed: shows login directly
+ *   - Already authed (AsyncStorage persisted): shows dashboard directly
  */
 export async function loginWithGoogle(): Promise<void> {
-  const isOnboarding = await OnboardingPage.isOnScreen();
-  if (isOnboarding) {
-    await OnboardingPage.tapGetStarted();
+  // Use zero implicit timeout so isDisplayed() returns immediately without waiting
+  await driver.setTimeout({ implicit: 0 });
+
+  let screen: string | null = null;
+  try {
+    screen = await driver.waitUntil(
+      async () => {
+        const onDashboard = await DashboardPage.balance.isDisplayed().catch(() => false);
+        if (onDashboard) return "dashboard";
+        const onLogin = await LoginPage.googleLoginBtn.isDisplayed().catch(() => false);
+        if (onLogin) return "login";
+        const onOnboarding = await OnboardingPage.getStartedBtn.isDisplayed().catch(() => false);
+        if (onOnboarding) return "onboarding";
+        return null;
+      },
+      { timeout: 45000, interval: 500, timeoutMsg: "App did not reach a known screen within 45s" },
+    );
+  } finally {
+    // Restore implicit timeout for the rest of the test
+    await driver.setTimeout({ implicit: 10000 });
   }
 
-  await LoginPage.waitForLoad();
+  if (screen === "dashboard") {
+    return; // Already authenticated
+  }
+
+  if (screen === "onboarding") {
+    await OnboardingPage.tapGetStarted();
+    await LoginPage.waitForLoad();
+  }
+
   await LoginPage.loginWithGoogle();
   await DashboardPage.waitForLoad();
 }
@@ -31,12 +59,33 @@ export async function loginWithGoogle(): Promise<void> {
  * Sign in with the dev Apple token (useful for Apple-specific flow tests).
  */
 export async function loginWithApple(): Promise<void> {
-  const isOnboarding = await OnboardingPage.isOnScreen();
-  if (isOnboarding) {
-    await OnboardingPage.tapGetStarted();
+  await driver.setTimeout({ implicit: 0 });
+
+  let screen: string | null = null;
+  try {
+    screen = await driver.waitUntil(
+      async () => {
+        const onDashboard = await DashboardPage.balance.isDisplayed().catch(() => false);
+        if (onDashboard) return "dashboard";
+        const onLogin = await LoginPage.googleLoginBtn.isDisplayed().catch(() => false);
+        if (onLogin) return "login";
+        const onOnboarding = await OnboardingPage.getStartedBtn.isDisplayed().catch(() => false);
+        if (onOnboarding) return "onboarding";
+        return null;
+      },
+      { timeout: 45000, interval: 500, timeoutMsg: "App did not reach a known screen within 45s" },
+    );
+  } finally {
+    await driver.setTimeout({ implicit: 10000 });
   }
 
-  await LoginPage.waitForLoad();
+  if (screen === "dashboard") return;
+
+  if (screen === "onboarding") {
+    await OnboardingPage.tapGetStarted();
+    await LoginPage.waitForLoad();
+  }
+
   await LoginPage.loginWithApple();
   await DashboardPage.waitForLoad();
 }
@@ -70,11 +119,31 @@ export async function logout(): Promise<void> {
 }
 
 /**
- * Reset the app to its initial state by terminating and relaunching it.
- * Pass fullReset: true in capabilities to clear storage between suite runs,
- * or use this helper to force-reset within a test file.
+ * Reset the app to its initial state (signed out) by clearing app data
+ * and relaunching. Uses Appium's clearApp to remove AsyncStorage/Keychain data.
  */
 export async function resetApp(bundleId: string): Promise<void> {
   await driver.terminateApp(bundleId);
+  // Clear app data (AsyncStorage, auth tokens) without uninstalling
+  try {
+    // @ts-ignore — clearApp is available in appium-xcuitest-driver
+    await driver.clearApp();
+  } catch {
+    // May not be supported — fall back to terminate/activate
+  }
   await driver.activateApp(bundleId);
+  await new Promise((r) => setTimeout(r, 2000));
+}
+
+/**
+ * Sign out the currently authenticated user and return to the login screen.
+ */
+export async function signOut(): Promise<void> {
+  const BUNDLE_ID = "org.name.SpendWise";
+  await driver.terminateApp(BUNDLE_ID);
+  try {
+    // @ts-ignore
+    await driver.clearApp();
+  } catch {}
+  await driver.activateApp(BUNDLE_ID);
 }

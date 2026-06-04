@@ -40,6 +40,9 @@ class AddAccountPage extends BasePage {
   }
 
   async save() {
+    // Dismiss keyboard first (it may be covering the save button)
+    await this.dismissKeyboard();
+    await new Promise((r) => setTimeout(r, 400));
     await this.tap("save-account-btn");
   }
 }

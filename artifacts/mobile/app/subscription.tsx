@@ -69,9 +69,9 @@ export default function SubscriptionScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: topPad }]}>
+    <View style={[styles.container, { paddingTop: topPad, backgroundColor: colors.background }]}>
       <View style={styles.navbar}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.closeBtn}>
+        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.closeBtn} testID="screen-back-btn">
           <Ionicons name="close" size={22} color="#111827" />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7}>
@@ -104,6 +104,7 @@ export default function SubscriptionScreen() {
                   </View>
                 ) : null}
                 <TouchableOpacity
+                  testID={`subscription-plan-${plan.slug}`}
                   style={[
                     styles.planCard,
                     isSelected && {
@@ -111,7 +112,7 @@ export default function SubscriptionScreen() {
                       borderColor: colors.primary,
                       borderWidth: 2,
                     },
-                    !isSelected && { backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", borderWidth: 1.5 },
+                    !isSelected && { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1.5 },
                   ]}
                   onPress={() => {
                     setSelected(plan.slug);
@@ -142,7 +143,7 @@ export default function SubscriptionScreen() {
           })}
         </View>
 {/* ── Pro Features card ── */}
-        <View style={[styles.featuresCard, { backgroundColor: "#F5F6F9" }]}>
+        <View style={[styles.featuresCard, { backgroundColor: colors.muted }]}>
           <View style={styles.featuresHeader}>
             <Ionicons name="sparkles" size={18} color={colors.primary} />
             <Text style={styles.featuresTitle}>Pro Features</Text>
@@ -169,8 +170,9 @@ export default function SubscriptionScreen() {
       </ScrollView>
 
       {/* ── Sticky CTA ── */}
-      <View style={[styles.ctaWrap, { paddingBottom: botPad + 16 }]}>
+      <View style={[styles.ctaWrap, { paddingBottom: botPad + 16, backgroundColor: colors.background }]}>
         <TouchableOpacity
+          testID="subscription-start-trial-btn"
           style={styles.trialBtn}
           activeOpacity={0.85}
           onPress={handleStartTrial}

@@ -42,3 +42,8 @@ yarn-error.*
 .vercel
 
 .env
+
+# E2E / build artifacts
+*.apk
+e2e/logs/
+.env.e2e

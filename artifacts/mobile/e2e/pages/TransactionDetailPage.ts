@@ -27,7 +27,7 @@ class TransactionDetailPage extends BasePage {
   }
 
   async goBack() {
-    await driver.back();
+    await super.goBack();
   }
 }
 
