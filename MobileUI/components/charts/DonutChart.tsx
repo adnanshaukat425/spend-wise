@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 
 export interface DonutSegment {
+  id: string;
   name: string;
   amount: number;
   color: string;
@@ -44,12 +45,12 @@ export function DonutChart({
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <G rotation="-90" origin={`${cx}, ${cy}`}>
           {total > 0 ? (
-            segments.map((seg) => {
+            segments.map((seg, index) => {
               const pct = (seg.amount / total) * circumference;
               const dash = Math.max(pct - GAP, 0);
               const circle = (
                 <Circle
-                  key={seg.name}
+                  key={seg.id ?? `segment-${index}`}
                   cx={cx}
                   cy={cy}
                   r={radius}

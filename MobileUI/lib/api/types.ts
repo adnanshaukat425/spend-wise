@@ -108,9 +108,13 @@ export interface BudgetSummaryDto {
 }
 
 export interface SpendingSegmentDto {
-  name: string;
+  categorySlug: string;
+  categoryName: string;
+  iconKey?: string;
+  iconBg?: string;
+  iconColor?: string;
   amount: number;
-  color?: string;
+  percent?: number;
 }
 
 export interface DashboardDto {

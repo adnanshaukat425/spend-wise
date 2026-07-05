@@ -120,7 +120,7 @@ function DashboardScreenBody({
             />
             <View style={styles.legendGrid}>
               {spendingByCategory.map((category) => (
-                <View key={category.name} style={styles.legendItem}>
+                <View key={category.id} style={styles.legendItem}>
                   <View style={[styles.legendDot, { backgroundColor: category.color }]} />
                   <View>
                     <Text style={[styles.legendName, { color: colors.foreground }]}>

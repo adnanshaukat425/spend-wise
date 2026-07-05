@@ -61,9 +61,10 @@ export function mapTransaction(dto: TransactionDto): Transaction {
 
 export function mapSpendingSegment(dto: SpendingSegmentDto, index = 0): SpendingSegment {
   return {
+    id: dto.categorySlug || `segment-${index}`,
     amount: dto.amount,
-    color: dto.color ?? SEGMENT_COLORS[index % SEGMENT_COLORS.length],
-    name: dto.name,
+    color: dto.iconColor ?? SEGMENT_COLORS[index % SEGMENT_COLORS.length],
+    name: dto.categoryName || dto.categorySlug || "Uncategorized",
   };
 }
 

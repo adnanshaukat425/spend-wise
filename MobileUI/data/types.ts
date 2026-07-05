@@ -18,6 +18,7 @@ export interface Transaction {
 }
 
 export interface SpendingSegment {
+  id: string;
   name: string;
   amount: number;
   color: string;
