@@ -10,3 +10,4 @@ export * from "./Screen";
 export * from "./ScreenHeader";
 export * from "./ScreenLoading";
 export * from "./SectionHeader";
+export * from "./TabScreenHeader";

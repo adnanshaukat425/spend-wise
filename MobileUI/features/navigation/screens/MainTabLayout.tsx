@@ -18,9 +18,9 @@ import { FloatingActionButton } from "@/components/ui/FloatingActionButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useColors } from "@/hooks/useColors";
+import { TAB_BAR_HEIGHT } from "@/constants/layout";
+import { palette, shadows } from "@/constants/theme";
 import { VoiceExpenseModal } from "@/features/voice/components/VoiceExpenseModal";
-
-const TAB_BAR_HEIGHT = 64;
 
 function VoiceMicFAB({ onPress }: { onPress: () => void }) {
   const colors = useColors();
@@ -102,12 +102,10 @@ export default function TabLayout() {
             position: "absolute",
             backgroundColor: isIOS ? "transparent" : colors.card,
             borderTopWidth: 0,
-            elevation: 0,
             height: TAB_BAR_HEIGHT,
-            shadowColor: "#000",
+            ...shadows.card,
             shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: isDark ? 0.2 : 0.06,
-            shadowRadius: 8,
+            shadowOpacity: isDark ? 0.2 : shadows.card.shadowOpacity,
           },
           tabBarLabelStyle: {
             fontSize: 11,
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -4,
     right: -10,
-    backgroundColor: "#F59E0B",
+    backgroundColor: palette.amber500,
     borderRadius: 4,
     paddingHorizontal: 3,
     paddingVertical: 1,
@@ -258,7 +256,7 @@ const styles = StyleSheet.create({
   proBadgeText: {
     fontSize: 7,
     fontFamily: "Inter_700Bold",
-    color: "#FFFFFF",
+    color: palette.white,
     letterSpacing: 0.3,
   },
   fabOverlay: {
@@ -284,11 +282,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 6,
+    ...shadows.floating,
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.06)",
   },

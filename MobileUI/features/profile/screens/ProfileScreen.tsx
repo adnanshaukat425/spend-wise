@@ -4,36 +4,46 @@ import * as Haptics from "expo-haptics";
 import React, { useMemo } from "react";
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
-import { ErrorState } from "@/components/ui/ErrorState";
+import { QueryScreenBoundary } from "@/components/ui/QueryScreenBoundary";
+import { Screen, ScreenScrollView } from "@/components/ui/Screen";
+import { spacing } from "@/constants/theme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useColors } from "@/hooks/useColors";
+import { mapUserProfile } from "@/lib/mappers";
+import { useDashboard } from "@/features/dashboard/queries";
+import { useAccounts } from "@/features/accounts/queries";
 import {
-  useAccounts,
-  useDashboard,
   usePreferences,
   useUpdatePreferences,
-} from "../api";
-import { useTheme } from "@/contexts/ThemeContext";
-import { mapUserProfile } from "@/lib/mappers";
-import { useColors } from "@/hooks/useColors";
-import { useScreenInsets } from "@/hooks/useScreenInsets";
+} from "@/features/settings/queries";
 
 import { ProfileHeader } from "../components/ProfileHeader";
-import {
-  ProfileMenuSection,
-  type ChevronRow,
-  type MenuRow,
-} from "../components/ProfileMenuSection";
+import { ProfileMenuSection, type ChevronRow } from "../components/ProfileMenuSection";
 import { ProfileStats } from "../components/ProfileStats";
+import { useProfileMenuSections } from "../hooks/useProfileMenuSections";
 
 export default function ProfileScreen() {
-  const insets = useScreenInsets();
+  const dashboardQuery = useDashboard();
+
+  return (
+    <QueryScreenBoundary loadingLabel="Loading profile" query={dashboardQuery}>
+      {(dashboard) => <ProfileScreenBody dashboard={dashboard} />}
+    </QueryScreenBoundary>
+  );
+}
+
+function ProfileScreenBody({
+  dashboard,
+}: {
+  dashboard: NonNullable<ReturnType<typeof useDashboard>["data"]>;
+}) {
   const colors = useColors();
   const router = useRouter();
   const { signOut, user: authUser } = useAuth();
@@ -41,13 +51,12 @@ export default function ProfileScreen() {
   const { data: preferences } = usePreferences();
   const updatePreferencesMutation = useUpdatePreferences();
   const { data: accounts = [] } = useAccounts();
-  const { data: dashboard, isError: dashboardError, error: dashboardQueryError, refetch: refetchDashboard } = useDashboard();
 
   const prefs = preferences ?? { notifications: true, currency: "USD" };
   const displayUser = useMemo(
     () =>
       authUser
-        ? mapUserProfile(authUser, dashboard?.raw)
+        ? mapUserProfile(authUser, dashboard.raw)
         : {
             name: "",
             email: "",
@@ -58,96 +67,8 @@ export default function ProfileScreen() {
             accountsConnected: 0,
             stats: { transactions: 0, categories: 0, saved: 0 },
           },
-    [authUser, dashboard?.raw],
+    [authUser, dashboard.raw],
   );
-
-  const preferencesRows: MenuRow[] = useMemo(
-    () => [
-      {
-        id: "notif",
-        kind: "toggle",
-        label: "Notifications",
-        icon: "notifications-outline",
-        stateKey: "notifications",
-      },
-      {
-        id: "dark",
-        kind: "toggle",
-        label: "Dark Mode",
-        icon: "moon-outline",
-        stateKey: "darkMode",
-      },
-      {
-        id: "currency",
-        kind: "chevron",
-        label: "Currency",
-        icon: "card-outline",
-        value: prefs.currency,
-        settingsSlug: "currency",
-      },
-    ],
-    [prefs.currency],
-  );
-
-  const accountRows: MenuRow[] = useMemo(
-    () => [
-      {
-        id: "accounts",
-        kind: "chevron",
-        label: "Manage Accounts",
-        icon: "wallet-outline",
-        value: String(accounts.length),
-        route: "/accounts",
-      },
-      {
-        id: "subscription",
-        kind: "chevron",
-        label: "Subscription",
-        icon: "ribbon-outline",
-        value: displayUser.plan,
-        route: "/subscription",
-      },
-      {
-        id: "security",
-        kind: "chevron",
-        label: "Security",
-        icon: "shield-outline",
-        settingsSlug: "security",
-      },
-      {
-        id: "export",
-        kind: "chevron",
-        label: "Export Data",
-        icon: "document-text-outline",
-        settingsSlug: "export",
-      },
-    ],
-    [accounts.length, displayUser.plan],
-  );
-
-  const supportRows: MenuRow[] = [
-    {
-      id: "help",
-      kind: "chevron",
-      label: "Help Center",
-      icon: "help-circle-outline",
-      settingsSlug: "help",
-    },
-    {
-      id: "share",
-      kind: "chevron",
-      label: "Share App",
-      icon: "share-social-outline",
-      settingsSlug: "share",
-    },
-    {
-      id: "settings",
-      kind: "chevron",
-      label: "App Settings",
-      icon: "settings-outline",
-      settingsSlug: "settings",
-    },
-  ];
 
   const handleSignOut = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -173,98 +94,76 @@ export default function ProfileScreen() {
     }
   };
 
-  if (dashboardError) {
-    return <ErrorState error={dashboardQueryError} onRetry={() => void refetchDashboard()} />;
-  }
+  const handleNotificationsChange = (value: boolean) => {
+    updatePreferencesMutation.mutate({ notificationsEnabled: value });
+  };
+
+  const sections = useProfileMenuSections({
+    accountsCount: accounts.length,
+    currency: prefs.currency,
+    displayPlan: displayUser.plan,
+    isDark,
+    notificationsEnabled: prefs.notifications,
+    onChevronPress: handleRowPress,
+    onDarkModeChange: toggleDarkMode,
+    onNotificationsChange: handleNotificationsChange,
+  });
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={{
-        paddingTop: insets.top + 4,
-        paddingBottom: insets.bottom + 110,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <ProfileHeader displayUser={displayUser} />
-      <ProfileStats stats={displayUser.stats} />
+    <Screen padded={false} variant="tab">
+      <ScreenScrollView contentContainerStyle={styles.scrollContent} padded={false} variant="tab">
+        <ProfileHeader displayUser={displayUser} />
+        <ProfileStats stats={displayUser.stats} />
 
-      <ProfileMenuSection
-        label="PREFERENCES"
-        rows={preferencesRows}
-        isDark={isDark}
-        notificationsEnabled={prefs.notifications}
-        onChevronPress={handleRowPress}
-        onDarkModeChange={toggleDarkMode}
-        onNotificationsChange={(v) =>
-          updatePreferencesMutation.mutate({ notificationsEnabled: v })
-        }
-      />
-      <ProfileMenuSection
-        label="ACCOUNT"
-        rows={accountRows}
-        isDark={isDark}
-        notificationsEnabled={prefs.notifications}
-        onChevronPress={handleRowPress}
-        onDarkModeChange={toggleDarkMode}
-        onNotificationsChange={(v) =>
-          updatePreferencesMutation.mutate({ notificationsEnabled: v })
-        }
-      />
-      <ProfileMenuSection
-        label="SUPPORT"
-        rows={supportRows}
-        isDark={isDark}
-        notificationsEnabled={prefs.notifications}
-        onChevronPress={handleRowPress}
-        onDarkModeChange={toggleDarkMode}
-        onNotificationsChange={(v) =>
-          updatePreferencesMutation.mutate({ notificationsEnabled: v })
-        }
-      />
+        <ProfileMenuSection {...sections.preferencesSection} />
+        <ProfileMenuSection {...sections.accountSection} />
+        <ProfileMenuSection {...sections.supportSection} />
 
-      <View style={styles.signOutWrap}>
-        <TouchableOpacity
-          style={[styles.signOutBtn, { backgroundColor: colors.signOutBackground }]}
-          onPress={handleSignOut}
-          activeOpacity={0.8}
-          accessibilityRole="button"
-          accessibilityLabel="Sign out"
-          testID="sign-out-btn"
-        >
-          <Ionicons name="log-out-outline" size={18} color={colors.destructive} />
-          <Text style={[styles.signOutText, { color: colors.destructive }]}>
-            Sign Out
+        <View style={styles.signOutWrap}>
+          <TouchableOpacity
+            accessibilityLabel="Sign out"
+            accessibilityRole="button"
+            activeOpacity={0.8}
+            onPress={handleSignOut}
+            style={[styles.signOutBtn, { backgroundColor: colors.signOutBackground }]}
+            testID="sign-out-btn"
+          >
+            <Ionicons name="log-out-outline" size={18} color={colors.destructive} />
+            <Text style={[styles.signOutText, { color: colors.destructive }]}>Sign Out</Text>
+          </TouchableOpacity>
+          <Text style={[styles.version, { color: colors.mutedForeground }]}>
+            SpendWise v1.0.0
           </Text>
-        </TouchableOpacity>
-        <Text style={[styles.version, { color: colors.mutedForeground }]}>
-          SpendWise v1.0.0
-        </Text>
-      </View>
-    </ScrollView>
+        </View>
+      </ScreenScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  signOutWrap: { paddingHorizontal: 20 },
+  scrollContent: {
+    paddingTop: 0,
+  },
   signOutBtn: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
     borderRadius: 16,
-    paddingVertical: 16,
+    flexDirection: "row",
+    gap: spacing.sm,
+    justifyContent: "center",
     marginBottom: 14,
+    paddingVertical: spacing.lg,
   },
   signOutText: {
-    fontSize: 15,
     fontFamily: "Inter_500Medium",
+    fontSize: 15,
+  },
+  signOutWrap: {
+    paddingHorizontal: spacing.xl,
   },
   version: {
-    fontSize: 12,
     fontFamily: "Inter_400Regular",
+    fontSize: 12,
+    marginBottom: spacing.sm,
     textAlign: "center",
-    marginBottom: 8,
   },
 });

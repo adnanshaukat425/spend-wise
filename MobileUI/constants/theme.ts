@@ -39,6 +39,10 @@ export const typography = {
     fontFamily: "Inter_400Regular",
     fontSize: 12,
   },
+  label: {
+    fontFamily: "Inter_500Medium",
+    fontSize: 12,
+  },
   body: {
     fontFamily: "Inter_400Regular",
     fontSize: 15,
@@ -46,6 +50,14 @@ export const typography = {
   bodyMedium: {
     fontFamily: "Inter_500Medium",
     fontSize: 15,
+  },
+  bodySemibold: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 15,
+  },
+  sectionTitle: {
+    fontFamily: "Inter_700Bold",
+    fontSize: 17,
   },
   title: {
     fontFamily: "Inter_700Bold",
@@ -55,6 +67,14 @@ export const typography = {
     fontFamily: "Inter_700Bold",
     fontSize: 32,
   },
+  statValue: {
+    fontFamily: "Inter_700Bold",
+    fontSize: 20,
+  },
+} as const;
+
+export const touchTarget = {
+  min: 44,
 } as const;
 
 export const shadows = {

@@ -6,10 +6,12 @@ import { useColors } from "@/hooks/useColors";
 
 export function SectionHeader({
   actionLabel,
+  actionTestID,
   onAction,
   title,
 }: {
   actionLabel?: string;
+  actionTestID?: string;
   onAction?: () => void;
   title: string;
 }) {
@@ -19,7 +21,11 @@ export function SectionHeader({
     <View style={styles.root}>
       <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
       {actionLabel && onAction ? (
-        <Pressable accessibilityRole="button" onPress={onAction}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={onAction}
+          testID={actionTestID}
+        >
           <Text style={[styles.action, { color: colors.primary }]}>{actionLabel}</Text>
         </Pressable>
       ) : null}

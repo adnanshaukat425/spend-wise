@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 import React, { useMemo } from "react";
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,126 +10,117 @@ import {
 } from "react-native";
 
 import { BarChart } from "@/components/charts/BarChart";
-import { ErrorState } from "@/components/ui/ErrorState";
-import { ScreenLoading } from "@/components/ui/ScreenLoading";
-import { useDashboard, useInsights, useWeeklySpend } from "../api";
-import { formatCurrency } from "@/lib/format";
+import { QueryScreenBoundary } from "@/components/ui/QueryScreenBoundary";
+import { Screen, ScreenScrollView } from "@/components/ui/Screen";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { spacing, typography } from "@/constants/theme";
+import { calculateSavingsRate } from "@/domain/budget";
 import { useColors } from "@/hooks/useColors";
-import { useScreenInsets } from "@/hooks/useScreenInsets";
+import { formatCurrency } from "@/lib/format";
+import { useDashboard } from "@/features/dashboard/queries";
+
+import { useInsights, useWeeklySpend } from "../queries";
 
 export default function InsightsScreen() {
+  const insightsQuery = useInsights();
+  const dashboardQuery = useDashboard();
+  const weeklySpendQuery = useWeeklySpend();
+
+  return (
+    <QueryScreenBoundary
+      loadingLabel="Loading insights"
+      queries={[insightsQuery, dashboardQuery, weeklySpendQuery]}
+    >
+      <InsightsScreenBody
+        dashboard={dashboardQuery.data}
+        insights={insightsQuery.data ?? []}
+        weeklySpend={weeklySpendQuery.data ?? []}
+      />
+    </QueryScreenBoundary>
+  );
+}
+
+function InsightsScreenBody({
+  dashboard,
+  insights,
+  weeklySpend,
+}: {
+  dashboard: ReturnType<typeof useDashboard>["data"];
+  insights: NonNullable<ReturnType<typeof useInsights>["data"]>;
+  weeklySpend: NonNullable<ReturnType<typeof useWeeklySpend>["data"]>;
+}) {
   const router = useRouter();
   const colors = useColors();
-  const insets = useScreenInsets();
-  const { data: insights = [], isLoading: insightsLoading, isError: insightsError, error: insightsQueryError, refetch: refetchInsights } = useInsights();
-  const { data: weeklySpend = [] } = useWeeklySpend();
-  const { data: dashboard, isLoading: dashboardLoading, isError: dashboardError, error: dashboardQueryError, refetch: refetchDashboard } = useDashboard();
 
   const barData = useMemo(
-    () => weeklySpend.map((d) => ({ label: d.day, value: d.amount })),
+    () => weeklySpend.map((entry) => ({ label: entry.day, value: entry.amount })),
     [weeklySpend],
   );
 
   const topCategory = dashboard?.spendingByCategory?.[0];
   const monthlyIncome = dashboard?.monthlyIncome ?? 0;
   const monthlyExpenses = dashboard?.monthlyExpenses ?? 0;
-  const savingsRate =
-    monthlyIncome > 0
-      ? Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100)
-      : 0;
-  const weeklyTotal = weeklySpend.reduce((s, d) => s + d.amount, 0);
-  const avgDaily =
-    weeklySpend.length > 0 ? weeklyTotal / weeklySpend.length : 0;
+  const savingsRate = calculateSavingsRate(monthlyIncome, monthlyExpenses);
+  const weeklyTotal = weeklySpend.reduce((sum, entry) => sum + entry.amount, 0);
+  const avgDaily = weeklySpend.length > 0 ? weeklyTotal / weeklySpend.length : 0;
 
   const monthlySummary = [
     {
+      color: colors.primary,
+      icon: "calendar-outline" as const,
       label: "Avg Daily Spend",
       value: formatCurrency(avgDaily),
-      icon: "calendar-outline" as const,
-      color: "#8B5CF6",
     },
     {
+      color: colors.success,
+      icon: "pie-chart-outline" as const,
       label: "Savings Rate",
       value: `${savingsRate}%`,
-      icon: "pie-chart-outline" as const,
-      color: "#10B981",
     },
     {
+      color: colors.warning,
+      icon: "restaurant-outline" as const,
       label: "Top Category",
       value: topCategory?.name ?? "—",
-      icon: "restaurant-outline" as const,
-      color: "#F59E0B",
     },
   ];
 
-  if (insightsLoading || dashboardLoading) {
-    return <ScreenLoading />;
-  }
-
-  if (insightsError || dashboardError) {
-    return (
-      <ErrorState
-        error={insightsQueryError ?? dashboardQueryError}
-        onRetry={() => {
-          void refetchInsights();
-          void refetchDashboard();
-        }}
-      />
-    );
-  }
-
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={{ paddingBottom: insets.bottom + 110 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={[styles.title, { color: colors.foreground }]}>
-          Insights
-        </Text>
-        <View style={[styles.aiBadge, { backgroundColor: colors.secondary }]}>
-          <Ionicons name="sparkles" size={14} color={colors.primary} />
-          <Text style={[styles.aiBadgeText, { color: colors.primary }]}>
-            AI
-          </Text>
-        </View>
+    <Screen padded={false}>
+      <View style={styles.headerWrap}>
+        <ScreenHeader onBack={() => router.back()} title="Insights" />
       </View>
+
+      <ScreenScrollView contentContainerStyle={styles.content}>
+        <View style={styles.titleRow}>
+          <View style={[styles.aiBadge, { backgroundColor: colors.secondary }]}>
+            <Ionicons color={colors.primary} name="sparkles" size={14} />
+            <Text style={[styles.aiBadgeText, { color: colors.primary }]}>AI</Text>
+          </View>
+        </View>
 
       <View style={styles.statsRow}>
         {monthlySummary.map((stat) => (
           <View
             key={stat.label}
-            style={[
-              styles.statCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
+            style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}
           >
-            <View
-              style={[styles.statIcon, { backgroundColor: stat.color + "20" }]}
-            >
-              <Ionicons name={stat.icon} size={18} color={stat.color} />
+            <View style={[styles.statIcon, { backgroundColor: stat.color + "20" }]}>
+              <Ionicons color={stat.color} name={stat.icon} size={18} />
             </View>
-            <Text style={[styles.statValue, { color: colors.foreground }]}>
-              {stat.value}
-            </Text>
-            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>
-              {stat.label}
-            </Text>
+            <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
+            <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
           </View>
         ))}
       </View>
 
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-          Weekly Spending
-        </Text>
-        <View
-          style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
+        <SectionHeader title="Weekly Spending" />
+        <View style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <BarChart
-            data={barData}
             barColor={colors.primary}
+            data={barData}
             labelColor={colors.mutedForeground}
             valueColor={colors.mutedForeground}
           />
@@ -138,57 +128,30 @@ export default function InsightsScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-          AI Recommendations
-        </Text>
+        <SectionHeader title="AI Recommendations" />
 
         {insights.map((insight) => (
           <TouchableOpacity
             key={insight.id}
-            style={[
-              styles.insightCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
             activeOpacity={0.7}
-            onPress={() =>
-              Alert.alert(insight.title, insight.body, [{ text: "OK" }])
-            }
+            onPress={() => Alert.alert(insight.title, insight.body, [{ text: "OK" }])}
+            style={[styles.insightCard, { backgroundColor: colors.card, borderColor: colors.border }]}
           >
             <View style={styles.insightHeader}>
-              <View
-                style={[
-                  styles.insightIconCircle,
-                  { backgroundColor: insight.bgColor },
-                ]}
-              >
-                <Ionicons
-                  name={insight.icon}
-                  size={20}
-                  color={insight.iconColor}
-                />
+              <View style={[styles.insightIconCircle, { backgroundColor: insight.bgColor }]}>
+                <Ionicons color={insight.iconColor} name={insight.icon} size={20} />
               </View>
               <View style={styles.insightMeta}>
                 <Text style={[styles.insightTitle, { color: colors.foreground }]}>
                   {insight.title}
                 </Text>
-                <View
-                  style={[
-                    styles.insightTag,
-                    { backgroundColor: insight.bgColor },
-                  ]}
-                >
-                  <Text
-                    style={[styles.insightTagText, { color: insight.iconColor }]}
-                  >
+                <View style={[styles.insightTag, { backgroundColor: insight.bgColor }]}>
+                  <Text style={[styles.insightTagText, { color: insight.iconColor }]}>
                     {insight.tag}
                   </Text>
                 </View>
               </View>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={colors.mutedForeground}
-              />
+              <Ionicons color={colors.mutedForeground} name="chevron-forward" size={18} />
             </View>
             <Text style={[styles.insightBody, { color: colors.mutedForeground }]}>
               {insight.body}
@@ -198,118 +161,110 @@ export default function InsightsScreen() {
       </View>
 
       <TouchableOpacity
-        style={[styles.aiLink, { backgroundColor: colors.secondary }]}
-        onPress={() => router.push("/(tabs)/ai")}
         activeOpacity={0.8}
+        onPress={() => router.push("/(tabs)/ai")}
+        style={[styles.aiLink, { backgroundColor: colors.secondary }]}
       >
-        <Ionicons name="sparkles" size={18} color={colors.primary} />
-        <Text style={[styles.aiLinkText, { color: colors.primary }]}>
-          View AI Insights
-        </Text>
+        <Ionicons color={colors.primary} name="sparkles" size={18} />
+        <Text style={[styles.aiLinkText, { color: colors.primary }]}>View AI Insights</Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScreenScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-  },
-  title: { fontSize: 24, fontFamily: "Inter_700Bold" },
   aiBadge: {
-    flexDirection: "row",
     alignItems: "center",
+    borderRadius: 12,
+    flexDirection: "row",
+    gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 12,
-    gap: 4,
   },
-  aiBadgeText: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
-  statsRow: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    gap: 10,
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
+  aiBadgeText: { ...typography.caption, fontFamily: "Inter_600SemiBold" },
+  aiLink: {
+    alignItems: "center",
     borderRadius: 14,
-    borderWidth: 1,
-    padding: 12,
-    alignItems: "center",
-    gap: 6,
-  },
-  statIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.sm,
     justifyContent: "center",
+    marginBottom: spacing.xl,
+    paddingVertical: 14,
   },
-  statValue: { fontSize: 16, fontFamily: "Inter_700Bold" },
-  statLabel: {
-    fontSize: 10,
-    fontFamily: "Inter_400Regular",
-    textAlign: "center",
-  },
-  section: { paddingHorizontal: 20, marginBottom: 20 },
-  sectionTitle: {
-    fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
-    marginBottom: 12,
-  },
+  aiLinkText: { ...typography.bodySemibold, fontSize: 14 },
   chartCard: {
+    alignItems: "center",
     borderRadius: 16,
     borderWidth: 1,
-    padding: 16,
-    alignItems: "center",
+    padding: spacing.lg,
   },
+  content: {
+    paddingTop: 0,
+  },
+  headerWrap: {
+    paddingHorizontal: spacing.xxl,
+  },
+  titleRow: {
+    alignItems: "flex-end",
+    marginBottom: spacing.lg,
+  },
+  insightBody: { ...typography.caption, lineHeight: 19 },
   insightCard: {
     borderRadius: 16,
     borderWidth: 1,
-    padding: 16,
-    marginBottom: 12,
     gap: 10,
+    marginBottom: spacing.md,
+    padding: spacing.lg,
   },
   insightHeader: {
-    flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    flexDirection: "row",
+    gap: spacing.md,
   },
   insightIconCircle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
     alignItems: "center",
+    borderRadius: 21,
+    height: 42,
     justifyContent: "center",
+    width: 42,
   },
   insightMeta: { flex: 1, gap: 4 },
-  insightTitle: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
   insightTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
     alignSelf: "flex-start",
+    borderRadius: 6,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
   },
-  insightTagText: { fontSize: 10, fontFamily: "Inter_500Medium" },
-  insightBody: {
-    fontSize: 13,
-    fontFamily: "Inter_400Regular",
-    lineHeight: 19,
+  insightTagText: { fontFamily: "Inter_500Medium", fontSize: 10 },
+  insightTitle: { ...typography.bodySemibold, fontSize: 14 },
+  section: {
+    marginBottom: spacing.xl,
   },
-  aiLink: {
-    flexDirection: "row",
+  statCard: {
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginHorizontal: 20,
-    paddingVertical: 14,
     borderRadius: 14,
+    borderWidth: 1,
+    flex: 1,
+    gap: 6,
+    padding: spacing.md,
   },
-  aiLinkText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  statIcon: {
+    alignItems: "center",
+    borderRadius: 18,
+    height: 36,
+    justifyContent: "center",
+    width: 36,
+  },
+  statLabel: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 10,
+    textAlign: "center",
+  },
+  statValue: { ...typography.bodySemibold, fontSize: 16 },
+  statsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: spacing.xxl,
+  },
 });

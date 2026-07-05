@@ -11,18 +11,24 @@ import {
 import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
+import { useTabContentInsets } from "@/hooks/useTabContentInsets";
+
+type ScreenVariant = "stack" | "tab";
 
 export function Screen({
   children,
   padded = true,
   style,
+  variant = "stack",
 }: {
   children: React.ReactNode;
   padded?: boolean;
   style?: StyleProp<ViewStyle>;
+  variant?: ScreenVariant;
 }) {
   const colors = useColors();
   const insets = useScreenInsets();
+  const isTab = variant === "tab";
 
   return (
     <View
@@ -30,9 +36,9 @@ export function Screen({
         styles.root,
         {
           backgroundColor: colors.background,
-          paddingBottom: insets.bottom,
-          paddingHorizontal: padded ? spacing.xxl : 0,
-          paddingTop: insets.top,
+          paddingBottom: isTab ? 0 : insets.bottom,
+          paddingHorizontal: padded && !isTab ? spacing.xxl : 0,
+          paddingTop: isTab ? 0 : insets.top,
         },
         style,
       ]}
@@ -46,23 +52,36 @@ export function ScreenScrollView({
   children,
   contentContainerStyle,
   refreshControl,
+  hero = false,
+  padded = true,
+  variant = "stack",
 }: {
   children: React.ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
+  hero?: boolean;
+  padded?: boolean;
+  variant?: ScreenVariant;
 }) {
   const colors = useColors();
   const insets = useScreenInsets();
+  const tabInsets = useTabContentInsets();
+  const isTab = variant === "tab";
 
   return (
     <ScrollView
       style={[styles.root, { backgroundColor: colors.background }]}
       contentContainerStyle={[
-        styles.scrollContent,
-        {
-          paddingBottom: insets.contentBottom,
-          paddingTop: insets.contentTop,
-        },
+        padded ? styles.scrollContent : null,
+        isTab
+          ? {
+              paddingBottom: tabInsets.paddingBottom,
+              paddingTop: hero ? 0 : tabInsets.paddingTop,
+            }
+          : {
+              paddingBottom: insets.contentBottom,
+              paddingTop: hero ? 0 : insets.contentTop,
+            },
         contentContainerStyle,
       ]}
       refreshControl={refreshControl}

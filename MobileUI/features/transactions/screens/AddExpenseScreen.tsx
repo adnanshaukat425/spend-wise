@@ -11,7 +11,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { z } from "zod";
 
 import { Screen } from "@/components/ui/Screen";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
@@ -19,23 +18,12 @@ import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 
 import { ExpenseForm } from "../components/ExpenseForm";
+import { expenseSchema } from "../validation";
 import {
   useAccounts,
   useCategories,
   useCreateTransaction,
 } from "../api";
-
-const expenseSchema = z.object({
-  amount: z
-    .string()
-    .min(1, "Amount is required")
-    .refine((v) => !Number.isNaN(parseFloat(v)) && parseFloat(v) > 0, {
-      message: "Enter a valid amount greater than 0",
-    }),
-  categorySlug: z.string().min(1, "Select a category"),
-  accountId: z.string().min(1, "Select an account"),
-  note: z.string().optional(),
-});
 
 export default function AddExpenseScreen() {
   const router = useRouter();
