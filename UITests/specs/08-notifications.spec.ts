@@ -18,7 +18,11 @@ describe("Notifications", () => {
     await NotificationsPage.waitForLoad();
   });
 
-  afterEach(async () => {
+  afterEach(async function () {
+    if (this.currentTest?.title === "should navigate back to the dashboard") {
+      return;
+    }
+
     // If we navigated away, come back
     const onScreen = await NotificationsPage.isOnScreen();
     if (!onScreen) {

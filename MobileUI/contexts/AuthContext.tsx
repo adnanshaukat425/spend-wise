@@ -1,212 +1,143 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { authApi } from "@/lib/api";
-import type { UserProfileDto } from "@/lib/api/types";
-import { initApi, isApiConfigured, registerAuthTokenGetter } from "@/lib/api";
-import {
-  clearAuth,
-  getStoredAuth,
-  isTokenExpired,
-  saveAuth,
-  type StoredAuth,
-} from "@/lib/auth-storage";
-import { StorageKeys, getString, setString } from "@/lib/storage";
+import { authApi, initApi, setAuthTokenGetter } from "@/lib/api";
+import type { AuthTokenResponse, UserProfileDto } from "@/lib/api/types";
 
-interface AuthContextValue {
-  isLoading: boolean;
-  hasOnboarded: boolean;
-  isAuthenticated: boolean;
-  user: UserProfileDto | null;
-  accessToken: string | null;
-  completeOnboarding: () => Promise<void>;
-  signInWithGoogle: (idToken: string) => Promise<void>;
-  signInWithApple: (identityToken: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+const SESSION_KEY = "spendwise.session.v1";
+const ONBOARDING_KEY = "spendwise.onboarding.v1";
+
+interface AuthSession {
+  accessToken: string;
+  refreshToken: string;
+  user: UserProfileDto;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+interface AuthContextValue {
+  completeOnboarding: () => Promise<void>;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  hasOnboarded: boolean;
+  onboardingCompleted: boolean;
+  signInWithApple: (identityToken: string) => Promise<void>;
+  signInWithGoogle: (idToken: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  user: UserProfileDto | null;
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+function toSession(response: AuthTokenResponse): AuthSession {
+  return {
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+    user: response.user,
+  };
+}
+
+async function persistSession(session: AuthSession | null) {
+  if (!session) {
+    await AsyncStorage.removeItem(SESSION_KEY);
+    return;
+  }
+
+  await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasOnboarded, setHasOnboarded] = useState(false);
-  const [auth, setAuth] = useState<StoredAuth | null>(null);
-  const authRef = useRef<StoredAuth | null>(null);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
 
   useEffect(() => {
-    authRef.current = auth;
-  }, [auth]);
-
-  useEffect(() => {
-    registerAuthTokenGetter(() => authRef.current?.accessToken ?? null);
     initApi();
-  }, []);
-
-  const applyAuth = useCallback(async (next: StoredAuth) => {
-    await saveAuth(next);
-    setAuth(next);
-    authRef.current = next;
-  }, []);
-
-  const clearSession = useCallback(async () => {
-    const refresh = authRef.current?.refreshToken;
-    if (refresh && isApiConfigured()) {
-      try {
-        await authApi.logout(refresh);
-      } catch {
-        // ignore logout errors
-      }
-    }
-    await clearAuth();
-    setAuth(null);
-    authRef.current = null;
-  }, []);
-
-  const establishSession = useCallback(
-    async (response: {
-      accessToken: string;
-      refreshToken: string;
-      expiresAt: string;
-      user: UserProfileDto;
-    }) => {
-      await applyAuth({
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-        expiresAt: response.expiresAt,
-        user: response.user,
-      });
-    },
-    [applyAuth],
-  );
-
-  const refreshTokens = useCallback(async (): Promise<boolean> => {
-    const stored = authRef.current ?? (await getStoredAuth());
-    if (!stored?.refreshToken || !isApiConfigured()) {
-      return false;
-    }
-
-    try {
-      const response = await authApi.refresh(stored.refreshToken);
-      await establishSession(response);
-      return true;
-    } catch {
-      await clearSession();
-      return false;
-    }
-  }, [clearSession, establishSession]);
+    setAuthTokenGetter(() => session?.accessToken ?? null);
+  }, [session?.accessToken]);
 
   useEffect(() => {
-    let mounted = true;
+    let active = true;
 
     async function hydrate() {
-      const onboarded = await getString(StorageKeys.hasOnboarded);
-      if (!mounted) return;
-      setHasOnboarded(onboarded === "true");
-
-      if (!isApiConfigured()) {
-        setIsLoading(false);
-        return;
-      }
-
-      const stored = await getStoredAuth();
-      if (!stored) {
-        setIsLoading(false);
-        return;
-      }
-
-      authRef.current = stored;
-      setAuth(stored);
-
-      if (isTokenExpired(stored.expiresAt)) {
-        const ok = await refreshTokens();
-        if (!mounted) return;
-        if (!ok) {
-          setAuth(null);
-          authRef.current = null;
+      try {
+        const [rawSession, rawOnboarding] = await Promise.all([
+          AsyncStorage.getItem(SESSION_KEY),
+          AsyncStorage.getItem(ONBOARDING_KEY),
+        ]);
+        if (!active) return;
+        if (rawSession) {
+          setSession(JSON.parse(rawSession) as AuthSession);
         }
+        setOnboardingCompleted(rawOnboarding === "1");
+      } finally {
+        if (active) setIsLoading(false);
       }
-
-      setIsLoading(false);
     }
 
     hydrate();
-    return () => {
-      mounted = false;
-    };
-  }, [refreshTokens]);
 
-  const completeOnboarding = useCallback(async () => {
-    await setString(StorageKeys.hasOnboarded, "true");
-    setHasOnboarded(true);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const applySession = useCallback(async (response: AuthTokenResponse) => {
+    const nextSession = toSession(response);
+    setSession(nextSession);
+    await persistSession(nextSession);
   }, []);
 
   const signInWithGoogle = useCallback(
     async (idToken: string) => {
-      if (!isApiConfigured()) {
-        throw new Error("API is not configured. Set EXPO_PUBLIC_API_URL.");
-      }
-      const response = await authApi.google(idToken);
-      await establishSession(response);
+      await applySession(await authApi.google(idToken));
     },
-    [establishSession],
+    [applySession],
   );
 
   const signInWithApple = useCallback(
     async (identityToken: string) => {
-      if (!isApiConfigured()) {
-        throw new Error("API is not configured. Set EXPO_PUBLIC_API_URL.");
-      }
-      const response = await authApi.apple(identityToken);
-      await establishSession(response);
+      await applySession(await authApi.apple(identityToken));
     },
-    [establishSession],
+    [applySession],
   );
 
   const signOut = useCallback(async () => {
-    await clearSession();
-  }, [clearSession]);
-
-  const refreshUser = useCallback(async () => {
-    if (!authRef.current?.accessToken || !isApiConfigured()) return;
-    try {
-      const user = await authApi.me();
-      const next = { ...authRef.current, user };
-      await applyAuth(next);
-    } catch {
-      await refreshTokens();
+    const refreshToken = session?.refreshToken;
+    setSession(null);
+    await persistSession(null);
+    if (refreshToken) {
+      try {
+        await authApi.logout(refreshToken);
+      } catch {
+        // Sign-out should not be blocked by a failed network logout.
+      }
     }
-  }, [applyAuth, refreshTokens]);
+  }, [session?.refreshToken]);
 
-  const value = useMemo(
+  const completeOnboarding = useCallback(async () => {
+    setOnboardingCompleted(true);
+    await AsyncStorage.setItem(ONBOARDING_KEY, "1");
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
     () => ({
-      isLoading,
-      hasOnboarded,
-      isAuthenticated: Boolean(auth?.accessToken),
-      user: auth?.user ?? null,
-      accessToken: auth?.accessToken ?? null,
       completeOnboarding,
-      signInWithGoogle,
+      hasOnboarded: onboardingCompleted,
+      isAuthenticated: Boolean(session?.accessToken),
+      isLoading,
+      onboardingCompleted,
       signInWithApple,
+      signInWithGoogle,
       signOut,
-      refreshUser,
+      user: session?.user ?? null,
     }),
     [
-      isLoading,
-      hasOnboarded,
-      auth,
       completeOnboarding,
-      signInWithGoogle,
+      isLoading,
+      onboardingCompleted,
+      session,
       signInWithApple,
+      signInWithGoogle,
       signOut,
-      refreshUser,
     ],
   );
 
@@ -214,23 +145,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
+  const value = useContext(AuthContext);
+  if (!value) {
     throw new Error("useAuth must be used within AuthProvider");
   }
-  return ctx;
-}
-
-export function devGoogleToken(
-  sub = "mobile-dev",
-  email = "dev@gmail.com",
-): string {
-  return `dev-google:${sub}:${email}`;
-}
-
-export function devAppleToken(
-  sub = "mobile-dev",
-  email = "dev@icloud.com",
-): string {
-  return `dev-apple:${sub}:${email}`;
+  return value;
 }

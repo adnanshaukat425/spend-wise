@@ -1,70 +1,68 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { spacing, typography } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
-import { useScreenInsets } from "@/hooks/useScreenInsets";
-
-interface ScreenHeaderProps {
-  title: string;
-  showBack?: boolean;
-  rightAction?: React.ReactNode;
-  onBack?: () => void;
-}
 
 export function ScreenHeader({
-  title,
-  showBack = true,
-  rightAction,
   onBack,
-}: ScreenHeaderProps) {
-  const router = useRouter();
+  right,
+  rightAction,
+  showBack = true,
+  title,
+  variant = "back",
+}: {
+  onBack?: () => void;
+  right?: React.ReactNode;
+  rightAction?: React.ReactNode;
+  showBack?: boolean;
+  title?: string;
+  variant?: "back" | "close";
+}) {
   const colors = useColors();
-  const insets = useScreenInsets();
+  const iconName = variant === "close" ? "close" : "chevron-back";
 
   return (
-    <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
-      {showBack ? (
-        <TouchableOpacity
-          onPress={onBack ?? (() => router.back())}
-          activeOpacity={0.7}
-          style={styles.iconBtn}
+    <View style={styles.root}>
+      {showBack && onBack ? (
+        <Pressable
+          accessibilityLabel={variant === "close" ? "Close screen" : "Go back"}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          onPress={onBack}
+          style={styles.iconButton}
           testID="screen-back-btn"
         >
-          <Ionicons name="chevron-back" size={22} color={colors.foreground} />
-        </TouchableOpacity>
+          <Ionicons name={iconName} size={22} color={colors.foreground} />
+        </Pressable>
       ) : (
-        <View style={styles.iconBtn} />
+        <View style={styles.iconButton} />
       )}
-      <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
-      <View style={[styles.iconBtn, rightAction ? styles.iconBtnRight : null]}>{rightAction}</View>
+      {title ? <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text> : <View />}
+      <View style={styles.right}>{right ?? rightAction}</View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
+  iconButton: {
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 14,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
+    height: 40,
     justifyContent: "center",
+    width: 40,
   },
-  iconBtnRight: {
-    width: "auto",
-    minWidth: 36,
+  right: {
+    alignItems: "flex-end",
+    minWidth: 40,
+  },
+  root: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: spacing.md,
   },
   title: {
-    fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
+    ...typography.bodyMedium,
+    fontFamily: "Inter_700Bold",
   },
 });

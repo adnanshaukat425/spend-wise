@@ -1,21 +1,26 @@
-/** API DTOs aligned with SpendWise .NET backend */
-
 export interface AuthTokenResponse {
   accessToken: string;
   refreshToken: string;
-  expiresAt: string;
+  expiresAt?: string;
   user: UserProfileDto;
 }
 
 export interface UserProfileDto {
   id: string;
+  name?: string;
+  displayName?: string;
   email: string;
-  displayName: string;
-  initials: string;
-  subscriptionTier: string;
-  transactionCount: number;
-  accountCount: number;
-  currencyCode: string;
+  initials?: string;
+  plan?: string;
+  subscriptionTier?: string;
+  balance?: number;
+  balanceChangePct?: number;
+  accountsConnected?: number;
+  accountCount?: number;
+  transactionCount?: number;
+  categoryCount?: number;
+  savedAmount?: number;
+  currencyCode?: string;
 }
 
 export interface UserPreferencesDto {
@@ -26,77 +31,86 @@ export interface UserPreferencesDto {
 export interface AccountDto {
   id: string;
   name: string;
-  accountType: string;
+  type?: string;
+  accountType?: string;
   balance: number;
-  lastFourDigits: string;
-  iconKey: string;
-  iconColor: string;
+  lastFour?: string;
+  lastFourDigits?: string;
+  iconKey?: string;
+  iconColor?: string;
 }
 
 export interface CategoryDto {
   id: string;
-  slug: string;
   name: string;
-  type: string;
-  iconKey: string;
-  iconBg: string;
-  iconColor: string;
+  slug: string;
+  type?: string;
+  icon?: string;
+  iconKey?: string;
+  iconBg?: string;
+  iconColor?: string;
 }
 
 export interface TransactionDto {
   id: string;
-  name: string;
+  name?: string;
+  description?: string;
   amount: number;
-  categorySlug: string;
-  categoryName: string;
-  categoryIconKey: string;
-  categoryIconBg: string;
-  categoryIconColor: string;
-  type: string;
-  accountId: string;
-  accountName: string;
+  categorySlug?: string;
+  categoryName?: string;
+  categoryIconKey?: string;
+  categoryIconBg?: string;
+  categoryIconColor?: string;
+  type?: string;
+  accountId?: string;
+  accountName?: string;
   note?: string | null;
   receiptUrl?: string | null;
-  occurredAt: string;
+  occurredAt?: string;
+  createdAt?: string;
 }
 
-export interface PagedResult<T> {
-  items: T[];
-  page: number;
-  pageSize: number;
-  totalCount: number;
+export interface CreateTransactionRequest {
+  amount: number;
+  categoryId?: string;
+  categorySlug?: string;
+  accountId?: string;
+  name?: string;
+  description?: string;
+  type?: string;
+  occurredAt?: string;
+  note?: string | null;
+  receiptUrl?: string | null;
 }
+
+export type UpdateTransactionRequest = Partial<CreateTransactionRequest>;
 
 export interface BudgetLineDto {
   categoryId: string;
-  categorySlug: string;
   categoryName: string;
-  iconKey: string;
-  iconBg: string;
-  iconColor: string;
-  limitAmount: number;
-  spentAmount: number;
-  percentUsed: number;
+  categorySlug?: string;
+  iconKey?: string;
+  iconBg?: string;
+  iconColor?: string;
+  spent?: number;
+  spentAmount?: number;
+  limit?: number;
+  limitAmount?: number;
 }
 
 export interface BudgetSummaryDto {
-  id: string;
-  year: number;
-  month: number;
-  totalLimit: number;
+  totalBudget?: number;
+  totalLimit?: number;
   totalSpent: number;
-  percentUsed: number;
+  daysRemaining?: number;
+  monthLabel?: string;
   lines: BudgetLineDto[];
 }
 
 export interface SpendingSegmentDto {
-  categorySlug: string;
-  categoryName: string;
-  iconKey: string;
-  iconBg: string;
-  iconColor: string;
+  name: string;
   amount: number;
-  percent: number;
+  color?: string;
 }
 
 export interface DashboardDto {
@@ -111,85 +125,45 @@ export interface DashboardDto {
 
 export interface InsightDto {
   id: string;
-  type: string;
+  type?: "tip" | "alert" | "positive";
   title: string;
-  description: string;
-  actionLabel?: string | null;
-  actionRoute?: string | null;
-}
-
-export interface WeeklySpendDayDto {
-  day: string;
-  amount: number;
+  body?: string;
+  message?: string;
+  iconKey?: string;
+  tag?: string;
 }
 
 export interface WeeklySpendDto {
-  days: WeeklySpendDayDto[];
-  total: number;
+  days?: { day: string; amount: number }[];
+  items?: { day: string; amount: number }[];
 }
 
 export interface NotificationDto {
   id: string;
   title: string;
   body: string;
-  isRead: boolean;
-  iconKey: string;
-  iconColor: string;
-  iconBg: string;
-  createdAt: string;
+  createdAt?: string;
+  read?: boolean;
+  isRead?: boolean;
+  iconKey?: string;
+  iconColor?: string;
+  iconBg?: string;
 }
 
 export interface SubscriptionPlanDto {
-  id: string;
   slug: string;
   name: string;
   price: number;
   billingPeriod: string;
-  badge?: string | null;
-  tag?: string | null;
-  isPopular: boolean;
-  features: string[];
+  badge?: string;
+  tag?: string;
+  isPopular?: boolean;
 }
 
 export interface UserSubscriptionDto {
-  tier: string;
+  plan: string;
   status: string;
-  planName?: string | null;
-  trialEndsAt?: string | null;
-}
-
-export interface CreateTransactionRequest {
-  accountId: string;
-  categorySlug: string;
-  name: string;
-  amount: number;
-  note?: string | null;
-  receiptUrl?: string | null;
-  occurredAt?: string | null;
-}
-
-export interface UpdateTransactionRequest {
-  name?: string | null;
-  amount?: number | null;
-  note?: string | null;
-  receiptUrl?: string | null;
-}
-
-export interface CreateAccountRequest {
-  name: string;
-  accountType: string;
-  balance: number;
-  lastFourDigits: string;
-  iconKey: string;
-  iconColor: string;
-}
-
-export interface UpdateBudgetTotalRequest {
-  totalLimit: number;
-}
-
-export interface UpdateBudgetLinesRequest {
-  lines: { categoryId: string; limitAmount: number }[];
+  trialEndsAt?: string;
 }
 
 export interface ParseVoiceRequest {
@@ -197,7 +171,29 @@ export interface ParseVoiceRequest {
 }
 
 export interface ParseVoiceResponse {
-  amount: number | null;
-  categorySlug: string | null;
-  note: string | null;
+  amount?: number;
+  categorySlug?: string;
+  categoryName?: string;
+  merchantName?: string;
+  note?: string;
+  occurredAt?: string;
+  confidence?: number;
+}
+
+export interface CreateAccountRequest {
+  name: string;
+  type?: string;
+  accountType?: string;
+  balance?: number;
+  initialBalance?: number;
+  lastFourDigits?: string;
+  iconKey?: string;
+  iconColor?: string;
+}
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page?: number;
+  pageSize?: number;
 }

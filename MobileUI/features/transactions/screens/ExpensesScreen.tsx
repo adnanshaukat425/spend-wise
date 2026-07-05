@@ -11,10 +11,19 @@ import {
   View,
 } from "react-native";
 
+import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { FloatingActionButton } from "@/components/ui/FloatingActionButton";
+import { SeparatedList } from "@/components/ui/List";
+import { Screen, ScreenScrollView } from "@/components/ui/Screen";
+import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { ScreenLoading } from "@/components/ui/ScreenLoading";
 import { TransactionRow } from "@/components/ui/TransactionRow";
-import { useCategories, useTransactions } from "@/hooks/api";
+import { spacing, typography } from "@/constants/theme";
+import { useCategories, useTransactions } from "../api";
 import { formatCurrency } from "@/lib/format";
+import { queryKeys } from "@/lib/query";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,14 +39,14 @@ export default function ExpensesScreen() {
 
   const categorySlug =
     selectedCategory === "all" ? undefined : selectedCategory;
-  const { data, isFetching } = useTransactions({ categorySlug });
+  const { data, isFetching, isLoading, isError, error, refetch } = useTransactions({ categorySlug });
 
   const transactions = data?.items ?? [];
   const totalIncome = data?.totalIncome ?? 0;
   const totalExpenses = data?.totalExpenses ?? 0;
 
   const handleRefresh = useCallback(() => {
-    qc.invalidateQueries({ queryKey: ["transactions"] });
+    qc.invalidateQueries({ queryKey: queryKeys.transactions() });
   }, [qc]);
 
   const filterOptions = useMemo(() => {
@@ -59,24 +68,31 @@ export default function ExpensesScreen() {
     );
   }, [transactions, searchQuery]);
 
+  if (isLoading) {
+    return <ScreenLoading />;
+  }
+
+  if (isError) {
+    return <ErrorState error={error} onRetry={() => void refetch()} />;
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={[styles.title, { color: colors.foreground }]}>
-          Expenses
-        </Text>
-        <TouchableOpacity
-          style={[styles.addBtn, { backgroundColor: colors.primary }]}
-          activeOpacity={0.8}
-          onPress={() => router.push("/add-expense")}
-          accessibilityRole="button"
-          accessibilityLabel="Add expense"
-        >
-          <Ionicons name="add" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
+    <Screen padded={false}>
+      <View style={styles.headerWrap}>
+        <ScreenHeader
+          onBack={() => router.back()}
+          rightAction={
+            <FloatingActionButton
+              accessibilityLabel="Add expense"
+              icon="add"
+              onPress={() => router.push("/add-expense")}
+              style={styles.headerFab}
+            />
+          }
+          title="Expenses"
+        />
       </View>
 
-      {/* Search bar */}
       <View style={[styles.searchBar, { backgroundColor: colors.muted }]}>
         <Ionicons name="search-outline" size={18} color={colors.mutedForeground} />
         <TextInput
@@ -89,30 +105,28 @@ export default function ExpensesScreen() {
           returnKeyType="search"
           clearButtonMode="while-editing"
         />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery("")}>
+        {searchQuery.length > 0 ? (
+          <TouchableOpacity
+            accessibilityLabel="Clear search"
+            accessibilityRole="button"
+            onPress={() => setSearchQuery("")}
+          >
             <Ionicons name="close-circle" size={18} color={colors.mutedForeground} />
           </TouchableOpacity>
-        )}
+        ) : null}
       </View>
 
       <View style={styles.summaryRow}>
-        <View
-          style={[styles.summaryCard, { backgroundColor: colors.successLight }]}
-        >
+        <View style={[styles.summaryCard, { backgroundColor: colors.successLight }]}>
           <Ionicons name="arrow-down-circle" size={20} color={colors.success} />
-          <Text style={[styles.summaryLabel, { color: colors.success }]}>
-            Income
-          </Text>
+          <Text style={[styles.summaryLabel, { color: colors.success }]}>Income</Text>
           <Text style={[styles.summaryValue, { color: colors.success }]}>
             {formatCurrency(totalIncome)}
           </Text>
         </View>
-        <View style={[styles.summaryCard, { backgroundColor: "#FEE2E2" }]}>
+        <View style={[styles.summaryCard, { backgroundColor: colors.expenseLight }]}>
           <Ionicons name="arrow-up-circle" size={20} color={colors.expense} />
-          <Text style={[styles.summaryLabel, { color: colors.expense }]}>
-            Expenses
-          </Text>
+          <Text style={[styles.summaryLabel, { color: colors.expense }]}>Expenses</Text>
           <Text style={[styles.summaryValue, { color: colors.expense }]}>
             {formatCurrency(totalExpenses)}
           </Text>
@@ -128,6 +142,10 @@ export default function ExpensesScreen() {
         {filterOptions.map((cat) => (
           <TouchableOpacity
             key={cat.id}
+            accessibilityLabel={`Filter by ${cat.label}`}
+            accessibilityRole="button"
+            activeOpacity={0.7}
+            onPress={() => setSelectedCategory(cat.id)}
             style={[
               styles.categoryChip,
               {
@@ -135,8 +153,6 @@ export default function ExpensesScreen() {
                   selectedCategory === cat.id ? colors.primary : colors.secondary,
               },
             ]}
-            onPress={() => setSelectedCategory(cat.id)}
-            activeOpacity={0.7}
           >
             <Text
               style={[
@@ -144,7 +160,7 @@ export default function ExpensesScreen() {
                 {
                   color:
                     selectedCategory === cat.id
-                      ? "#FFFFFF"
+                      ? colors.primaryForeground
                       : colors.mutedForeground,
                 },
               ]}
@@ -155,115 +171,92 @@ export default function ExpensesScreen() {
         ))}
       </ScrollView>
 
-      <ScrollView
-        style={styles.list}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
-        showsVerticalScrollIndicator={false}
+      <ScreenScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 100, paddingTop: 0 }}
         refreshControl={
           <RefreshControl
-            refreshing={isFetching}
             onRefresh={handleRefresh}
+            refreshing={isFetching}
             tintColor={colors.primary}
           />
         }
       >
         {filtered.length === 0 ? (
           <EmptyState
-            title="No transactions"
-            message={`No transactions found in the ${selectedCategory} category.`}
             icon="receipt-outline"
+            message={`No transactions found in the ${selectedCategory} category.`}
+            title="No transactions"
           />
         ) : (
-          <View
-            style={[
-              styles.listCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-          >
-            {filtered.map((item, index) => (
-              <View key={item.id}>
+          <Card style={styles.listCard}>
+            <SeparatedList
+              data={filtered}
+              keyExtractor={(item) => item.id}
+              renderItem={(item) => (
                 <TransactionRow
-                  transaction={item}
                   onPress={() => router.push(`/transaction/${item.id}` as Href)}
+                  transaction={item}
                 />
-                {index < filtered.length - 1 && (
-                  <View
-                    style={[styles.divider, { backgroundColor: colors.border }]}
-                  />
-                )}
-              </View>
-            ))}
-          </View>
+              )}
+            />
+          </Card>
         )}
-      </ScrollView>
-    </View>
+      </ScreenScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingBottom: 16,
+  categories: {
+    gap: spacing.sm,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.xxl,
   },
-  title: { fontSize: 24, fontFamily: "Inter_700Bold" },
-  addBtn: {
-    width: 40,
-    height: 40,
+  categoriesScroll: { flexGrow: 0 },
+  categoryChip: {
     borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
   },
-  summaryRow: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    gap: 12,
-    marginBottom: 16,
+  categoryText: { ...typography.bodyMedium, fontSize: 13 },
+  headerFab: {
+    height: 40,
+    width: 40,
   },
-  summaryCard: {
-    flex: 1,
-    borderRadius: 14,
-    padding: 14,
-    gap: 4,
+  headerWrap: {
+    paddingHorizontal: spacing.xxl,
   },
-  summaryLabel: { fontSize: 12, fontFamily: "Inter_500Medium" },
-  summaryValue: { fontSize: 18, fontFamily: "Inter_700Bold" },
+  listCard: {
+    overflow: "hidden",
+  },
   searchBar: {
-    flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20,
-    marginBottom: 12,
     borderRadius: 12,
-    paddingHorizontal: 12,
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+    marginHorizontal: spacing.xxl,
+    paddingHorizontal: spacing.md,
     paddingVertical: 10,
-    gap: 8,
   },
   searchInput: {
     flex: 1,
-    fontSize: 14,
     fontFamily: "Inter_400Regular",
+    fontSize: 14,
     padding: 0,
   },
-  categoriesScroll: { flexGrow: 0 },
-  categories: {
-    paddingHorizontal: 20,
-    gap: 8,
-    paddingBottom: 16,
+  summaryCard: {
+    borderRadius: 14,
+    flex: 1,
+    gap: spacing.xs,
+    padding: 14,
   },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+  summaryLabel: { fontFamily: "Inter_500Medium", fontSize: 12 },
+  summaryRow: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+    paddingHorizontal: spacing.xxl,
   },
-  categoryText: { fontSize: 13, fontFamily: "Inter_500Medium" },
-  list: { flex: 1, paddingHorizontal: 20 },
-  listCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    overflow: "hidden",
-  },
-  divider: { height: 1, marginHorizontal: 16 },
+  summaryValue: { fontFamily: "Inter_700Bold", fontSize: 18 },
 });

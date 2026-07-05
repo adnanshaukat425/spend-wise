@@ -4,9 +4,11 @@ export function useScreenInsets() {
   const insets = useSafeAreaInsets();
 
   return {
-    top: insets.top,
     bottom: insets.bottom,
+    contentBottom: insets.bottom + 24,
+    contentTop: insets.top + 16,
     left: insets.left,
     right: insets.right,
+    top: insets.top,
   };
 }

@@ -85,7 +85,7 @@ export class BasePage {
   async goBack() {
     try {
       const backBtn = await $("~screen-back-btn");
-      if (await backBtn.isDisplayed()) {
+      if (await backBtn.isExisting()) {
         await backBtn.click();
         return;
       }

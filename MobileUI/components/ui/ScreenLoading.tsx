@@ -1,22 +1,32 @@
 import React from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
+import { spacing, typography } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 
-export function ScreenLoading() {
+export function ScreenLoading({ label = "Loading" }: { label?: string }) {
   const colors = useColors();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <ActivityIndicator size="large" color={colors.primary} />
+    <View
+      accessibilityLabel={label}
+      accessibilityRole="progressbar"
+      style={[styles.root, { backgroundColor: colors.background }]}
+    >
+      <ActivityIndicator color={colors.primary} />
+      <Text style={[styles.label, { color: colors.mutedForeground }]}>{label}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  label: {
+    ...typography.caption,
+    marginTop: spacing.sm,
+  },
+  root: {
     alignItems: "center",
+    flex: 1,
     justifyContent: "center",
   },
 });

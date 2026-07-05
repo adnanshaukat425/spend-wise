@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import type { Transaction } from "@/data/types";
@@ -12,7 +12,7 @@ interface TransactionRowProps {
   showChevron?: boolean;
 }
 
-export function TransactionRow({
+export const TransactionRow = memo(function TransactionRow({
   transaction,
   onPress,
   showChevron = false,
@@ -69,7 +69,7 @@ export function TransactionRow({
       ) : null}
     </TouchableOpacity>
   );
-}
+});
 
 const styles = StyleSheet.create({
   row: {

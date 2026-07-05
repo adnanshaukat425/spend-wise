@@ -13,6 +13,27 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "off",
+      "eqeqeq": ["error", "always"],
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-implicit-coercion": "error",
+    },
+  },
+  {
+    files: ["features/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "react-native-safe-area-context",
+              importNames: ["useSafeAreaInsets"],
+              message:
+                "Use useScreenInsets from @/hooks/useScreenInsets in feature screens.",
+            },
+          ],
+        },
+      ],
     },
   },
   {

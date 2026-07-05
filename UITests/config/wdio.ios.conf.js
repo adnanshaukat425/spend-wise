@@ -25,7 +25,7 @@ exports.config = {
       "appium:bundleId": "com.adnanshaukat425.mobile",
       "appium:newCommandTimeout": 300,
       "appium:noReset": false,
-      "appium:fullReset": false,
+      "appium:fullReset": true,
       "appium:wdaLaunchTimeout": 120000,
       "appium:wdaConnectionTimeout": 120000,
     },

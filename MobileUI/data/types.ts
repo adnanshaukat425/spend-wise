@@ -1,6 +1,6 @@
-import type { Ionicons } from "@expo/vector-icons";
+import type { IconName } from "@/domain/types";
 
-export type IconName = keyof typeof Ionicons.glyphMap;
+export type { IconName } from "@/domain/types";
 
 export interface Transaction {
   id: string;

@@ -1,21 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-
-// expo-speech-recognition requires native module linking — guard against missing native module
-let ExpoSpeechRecognitionModule: any = null;
-let useSpeechRecognitionEvent: ((event: string, handler: (e: any) => void) => void) = () => {};
-try {
-  const speechModule = require("expo-speech-recognition");
-  ExpoSpeechRecognitionModule = speechModule.ExpoSpeechRecognitionModule;
-  useSpeechRecognitionEvent = speechModule.useSpeechRecognitionEvent;
-} catch {
-  // Native module not available — voice features will be disabled
-}
-
-/** True only when the speech-recognition native module is linked (i.e. dev/prod build, not Expo Go) */
-export const isSpeechRecognitionAvailable = ExpoSpeechRecognitionModule !== null;
-import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -27,184 +11,36 @@ import {
   View,
 } from "react-native";
 
-import { useParseVoiceExpense } from "@/hooks/api";
 import { useColors } from "@/hooks/useColors";
 
-type VoiceState = "idle" | "listening" | "done" | "parsing" | "error";
+import { useVoiceExpense } from "../hooks/useVoiceExpense";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
 }
 
+export { isSpeechRecognitionAvailable } from "../hooks/useVoiceExpense";
+
 export function VoiceExpenseModal({ visible, onClose }: Props) {
   const colors = useColors();
-  const router = useRouter();
-  const parseVoice = useParseVoiceExpense();
-
-  const [voiceState, setVoiceState] = useState<VoiceState>("idle");
-  const [transcript, setTranscript] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
-  const ringAnim = useRef(new Animated.Value(0)).current;
-  const ringLoop = useRef<Animated.CompositeAnimation | null>(null);
-
-  // Pulsing mic scale + ring expand when listening
-  useEffect(() => {
-    if (voiceState === "listening") {
-      pulseLoop.current = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, {
-            toValue: 1.15,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      pulseLoop.current.start();
-
-      ringLoop.current = Animated.loop(
-        Animated.sequence([
-          Animated.timing(ringAnim, {
-            toValue: 1,
-            duration: 1200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(ringAnim, {
-            toValue: 0,
-            duration: 0,
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      ringLoop.current.start();
-    } else {
-      pulseLoop.current?.stop();
-      ringLoop.current?.stop();
-      pulseAnim.setValue(1);
-      ringAnim.setValue(0);
-    }
-  }, [voiceState, pulseAnim, ringAnim]);
-
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!visible) {
-      setVoiceState("idle");
-      setTranscript("");
-      setErrorMsg("");
-    }
-  }, [visible]);
-
-  useSpeechRecognitionEvent("start", () => {
-    setVoiceState("listening");
-  });
-
-  useSpeechRecognitionEvent("end", () => {
-    setVoiceState((prev) => (prev === "listening" ? "done" : prev));
-  });
-
-  useSpeechRecognitionEvent("result", (event) => {
-    const best = event.results[0]?.transcript ?? "";
-    setTranscript(best);
-    if (event.isFinal) {
-      setVoiceState("done");
-    }
-  });
-
-  useSpeechRecognitionEvent("error", (event) => {
-    if (event.error === "aborted") return;
-    setErrorMsg(
-      event.message?.length > 0
-        ? event.message
-        : "Speech recognition failed. Please try again.",
-    );
-    setVoiceState("error");
-  });
-
-  const startListening = useCallback(() => {
-    if (!ExpoSpeechRecognitionModule) {
-      setErrorMsg("Voice recognition is not available on this device.");
-      setVoiceState("error");
-      return;
-    }
-    setTranscript("");
-    setErrorMsg("");
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    ExpoSpeechRecognitionModule.start({
-      lang: "en-US",
-      interimResults: true,
-      maxAlternatives: 1,
-      continuous: false,
-    });
-  }, []);
-
-  const stopListening = useCallback(() => {
-    ExpoSpeechRecognitionModule?.stop();
-  }, []);
-
-  const handleAnalyse = useCallback(async () => {
-    if (!transcript.trim()) return;
-    setVoiceState("parsing");
-    try {
-      const result = await parseVoice.mutateAsync(transcript.trim());
-      onClose();
-
-      const params = new URLSearchParams();
-      if (result.amount !== null && result.amount !== undefined) {
-        params.set("prefillAmount", String(result.amount));
-      }
-      if (result.categorySlug) {
-        params.set("prefillCategory", result.categorySlug);
-      }
-      if (result.note) {
-        params.set("prefillNote", result.note);
-      }
-
-      const qs = params.toString();
-      router.push(qs ? (`/add-expense?${qs}` as any) : "/add-expense");
-    } catch {
-      setErrorMsg("Could not extract expense details. Please try again.");
-      setVoiceState("error");
-    }
-  }, [transcript, parseVoice, onClose, router]);
-
-  const handleClose = useCallback(() => {
-    if (voiceState === "listening") {
-      ExpoSpeechRecognitionModule?.abort();
-    }
-    setVoiceState("idle");
-    setTranscript("");
-    setErrorMsg("");
-    onClose();
-  }, [voiceState, onClose]);
-
-  const handleRetry = useCallback(() => {
-    setTranscript("");
-    setErrorMsg("");
-    setVoiceState("idle");
-  }, []);
-
-  const ringScale = ringAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 1.6],
-  });
-  const ringOpacity = ringAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0.4, 0.15, 0],
-  });
-
-  const isListening = voiceState === "listening";
-  const isDone = voiceState === "done";
-  const isParsing = voiceState === "parsing";
-  const isError = voiceState === "error";
-  const isIdle = voiceState === "idle";
+  const {
+    transcript,
+    errorMsg,
+    pulseAnim,
+    ringScale,
+    ringOpacity,
+    isListening,
+    isDone,
+    isParsing,
+    isError,
+    isIdle,
+    startListening,
+    stopListening,
+    handleAnalyse,
+    handleClose,
+    handleRetry,
+  } = useVoiceExpense(onClose, visible);
 
   return (
     <Modal
@@ -221,7 +57,6 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
             { backgroundColor: colors.card },
           ]}
         >
-          {/* Header */}
           <View style={styles.header}>
             <Text style={[styles.title, { color: colors.foreground }]}>
               Voice Expense
@@ -236,9 +71,7 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
             </TouchableOpacity>
           </View>
 
-          {/* Mic area */}
           <View style={styles.micArea}>
-            {/* Expanding ring */}
             {isListening && (
               <Animated.View
                 style={[
@@ -252,7 +85,6 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
               />
             )}
 
-            {/* Mic button */}
             <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
               <TouchableOpacity
                 onPress={isListening ? stopListening : startListening}
@@ -283,7 +115,6 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
               </TouchableOpacity>
             </Animated.View>
 
-            {/* Status label */}
             <Text
               style={[styles.statusText, { color: colors.mutedForeground }]}
             >
@@ -295,7 +126,6 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
             </Text>
           </View>
 
-          {/* Transcript */}
           <View
             style={[
               styles.transcriptBox,
@@ -323,7 +153,6 @@ export function VoiceExpenseModal({ visible, onClose }: Props) {
             )}
           </View>
 
-          {/* Action buttons */}
           <View style={styles.actions}>
             {isError ? (
               <TouchableOpacity

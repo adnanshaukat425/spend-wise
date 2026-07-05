@@ -1,49 +1,44 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
-import { StorageKeys, getJson, setJson } from "@/lib/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useColorScheme } from "react-native";
 
 export type ThemePreference = "system" | "light" | "dark";
 
 interface ThemeContextValue {
-  preference: ThemePreference;
   isDark: boolean;
-  setPreference: (pref: ThemePreference) => Promise<void>;
+  preference: ThemePreference;
+  setPreference: (preference: ThemePreference) => Promise<void>;
   toggleDarkMode: (enabled: boolean) => Promise<void>;
 }
 
-export const ThemeContext = createContext<ThemeContextValue | null>(null);
+const THEME_KEY = "spendwise.theme.v1";
+export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({
   children,
   systemIsDark,
 }: {
   children: React.ReactNode;
-  systemIsDark: boolean;
+  systemIsDark?: boolean;
 }) {
+  const systemScheme = useColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>("system");
 
   useEffect(() => {
-    getJson<ThemePreference>(StorageKeys.themePreference).then((stored) => {
-      if (stored) setPreferenceState(stored);
+    AsyncStorage.getItem(THEME_KEY).then((stored) => {
+      if (stored === "system" || stored === "light" || stored === "dark") {
+        setPreferenceState(stored);
+      }
     });
   }, []);
 
-  const isDark = useMemo(() => {
-    if (preference === "dark") return true;
-    if (preference === "light") return false;
-    return systemIsDark;
-  }, [preference, systemIsDark]);
+  const isDark =
+    preference === "dark" ||
+    (preference === "system" && (systemIsDark ?? systemScheme === "dark"));
 
-  const setPreference = useCallback(async (pref: ThemePreference) => {
-    await setJson(StorageKeys.themePreference, pref);
-    setPreferenceState(pref);
+  const setPreference = useCallback(async (nextPreference: ThemePreference) => {
+    setPreferenceState(nextPreference);
+    await AsyncStorage.setItem(THEME_KEY, nextPreference);
   }, []);
 
   const toggleDarkMode = useCallback(
@@ -55,23 +50,23 @@ export function ThemeProvider({
 
   const value = useMemo(
     () => ({
-      preference,
       isDark,
+      preference,
       setPreference,
       toggleDarkMode,
     }),
-    [preference, isDark, setPreference, toggleDarkMode],
+    [isDark, preference, setPreference, toggleDarkMode],
   );
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
+  const value = useContext(ThemeContext);
+  if (!value) {
     throw new Error("useTheme must be used within ThemeProvider");
   }
-  return ctx;
+  return value;
 }
+
+export const useThemePreference = useTheme;

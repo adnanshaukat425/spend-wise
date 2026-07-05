@@ -7,6 +7,7 @@
 import DashboardPage from "../pages/DashboardPage";
 import TransactionsPage from "../pages/TransactionsPage";
 import { loginWithGoogle } from "../helpers/auth.helper";
+import { goBack } from "../helpers/wait.helper";
 
 describe("Transactions", () => {
   before(async () => {
@@ -35,8 +36,7 @@ describe("Transactions", () => {
   });
 
   it("should navigate back to the dashboard from the transactions list", async () => {
-    // Expenses is a tab — tap the home tab to return to dashboard
-    await $("~tab-home").click();
+    await goBack();
     await DashboardPage.waitForLoad();
     expect(await DashboardPage.isOnScreen()).toBe(true);
   });

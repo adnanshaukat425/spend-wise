@@ -2,61 +2,65 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { Button } from "./Button";
+import type { IconName } from "@/domain/types";
+import { spacing, typography } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 
-interface EmptyStateProps {
-  title: string;
-  message?: string;
-  icon?: keyof typeof Ionicons.glyphMap;
-}
-
 export function EmptyState({
-  title,
+  actionLabel,
+  body,
+  icon,
   message,
-  icon = "document-text-outline",
-}: EmptyStateProps) {
+  onAction,
+  title,
+}: {
+  actionLabel?: string;
+  body?: string;
+  icon?: IconName;
+  message?: string;
+  onAction?: () => void;
+  title: string;
+}) {
   const colors = useColors();
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
-        <Ionicons name={icon} size={32} color={colors.mutedForeground} />
-      </View>
-      <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
-      {message ? (
-        <Text style={[styles.message, { color: colors.mutedForeground }]}>
-          {message}
-        </Text>
+    <View style={styles.root}>
+      {icon ? (
+        <View style={[styles.iconWrap, { backgroundColor: colors.muted }]}>
+          <Ionicons color={colors.mutedForeground} name={icon} size={28} />
+        </View>
       ) : null}
+      <Text style={[styles.title, { color: colors.foreground }]}>{title}</Text>
+      <Text style={[styles.body, { color: colors.mutedForeground }]}>{body ?? message}</Text>
+      {actionLabel && onAction ? <Button onPress={onAction}>{actionLabel}</Button> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 48,
-    paddingHorizontal: 32,
+  body: {
+    ...typography.body,
+    lineHeight: 22,
+    marginBottom: spacing.lg,
+    textAlign: "center",
   },
   iconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    alignItems: "center",
+    borderRadius: 999,
+    height: 56,
+    justifyContent: "center",
+    marginBottom: spacing.lg,
+    width: 56,
+  },
+  root: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+    padding: spacing.xxl,
   },
   title: {
-    fontSize: 16,
-    fontFamily: "Inter_600SemiBold",
+    ...typography.title,
+    marginBottom: spacing.sm,
     textAlign: "center",
-    marginBottom: 8,
-  },
-  message: {
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    textAlign: "center",
-    lineHeight: 20,
   },
 });

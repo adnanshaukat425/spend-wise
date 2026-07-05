@@ -19,7 +19,7 @@ export async function waitForDataRefresh(pause = 1500): Promise<void> {
 export async function goBack(): Promise<void> {
   try {
     const backBtn = await $("~screen-back-btn");
-    if (await backBtn.isDisplayed()) {
+    if (await backBtn.isExisting()) {
       await backBtn.click();
       return;
     }

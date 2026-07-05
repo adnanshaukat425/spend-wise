@@ -3,7 +3,6 @@ import type {
   BudgetLineDto,
   BudgetSummaryDto,
   CategoryDto,
-  DashboardDto,
   InsightDto,
   NotificationDto,
   SpendingSegmentDto,
@@ -12,6 +11,7 @@ import type {
   UserProfileDto,
   WeeklySpendDto,
 } from "@/lib/api/types";
+import type { IconName } from "@/domain/types";
 import type {
   BudgetCategory,
   BudgetSummary,
@@ -23,274 +23,163 @@ import type {
   UserPreferences,
   UserProfile,
   WeeklySpend,
-  IconName,
 } from "@/data/types";
-import {
-  formatTransactionDate,
-  formatTransactionTime,
-  getCurrentMonthLabel,
-} from "@/lib/format";
+import { formatRelativeTransactionDate, formatTransactionTime, getCurrentMonthPeriod } from "@/domain/dates";
 
-const SEGMENT_COLORS = [
-  "#FF6B35",
-  "#8B5CF6",
-  "#3B82F6",
-  "#F59E0B",
-  "#EF4444",
-  "#9CA3AF",
-  "#10B981",
-  "#E07B39",
-];
+const SEGMENT_COLORS = ["#2E7D52", "#F59E0B", "#1976D2", "#E91E63", "#6B7280"];
 
-const ICON_KEY_MAP: Record<string, IconName> = {
-  restaurant: "restaurant-outline",
-  food: "restaurant-outline",
-  car: "car-outline",
-  transport: "car-outline",
-  bag: "bag-outline",
-  shopping: "bag-outline",
-  cafe: "cafe-outline",
-  coffee: "cafe-outline",
-  home: "home-outline",
-  flash: "flash-outline",
-  utilities: "flash-outline",
-  heart: "heart-outline",
-  health: "heart-outline",
-  airplane: "airplane-outline",
-  travel: "airplane-outline",
-  game: "game-controller-outline",
-  fun: "game-controller-outline",
-  school: "school-outline",
-  tv: "tv-outline",
-  bills: "tv-outline",
-  cart: "cart-outline",
-  trending: "trending-up-outline",
-  income: "trending-up-outline",
-  wallet: "wallet-outline",
-  card: "card-outline",
-  business: "business-outline",
-  laptop: "laptop-outline",
-  warning: "warning-outline",
-  bulb: "bulb-outline",
-  analytics: "analytics-outline",
-  trophy: "trophy-outline",
-  "bar-chart": "bar-chart-outline",
-  notifications: "notifications-outline",
-  sparkles: "sparkles-outline",
-};
-
-export function mapIconKey(iconKey: string): IconName {
-  const normalized = iconKey.replace(/-outline$/i, "").toLowerCase();
-  if (ICON_KEY_MAP[normalized]) {
-    return ICON_KEY_MAP[normalized];
-  }
-  const withOutline = `${normalized}-outline` as IconName;
-  return withOutline;
+function asIcon(name: string | undefined, fallback: IconName): IconName {
+  return (name ?? fallback) as IconName;
 }
 
-function signedAmount(dto: TransactionDto): number {
-  const raw = dto.amount;
-  if (dto.type?.toLowerCase() === "income") {
-    return Math.abs(raw);
-  }
-  if (dto.type?.toLowerCase() === "expense") {
-    return raw <= 0 ? raw : -Math.abs(raw);
-  }
-  return raw;
+export function defaultBudgetSummary(): BudgetSummary {
+  const period = getCurrentMonthPeriod();
+  return {
+    daysRemaining: 0,
+    monthLabel: period.label,
+    totalBudget: 0,
+    totalSpent: 0,
+  };
 }
 
 export function mapTransaction(dto: TransactionDto): Transaction {
-  const occurred = new Date(dto.occurredAt);
-  const amount = signedAmount(dto);
+  const date = new Date(dto.occurredAt ?? dto.createdAt ?? Date.now());
   return {
+    amount: dto.amount,
+    category: dto.categoryName ?? dto.categorySlug ?? "Uncategorized",
+    date: formatRelativeTransactionDate(date),
+    icon: asIcon(dto.categoryIconKey, dto.amount < 0 ? "card-outline" : "cash-outline"),
+    iconBg: dto.categoryIconBg ?? (dto.amount < 0 ? "#FEE2E2" : "#DCFCE7"),
+    iconColor: dto.categoryIconColor ?? (dto.amount < 0 ? "#B91C1C" : "#15803D"),
     id: dto.id,
-    name: dto.name,
-    category: dto.categoryName,
-    amount,
-    time: formatTransactionTime(occurred),
-    date: formatTransactionDate(occurred),
-    icon: mapIconKey(dto.categoryIconKey),
-    iconBg: dto.categoryIconBg,
-    iconColor: dto.categoryIconColor,
+    name: dto.name ?? dto.description ?? "Transaction",
     note: dto.note ?? undefined,
     receiptUri: dto.receiptUrl ?? undefined,
+    time: formatTransactionTime(date),
   };
 }
 
-export function mapSpendingSegment(
-  dto: SpendingSegmentDto,
-  colorIndex: number,
-): SpendingSegment {
+export function mapSpendingSegment(dto: SpendingSegmentDto, index = 0): SpendingSegment {
   return {
-    name: dto.categoryName,
     amount: dto.amount,
-    color: dto.iconColor || SEGMENT_COLORS[colorIndex % SEGMENT_COLORS.length],
-  };
-}
-
-export function mapBudgetCategory(line: BudgetLineDto): BudgetCategory {
-  return {
-    id: line.categoryId,
-    name: line.categoryName,
-    spent: line.spentAmount,
-    limit: line.limitAmount,
-    icon: mapIconKey(line.iconKey),
-    iconBg: line.iconBg,
-    iconColor: line.iconColor,
+    color: dto.color ?? SEGMENT_COLORS[index % SEGMENT_COLORS.length],
+    name: dto.name,
   };
 }
 
 export function mapBudgetSummary(dto: BudgetSummaryDto): BudgetSummary {
-  const now = new Date();
-  const isCurrentMonth =
-    dto.year === now.getFullYear() && dto.month === now.getMonth() + 1;
-  const lastDay = new Date(dto.year, dto.month, 0).getDate();
-  const daysRemaining = isCurrentMonth
-    ? Math.max(0, lastDay - now.getDate())
-    : 0;
-  const monthLabel = new Date(dto.year, dto.month - 1, 1).toLocaleDateString(
-    "en-US",
-    { month: "long", year: "numeric" },
-  );
-
   return {
-    totalBudget: dto.totalLimit,
+    daysRemaining: dto.daysRemaining ?? 0,
+    monthLabel: dto.monthLabel ?? getCurrentMonthPeriod().label,
+    totalBudget: dto.totalBudget ?? dto.totalLimit ?? 0,
     totalSpent: dto.totalSpent,
-    daysRemaining,
-    monthLabel,
   };
 }
 
-export function mapUserProfile(
-  dto: UserProfileDto,
-  dashboard?: DashboardDto | null,
-): UserProfile {
-  const tier = dto.subscriptionTier || "Free";
-  const plan =
-    tier.toLowerCase() === "free"
-      ? "Free Plan"
-      : tier.charAt(0).toUpperCase() + tier.slice(1).toLowerCase() + " Plan";
-
+export function mapBudgetCategory(dto: BudgetLineDto): BudgetCategory {
   return {
-    name: dto.displayName,
-    email: dto.email,
-    initials: dto.initials,
-    plan,
-    balance: dashboard?.balance ?? 0,
-    balanceChangePct: dashboard?.balanceChangePct ?? 0,
-    accountsConnected: dto.accountCount,
-    stats: {
-      transactions: dto.transactionCount,
-      categories: dashboard?.spendingByCategory?.length ?? 0,
-      saved: Math.max(
-        0,
-        (dashboard?.monthlyIncome ?? 0) - (dashboard?.monthlyExpenses ?? 0),
-      ),
-    },
+    icon: asIcon(dto.iconKey, "wallet-outline"),
+    iconBg: dto.iconBg ?? "#EEF9F2",
+    iconColor: dto.iconColor ?? "#2E7D52",
+    id: dto.categoryId,
+    limit: dto.limitAmount ?? dto.limit ?? 0,
+    name: dto.categoryName,
+    spent: dto.spent ?? dto.spentAmount ?? 0,
   };
 }
 
-export function mapPreferences(dto: UserPreferencesDto): UserPreferences {
+export function mapCategoryOption(dto: CategoryDto) {
   return {
-    notifications: dto.notificationsEnabled,
-    currency: dto.currencyCode,
+    categoryId: dto.id,
+    icon: asIcon(dto.iconKey ?? dto.icon, "pricetag-outline"),
+    id: dto.slug ?? dto.id,
+    label: dto.name,
+    name: dto.name,
+    slug: dto.slug,
+    type: dto.type,
   };
 }
 
 export function mapInsight(dto: InsightDto): Insight {
-  const type =
-    dto.type?.toLowerCase() === "alert"
-      ? "alert"
-      : dto.type?.toLowerCase() === "positive"
-        ? "positive"
-        : "tip";
-
-  const icon: IconName =
-    type === "alert"
-      ? "warning-outline"
-      : type === "positive"
-        ? "trending-up-outline"
-        : "bulb-outline";
-
-  const iconColor =
-    type === "alert" ? "#EF4444" : type === "positive" ? "#10B981" : "#F59E0B";
-  const bgColor =
-    type === "alert" ? "#FEE2E2" : type === "positive" ? "#D1FAE5" : "#FEF3C7";
-
+  const type = dto.type ?? "tip";
   return {
+    bgColor: type === "alert" ? "#FEF3C7" : type === "positive" ? "#DCFCE7" : "#E0F2FE",
+    body: dto.body ?? dto.message ?? "",
+    icon: asIcon(
+      dto.iconKey,
+      type === "alert" ? "warning-outline" : type === "positive" ? "trending-up-outline" : "bulb-outline",
+    ),
+    iconColor: type === "alert" ? "#D97706" : type === "positive" ? "#15803D" : "#0369A1",
     id: dto.id,
-    type,
+    tag: dto.tag ?? type.toUpperCase(),
     title: dto.title,
-    body: dto.description,
-    icon,
-    iconColor,
-    bgColor,
-    tag: dto.type ?? "Insight",
+    type,
   };
 }
 
 export function mapWeeklySpend(dto: WeeklySpendDto): WeeklySpend[] {
-  return dto.days.map((d) => ({ day: d.day, amount: d.amount }));
+  return (dto.days ?? dto.items ?? []).map((item) => ({
+    amount: item.amount,
+    day: item.day,
+  }));
 }
 
 export function mapNotification(dto: NotificationDto): Notification {
-  const created = new Date(dto.createdAt);
-  const now = new Date();
-  const diffMs = now.getTime() - created.getTime();
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  let time: string;
-  if (diffHours < 1) {
-    time = "Just now";
-  } else if (diffHours < 24) {
-    time = `${diffHours}h ago`;
-  } else if (diffHours < 48) {
-    time = "Yesterday";
-  } else {
-    const days = Math.floor(diffHours / 24);
-    time = `${days} days ago`;
-  }
-
+  const date = new Date(dto.createdAt ?? Date.now());
+  const read = dto.read ?? dto.isRead ?? false;
   return {
-    id: dto.id,
-    title: dto.title,
     body: dto.body,
-    time,
-    read: dto.isRead,
-    icon: mapIconKey(dto.iconKey),
-    iconColor: dto.iconColor,
-    iconBg: dto.iconBg,
+    icon: read ? "notifications-outline" : "notifications",
+    iconBg: read ? "#F3F4F6" : "#EEF9F2",
+    iconColor: read ? "#6B7280" : "#2E7D52",
+    id: dto.id,
+    read,
+    time: formatRelativeTransactionDate(date),
+    title: dto.title,
   };
 }
 
 export function mapAccount(dto: AccountDto): LinkedAccount {
   return {
-    id: dto.id,
-    name: dto.name,
-    type: dto.accountType,
     balance: dto.balance,
-    lastFour: dto.lastFourDigits,
-    icon: mapIconKey(dto.iconKey),
-    iconColor: dto.iconColor,
+    icon: asIcon(dto.iconKey, "card-outline"),
+    iconColor: dto.iconColor ?? "#2E7D52",
+    id: dto.id,
+    lastFour: dto.lastFourDigits ?? dto.lastFour ?? "",
+    name: dto.name,
+    type: dto.accountType ?? dto.type ?? "Account",
   };
 }
 
-export function mapCategoryOption(cat: CategoryDto) {
+export function mapPreferences(dto: UserPreferencesDto): UserPreferences {
   return {
-    id: cat.slug,
-    categoryId: cat.id,
-    slug: cat.slug,
-    label: cat.name,
-    icon: mapIconKey(cat.iconKey),
-    iconBg: cat.iconBg,
-    iconColor: cat.iconColor,
+    currency: dto.currencyCode,
+    notifications: dto.notificationsEnabled,
   };
 }
 
-export function defaultBudgetSummary(): BudgetSummary {
+export function mapUserProfile(dto: UserProfileDto, dashboard?: { balance?: number; balanceChangePct?: number }): UserProfile {
+  const name = dto.displayName ?? dto.name ?? "SpendWise User";
+  const initials = (dto.initials ?? name)
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return {
-    totalBudget: 0,
-    totalSpent: 0,
-    daysRemaining: 0,
-    monthLabel: getCurrentMonthLabel(),
+    accountsConnected: dto.accountsConnected ?? dto.accountCount ?? 0,
+    balance: dto.balance ?? dashboard?.balance ?? 0,
+    balanceChangePct: dto.balanceChangePct ?? dashboard?.balanceChangePct ?? 0,
+    email: dto.email,
+    initials: initials || "SW",
+    name,
+    plan: dto.plan ?? dto.subscriptionTier ?? "Free",
+    stats: {
+      categories: dto.categoryCount ?? 0,
+      saved: dto.savedAmount ?? 0,
+      transactions: dto.transactionCount ?? 0,
+    },
   };
 }

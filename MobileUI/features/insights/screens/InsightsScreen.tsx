@@ -11,7 +11,9 @@ import {
 } from "react-native";
 
 import { BarChart } from "@/components/charts/BarChart";
-import { useDashboard, useInsights, useWeeklySpend } from "@/hooks/api";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { ScreenLoading } from "@/components/ui/ScreenLoading";
+import { useDashboard, useInsights, useWeeklySpend } from "../api";
 import { formatCurrency } from "@/lib/format";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
@@ -20,9 +22,9 @@ export default function InsightsScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
-  const { data: insights = [] } = useInsights();
+  const { data: insights = [], isLoading: insightsLoading, isError: insightsError, error: insightsQueryError, refetch: refetchInsights } = useInsights();
   const { data: weeklySpend = [] } = useWeeklySpend();
-  const { data: dashboard } = useDashboard();
+  const { data: dashboard, isLoading: dashboardLoading, isError: dashboardError, error: dashboardQueryError, refetch: refetchDashboard } = useDashboard();
 
   const barData = useMemo(
     () => weeklySpend.map((d) => ({ label: d.day, value: d.amount })),
@@ -60,6 +62,22 @@ export default function InsightsScreen() {
       color: "#F59E0B",
     },
   ];
+
+  if (insightsLoading || dashboardLoading) {
+    return <ScreenLoading />;
+  }
+
+  if (insightsError || dashboardError) {
+    return (
+      <ErrorState
+        error={insightsQueryError ?? dashboardQueryError}
+        onRetry={() => {
+          void refetchInsights();
+          void refetchDashboard();
+        }}
+      />
+    );
+  }
 
   return (
     <ScrollView
