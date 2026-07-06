@@ -23,7 +23,8 @@ import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 
-import { useAccount, useCreateAccount, useUpdateAccount } from "../api";
+import { useAccount, useCreateAccount, useSetDefaultAccount, useUpdateAccount } from "../api";
+import { confirmSetDefaultAccount } from "../utils/accountActions";
 
 const ACCOUNT_TYPES = [
   { id: "checking", label: "Checking", icon: "wallet-outline" as const },
@@ -77,6 +78,7 @@ export default function AddAccountScreen() {
   const insets = useScreenInsets();
   const createAccount = useCreateAccount();
   const updateAccount = useUpdateAccount();
+  const setDefaultAccount = useSetDefaultAccount();
   const { data: account, isLoading, isError, error, refetch } = useAccount(accountId);
 
   const [name, setName] = useState("");
@@ -142,6 +144,22 @@ export default function AddAccountScreen() {
   const screenTitle = isEditMode ? "Edit Account" : "Add Account";
   const balanceLabel = isEditMode ? "Balance" : "Opening Balance";
   const saveLabel = saving ? "Saving..." : isEditMode ? "Save Changes" : "Add Account";
+
+  const handleSetAsDefault = () => {
+    if (!accountId || !account || account.isDefault || setDefaultAccount.isPending) return;
+
+    confirmSetDefaultAccount(account.name, async () => {
+      try {
+        await setDefaultAccount.mutateAsync(accountId);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } catch (err) {
+        Alert.alert(
+          "Could not update",
+          err instanceof Error ? err.message : "Something went wrong.",
+        );
+      }
+    });
+  };
 
   if (isEditMode && isLoading) {
     return (
@@ -306,6 +324,30 @@ export default function AddAccountScreen() {
               </TouchableOpacity>
             ))}
           </View>
+
+          {isEditMode && account?.isDefault ? (
+            <View style={[styles.defaultLabel, { backgroundColor: colors.secondary }]}>
+              <Ionicons name="star" size={16} color={colors.primary} />
+              <Text style={[styles.defaultLabelText, { color: colors.primary }]}>
+                Default account
+              </Text>
+            </View>
+          ) : null}
+
+          {isEditMode && account && !account.isDefault ? (
+            <TouchableOpacity
+              style={[styles.setDefaultBtn, { borderColor: colors.border }]}
+              onPress={handleSetAsDefault}
+              activeOpacity={0.7}
+              disabled={setDefaultAccount.isPending}
+              testID="account-set-default-btn"
+            >
+              <Ionicons name="star-outline" size={18} color={colors.primary} />
+              <Text style={[styles.setDefaultText, { color: colors.primary }]}>
+                Set as default account
+              </Text>
+            </TouchableOpacity>
+          ) : null}
         </ScrollView>
 
         <View
@@ -414,6 +456,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   scroll: { paddingHorizontal: spacing.xxl },
+  setDefaultBtn: {
+    alignItems: "center",
+    borderRadius: 14,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: spacing.sm,
+    justifyContent: "center",
+    marginTop: spacing.xl,
+    paddingVertical: spacing.lg,
+  },
+  setDefaultText: {
+    fontFamily: "Inter_500Medium",
+    fontSize: 14,
+  },
+  defaultLabel: {
+    alignItems: "center",
+    borderRadius: 14,
+    flexDirection: "row",
+    gap: spacing.sm,
+    justifyContent: "center",
+    marginTop: spacing.xl,
+    paddingVertical: spacing.md,
+  },
+  defaultLabelText: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 14,
+  },
   typeCard: {
     alignItems: "center",
     aspectRatio: 1,

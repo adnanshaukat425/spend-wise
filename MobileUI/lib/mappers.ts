@@ -149,6 +149,8 @@ export function mapAccount(dto: AccountDto): LinkedAccount {
     lastFour: dto.lastFourDigits ?? dto.lastFour ?? "",
     name: dto.name,
     type: dto.accountType ?? dto.type ?? "Account",
+    isDefault: dto.isDefault ?? false,
+    hasIncomeTransactions: dto.hasIncomeTransactions ?? false,
   };
 }
 

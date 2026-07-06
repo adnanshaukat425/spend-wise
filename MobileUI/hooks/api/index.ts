@@ -25,6 +25,7 @@ export {
   useAccount,
   useCreateAccount,
   useUpdateAccount,
+  useSetDefaultAccount,
   useDeleteAccount,
 } from "@/features/accounts/queries";
 export { useCategories } from "@/features/categories/queries";

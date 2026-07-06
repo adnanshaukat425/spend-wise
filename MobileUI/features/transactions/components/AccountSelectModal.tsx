@@ -115,7 +115,16 @@ export function AccountSelectModal({
                     <Ionicons name={account.icon} size={22} color={account.iconColor} />
                   </View>
                   <View style={styles.info}>
-                    <Text style={[styles.name, { color: colors.foreground }]}>{account.name}</Text>
+                    <View style={styles.nameRow}>
+                      <Text style={[styles.name, { color: colors.foreground }]}>{account.name}</Text>
+                      {account.isDefault ? (
+                        <View style={[styles.defaultBadge, { backgroundColor: colors.secondary }]}>
+                          <Text style={[styles.defaultBadgeText, { color: colors.primary }]}>
+                            Default
+                          </Text>
+                        </View>
+                      ) : null}
+                    </View>
                     <Text style={[styles.type, { color: colors.mutedForeground }]}>
                       {account.type} •••• {account.lastFour}
                     </Text>
@@ -203,6 +212,22 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: spacing.lg,
   },
+  defaultBadge: {
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  defaultBadgeText: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 10,
+  },
+  nameRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 2,
+  },
   manageBtn: {
     alignItems: "center",
     borderRadius: 14,
@@ -220,7 +245,6 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: "Inter_600SemiBold",
     fontSize: 15,
-    marginBottom: 2,
   },
   row: {
     alignItems: "center",

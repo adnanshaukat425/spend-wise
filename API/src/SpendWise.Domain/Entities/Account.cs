@@ -14,6 +14,7 @@ public class Account : AuditableEntity
     public string IconKey { get; set; } = string.Empty;
     public string IconColor { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
+    public bool IsDefault { get; set; }
 
     public ApplicationUser User { get; set; } = null!;
     public ICollection<MoneyTransaction> Transactions { get; set; } = [];

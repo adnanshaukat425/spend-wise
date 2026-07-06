@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
 import {
@@ -15,12 +16,18 @@ import { QueryScreenBoundary } from "@/components/ui/QueryScreenBoundary";
 import { Screen, ScreenScrollView } from "@/components/ui/Screen";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { spacing } from "@/constants/theme";
+import type { LinkedAccount } from "@/data/types";
 import { useColors } from "@/hooks/useColors";
 import { formatCurrency } from "@/lib/format";
 import { queryKeys } from "@/lib/query";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { useAccounts, useDeleteAccount } from "../queries";
+import { useAccounts, useDeleteAccount, useSetDefaultAccount } from "../queries";
+import {
+  confirmDeleteAccount,
+  confirmSetDefaultAccount,
+  getDefaultAccount,
+} from "../utils/accountActions";
 
 export default function AccountsScreen() {
   const router = useRouter();
@@ -28,28 +35,56 @@ export default function AccountsScreen() {
   const qc = useQueryClient();
   const accountsQuery = useAccounts();
   const deleteAccount = useDeleteAccount();
+  const setDefaultAccount = useSetDefaultAccount();
   const isDeleting = deleteAccount.isPending;
+  const isSettingDefault = setDefaultAccount.isPending;
 
   const handleRefresh = useCallback(() => {
     qc.invalidateQueries({ queryKey: queryKeys.accounts });
   }, [qc]);
 
+  const handleSetDefault = useCallback(
+    (account: LinkedAccount) => {
+      if (account.isDefault || setDefaultAccount.isPending) return;
+
+      confirmSetDefaultAccount(account.name, () => {
+        setDefaultAccount.mutate(account.id, {
+          onError: (err) => {
+            Alert.alert(
+              "Could not update",
+              err instanceof Error ? err.message : "Something went wrong.",
+            );
+          },
+        });
+      });
+    },
+    [setDefaultAccount],
+  );
+
   const handleDeleteAccount = useCallback(
-    (id: string, name: string) => {
+    (account: LinkedAccount, accounts: LinkedAccount[]) => {
       if (deleteAccount.isPending) return;
 
-      Alert.alert(
-        "Delete Account",
-        `Remove "${name}"? All associated data will be lost.`,
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Delete",
-            style: "destructive",
-            onPress: () => deleteAccount.mutate(id),
-          },
-        ],
-      );
+      const defaultAccount = getDefaultAccount(accounts);
+      if (!defaultAccount) return;
+
+      confirmDeleteAccount({
+        account,
+        defaultAccountName: defaultAccount.name,
+        onDelete: (transferIncome) => {
+          deleteAccount.mutate(
+            { id: account.id, transferIncome },
+            {
+              onError: (err) => {
+                Alert.alert(
+                  "Could not delete",
+                  err instanceof Error ? err.message : "Something went wrong.",
+                );
+              },
+            },
+          );
+        },
+      });
     },
     [deleteAccount],
   );
@@ -119,7 +154,7 @@ export default function AccountsScreen() {
                   activeOpacity={0.7}
                   testID={`account-row-${account.id}`}
                   onPress={() => router.push(`/account/${account.id}`)}
-                  onLongPress={() => handleDeleteAccount(account.id, account.name)}
+                  onLongPress={() => handleDeleteAccount(account, accounts)}
                   delayLongPress={600}
                   accessibilityHint="Tap to edit, long press to delete"
                 >
@@ -127,7 +162,19 @@ export default function AccountsScreen() {
                     <Ionicons name={account.icon} size={22} color={account.iconColor} />
                   </View>
                   <View style={styles.info}>
-                    <Text style={[styles.name, { color: colors.foreground }]}>{account.name}</Text>
+                    <View style={styles.nameRow}>
+                      <Text style={[styles.name, { color: colors.foreground }]}>{account.name}</Text>
+                      {account.isDefault ? (
+                        <View
+                          style={[styles.defaultBadge, { backgroundColor: colors.secondary }]}
+                          testID={`account-default-badge-${account.id}`}
+                        >
+                          <Text style={[styles.defaultBadgeText, { color: colors.primary }]}>
+                            Default
+                          </Text>
+                        </View>
+                      ) : null}
+                    </View>
                     <Text style={[styles.type, { color: colors.mutedForeground }]}>
                       {account.type} •••• {account.lastFour}
                     </Text>
@@ -142,9 +189,21 @@ export default function AccountsScreen() {
                   >
                     {formatCurrency(account.balance)}
                   </Text>
+                  {!account.isDefault ? (
+                    <TouchableOpacity
+                      testID={`account-set-default-btn-${account.id}`}
+                      onPress={() => handleSetDefault(account)}
+                      style={[styles.starBtn, isSettingDefault && styles.starBtnDisabled]}
+                      disabled={isSettingDefault}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Set ${account.name} as default`}
+                    >
+                      <Ionicons name="star-outline" size={18} color={colors.primary} />
+                    </TouchableOpacity>
+                  ) : null}
                   <TouchableOpacity
                     testID={`delete-account-btn-${account.id}`}
-                    onPress={() => handleDeleteAccount(account.id, account.name)}
+                    onPress={() => handleDeleteAccount(account, accounts)}
                     style={[styles.deleteBtn, isDeleting && styles.deleteBtnDisabled]}
                     disabled={isDeleting}
                     accessibilityRole="button"
@@ -201,6 +260,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: spacing.lg,
   },
+  defaultBadge: {
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  defaultBadgeText: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 10,
+  },
   deleteBtn: {
     marginLeft: spacing.xs,
     padding: 6,
@@ -225,11 +293,23 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: "Inter_600SemiBold",
     fontSize: 15,
+  },
+  nameRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
     marginBottom: 2,
   },
   scrollContent: {
     paddingBottom: spacing.xxl,
     paddingTop: 0,
+  },
+  starBtn: {
+    padding: 6,
+  },
+  starBtnDisabled: {
+    opacity: 0.4,
   },
   summary: {
     alignItems: "center",

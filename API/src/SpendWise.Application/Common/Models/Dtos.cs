@@ -40,6 +40,8 @@ public class AccountDto
     public string LastFourDigits { get; set; } = string.Empty;
     public string IconKey { get; set; } = string.Empty;
     public string IconColor { get; set; } = string.Empty;
+    public bool IsDefault { get; set; }
+    public bool HasIncomeTransactions { get; set; }
 }
 
 public class TransactionDto

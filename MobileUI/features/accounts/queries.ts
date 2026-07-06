@@ -50,10 +50,22 @@ export function useUpdateAccount() {
   });
 }
 
+export function useSetDefaultAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => accountsApi.setDefault(id),
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: queryKeys.account(id) });
+      invalidateFinancialQueries(qc);
+    },
+  });
+}
+
 export function useDeleteAccount() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => accountsApi.remove(id),
+    mutationFn: ({ id, transferIncome }: { id: string; transferIncome?: boolean }) =>
+      accountsApi.remove(id, transferIncome ?? false),
     onSuccess: () => {
       invalidateFinancialQueries(qc);
     },

@@ -91,6 +91,8 @@ export interface LinkedAccount {
   lastFour: string;
   icon: IconName;
   iconColor: string;
+  isDefault: boolean;
+  hasIncomeTransactions: boolean;
 }
 
 export interface UserPreferences {

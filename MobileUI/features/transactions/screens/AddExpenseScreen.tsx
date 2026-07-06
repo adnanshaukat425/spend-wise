@@ -71,8 +71,13 @@ export default function AddExpenseScreen() {
   }, [categories, prefillCategory, selectedCategory]);
 
   useEffect(() => {
-    if (accounts.length && !selectedAccountId) {
-      setSelectedAccountId(accounts[0].id);
+    if (!accounts.length) return;
+
+    const defaultAccount = accounts.find((a) => a.isDefault) ?? accounts[0];
+    const selectedStillExists = accounts.some((a) => a.id === selectedAccountId);
+
+    if (!selectedAccountId || !selectedStillExists) {
+      setSelectedAccountId(defaultAccount.id);
     }
   }, [accounts, selectedAccountId]);
 

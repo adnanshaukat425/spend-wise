@@ -38,6 +38,8 @@ export interface AccountDto {
   lastFourDigits?: string;
   iconKey?: string;
   iconColor?: string;
+  isDefault?: boolean;
+  hasIncomeTransactions?: boolean;
 }
 
 export interface CategoryDto {

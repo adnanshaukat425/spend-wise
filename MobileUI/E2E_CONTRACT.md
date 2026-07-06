@@ -52,6 +52,9 @@ Stable `testID` and accessibility identifiers used by UITests. **Do not rename**
 | `account-name-input` | Add / edit account form |
 | `account-balance-input` | Add / edit account balance |
 | `save-account-btn` | Save add / edit account |
+| `account-default-badge-{id}` | Default badge on account row |
+| `account-set-default-btn-{id}` | Set default action on list row |
+| `account-set-default-btn` | Set as default on edit account screen |
 
 ## Notifications
 

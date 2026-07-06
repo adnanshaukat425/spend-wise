@@ -41,6 +41,7 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.Property(a => a.Name).HasMaxLength(200).IsRequired();
         builder.Property(a => a.AccountType).HasConversion<string>().HasMaxLength(20);
         builder.Property(a => a.Balance).HasPrecision(18, 2);
+        builder.HasIndex(a => new { a.UserId, a.IsDefault });
         builder.HasOne(a => a.User).WithMany(u => u.Accounts).HasForeignKey(a => a.UserId);
     }
 }

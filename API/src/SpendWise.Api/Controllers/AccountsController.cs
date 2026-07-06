@@ -33,10 +33,13 @@ public class AccountsController : ControllerBase
             id, request.Name, request.AccountType, request.Balance,
             request.LastFourDigits, request.IconKey, request.IconColor));
 
+    [HttpPut("{id:guid}/default")]
+    public Task<AccountDto> SetDefault(Guid id) => _mediator.Send(new SetDefaultAccountCommand(id));
+
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, [FromQuery] bool transferIncome = false)
     {
-        await _mediator.Send(new DeleteAccountCommand(id));
+        await _mediator.Send(new DeleteAccountCommand(id, transferIncome));
         return NoContent();
     }
 }

@@ -150,7 +150,11 @@ export const accountsApi = {
     request<AccountDto>("POST", "/accounts", { body }),
   update: (id: string, body: UpdateAccountRequest) =>
     request<AccountDto>("PUT", `/accounts/${id}`, { body }),
-  remove: (id: string) => request<void>("DELETE", `/accounts/${id}`),
+  setDefault: (id: string) => request<AccountDto>("PUT", `/accounts/${id}/default`),
+  remove: (id: string, transferIncome = false) =>
+    request<void>("DELETE", `/accounts/${id}`, {
+      query: { transferIncome: transferIncome ? "true" : "false" },
+    }),
 };
 
 export const categoriesApi = {
