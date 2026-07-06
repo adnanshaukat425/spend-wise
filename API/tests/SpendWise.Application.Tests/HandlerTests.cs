@@ -99,6 +99,64 @@ public class HandlerTests
         Assert.Equal(1000m, dashboard.MonthlyIncome);
         Assert.Equal(50m, dashboard.MonthlyExpenses);
         Assert.Single(dashboard.SpendingByCategory);
+        Assert.Single(dashboard.SpendingByAccount);
+        Assert.Equal(50m, dashboard.SpendingByAccount[0].Amount);
+    }
+
+    [Fact]
+    public async Task GetDashboard_SpendingByAccount_GroupsAcrossMultipleAccounts()
+    {
+        var userId = Guid.NewGuid();
+        await using var provider = CreateProvider(services =>
+        {
+            services.AddSingleton<ICurrentUserService>(new StubCurrentUserService(userId));
+        });
+
+        var db = provider.GetRequiredService<IApplicationDbContext>();
+        await SeedUserWithAccountAsync(db, userId);
+
+        var checking = db.Accounts.First();
+        var savingsId = Guid.NewGuid();
+        db.Accounts.Add(new Account
+        {
+            Id = savingsId,
+            UserId = userId,
+            Name = "Savings",
+            AccountType = AccountType.Savings,
+            Balance = 500m,
+        });
+
+        var foodId = db.Categories.First(c => c.Slug == "food").Id;
+
+        db.Transactions.Add(new MoneyTransaction
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            AccountId = checking.Id,
+            CategoryId = foodId,
+            Name = "Lunch",
+            Amount = -30m,
+            OccurredAt = DateTime.UtcNow,
+        });
+        db.Transactions.Add(new MoneyTransaction
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            AccountId = savingsId,
+            CategoryId = foodId,
+            Name = "Groceries",
+            Amount = -20m,
+            OccurredAt = DateTime.UtcNow,
+        });
+        await db.SaveChangesAsync();
+
+        var mediator = provider.GetRequiredService<IMediator>();
+        var dashboard = await mediator.Send(new GetDashboardQuery());
+
+        Assert.Equal(50m, dashboard.MonthlyExpenses);
+        Assert.Equal(2, dashboard.SpendingByAccount.Count);
+        Assert.Contains(dashboard.SpendingByAccount, s => s.AccountName == "Checking" && s.Amount == 30m);
+        Assert.Contains(dashboard.SpendingByAccount, s => s.AccountName == "Savings" && s.Amount == 20m);
     }
 
     private static ServiceProvider CreateProvider(Action<IServiceCollection>? configure = null)

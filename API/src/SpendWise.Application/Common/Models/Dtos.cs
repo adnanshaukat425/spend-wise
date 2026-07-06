@@ -93,6 +93,7 @@ public class DashboardDto
     public decimal MonthlyIncome { get; set; }
     public decimal MonthlyExpenses { get; set; }
     public IReadOnlyList<SpendingSegmentDto> SpendingByCategory { get; set; } = [];
+    public IReadOnlyList<AccountSpendingSegmentDto> SpendingByAccount { get; set; } = [];
     public IReadOnlyList<TransactionDto> RecentTransactions { get; set; } = [];
     public BudgetSummaryDto? BudgetSummary { get; set; }
 }
@@ -103,6 +104,16 @@ public class SpendingSegmentDto
     public string CategoryName { get; set; } = string.Empty;
     public string IconKey { get; set; } = string.Empty;
     public string IconBg { get; set; } = string.Empty;
+    public string IconColor { get; set; } = string.Empty;
+    public decimal Amount { get; set; }
+    public decimal Percent { get; set; }
+}
+
+public class AccountSpendingSegmentDto
+{
+    public Guid AccountId { get; set; }
+    public string AccountName { get; set; } = string.Empty;
+    public string IconKey { get; set; } = string.Empty;
     public string IconColor { get; set; } = string.Empty;
     public decimal Amount { get; set; }
     public decimal Percent { get; set; }

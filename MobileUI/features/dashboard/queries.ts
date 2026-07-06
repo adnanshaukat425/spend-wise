@@ -4,6 +4,7 @@ import { dashboardApi } from "@/lib/api";
 import { queryKeys } from "@/lib/query";
 import {
   defaultBudgetSummary,
+  mapAccountSpendingSegment,
   mapBudgetCategory,
   mapBudgetSummary,
   mapSpendingSegment,
@@ -25,6 +26,9 @@ export function useDashboard() {
         monthlyExpenses: data.monthlyExpenses,
         spendingByCategory: data.spendingByCategory.map((s, i) =>
           mapSpendingSegment(s, i),
+        ),
+        spendingByAccount: (data.spendingByAccount ?? []).map((s, i) =>
+          mapAccountSpendingSegment(s, i),
         ),
         recentTransactions: data.recentTransactions.map(mapTransaction),
         budgetSummary: data.budgetSummary

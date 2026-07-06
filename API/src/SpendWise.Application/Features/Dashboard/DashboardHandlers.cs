@@ -78,6 +78,32 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Dashb
             })
             .ToList();
 
+        var accountSpendingRaw = await _db.Transactions
+            .Where(t => t.UserId == userId && t.OccurredAt >= start && t.OccurredAt < end && t.Amount < 0)
+            .GroupBy(t => new { t.AccountId, t.Account.Name, t.Account.IconKey, t.Account.IconColor })
+            .Select(g => new
+            {
+                g.Key.AccountId,
+                g.Key.Name,
+                g.Key.IconKey,
+                g.Key.IconColor,
+                Amount = g.Sum(t => Math.Abs(t.Amount)),
+            })
+            .ToListAsync(cancellationToken);
+
+        var accountSegments = accountSpendingRaw
+            .OrderByDescending(s => s.Amount)
+            .Select(s => new AccountSpendingSegmentDto
+            {
+                AccountId = s.AccountId,
+                AccountName = s.Name,
+                IconKey = s.IconKey,
+                IconColor = s.IconColor,
+                Amount = s.Amount,
+                Percent = totalSpend > 0 ? Math.Round(s.Amount / totalSpend * 100, 1) : 0,
+            })
+            .ToList();
+
         var recent = await _db.Transactions
             .Include(t => t.Category)
             .Include(t => t.Account)
@@ -101,6 +127,7 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Dashb
             MonthlyIncome = monthlyIncome,
             MonthlyExpenses = monthlyExpenses,
             SpendingByCategory = segments,
+            SpendingByAccount = accountSegments,
             RecentTransactions = recent.Select(TransactionMapper.ToDto).ToList(),
             BudgetSummary = budgetSummary,
         };

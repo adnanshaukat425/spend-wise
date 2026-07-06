@@ -12,6 +12,8 @@ export interface Transaction {
   icon: IconName;
   iconBg: string;
   iconColor: string;
+  accountId?: string;
+  accountName?: string;
   note?: string;
   receiptUri?: string;
   isUserAdded?: boolean;

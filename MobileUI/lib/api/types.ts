@@ -119,12 +119,22 @@ export interface SpendingSegmentDto {
   percent?: number;
 }
 
+export interface AccountSpendingSegmentDto {
+  accountId: string;
+  accountName: string;
+  iconKey?: string;
+  iconColor?: string;
+  amount: number;
+  percent?: number;
+}
+
 export interface DashboardDto {
   balance: number;
   balanceChangePct: number;
   monthlyIncome: number;
   monthlyExpenses: number;
   spendingByCategory: SpendingSegmentDto[];
+  spendingByAccount: AccountSpendingSegmentDto[];
   recentTransactions: TransactionDto[];
   budgetSummary?: BudgetSummaryDto | null;
 }

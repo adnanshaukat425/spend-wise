@@ -192,6 +192,7 @@ export default function TransactionDetailScreen() {
           <DetailRow label="Date" value={tx.date} colors={colors} />
           <DetailRow label="Time" value={tx.time} colors={colors} />
           <DetailRow label="Type" value={isIncome ? "Income" : "Expense"} colors={colors} />
+          <DetailRow label="Account" value={tx.accountName ?? "—"} colors={colors} />
 
           {/* Note — editable in edit mode */}
           <View style={styles.detailRow}>

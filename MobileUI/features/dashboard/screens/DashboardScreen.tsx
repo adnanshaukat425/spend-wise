@@ -1,18 +1,15 @@
 import { useRouter, type Href } from "expo-router";
 import React from "react";
-import { RefreshControl, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 
-import { DonutChart } from "@/components/charts/DonutChart";
-import { Card } from "@/components/ui/Card";
 import { QueryScreenBoundary } from "@/components/ui/QueryScreenBoundary";
 import { ScreenLoading } from "@/components/ui/ScreenLoading";
 import { ScreenScrollView } from "@/components/ui/Screen";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { useAuth } from "@/contexts/AuthContext";
-import { spacing, typography } from "@/constants/theme";
+import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
-import { formatCurrency } from "@/lib/format";
 import { defaultBudgetSummary, mapUserProfile } from "@/lib/mappers";
 import { queryKeys } from "@/lib/query";
 import { useQueryClient } from "@tanstack/react-query";
@@ -22,6 +19,7 @@ import { useAccounts } from "@/features/accounts/queries";
 import { DashboardHero } from "../components/DashboardHero";
 import { DashboardMetrics } from "../components/DashboardMetrics";
 import { RecentTransactions } from "../components/RecentTransactions";
+import { SpendingDonutCard } from "../components/SpendingDonutCard";
 import { useDashboard } from "../queries";
 
 export default function DashboardScreen() {
@@ -68,10 +66,13 @@ function DashboardScreenBody({
     accountsConnected: accounts.length,
   };
   const spendingByCategory = data.spendingByCategory;
+  const spendingByAccount = data.spendingByAccount;
   const recentTransactions = data.recentTransactions;
   const hasUnreadNotifications = notifications.some((notification) => !notification.read);
   const budgetSummary = data.budgetSummary ?? defaultBudgetSummary();
-  const totalSpent = spendingByCategory.reduce((sum, category) => sum + category.amount, 0);
+  const totalSpentByCategory = spendingByCategory.reduce((sum, category) => sum + category.amount, 0);
+  const totalSpentByAccount = spendingByAccount.reduce((sum, account) => sum + account.amount, 0);
+  const showAccountChart = accounts.length > 1;
 
   const handleRefresh = React.useCallback(() => {
     qc.invalidateQueries({ queryKey: queryKeys.dashboard });
@@ -116,32 +117,15 @@ function DashboardScreenBody({
           title="Spending by Category"
         />
 
-        <Card style={styles.chartCard}>
-          <View style={styles.chartRow}>
-            <DonutChart
-              centerLabel="Total"
-              centerValue={formatCurrency(totalSpent, { compact: true })}
-              segments={spendingByCategory}
-              size={140}
-            />
-            <View style={styles.legendGrid}>
-              {spendingByCategory.map((category) => (
-                <View key={category.id} style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: category.color }]} />
-                  <View>
-                    <Text style={[styles.legendName, { color: colors.foreground }]}>
-                      {category.name}
-                    </Text>
-                    <Text style={[styles.legendAmount, { color: colors.mutedForeground }]}>
-                      {formatCurrency(category.amount, { compact: true })}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </Card>
+        <SpendingDonutCard segments={spendingByCategory} total={totalSpentByCategory} />
       </View>
+
+      {showAccountChart ? (
+        <View style={styles.section}>
+          <SectionHeader title="Spending by Account" />
+          <SpendingDonutCard segments={spendingByAccount} total={totalSpentByAccount} />
+        </View>
+      ) : null}
 
       <RecentTransactions transactions={recentTransactions} />
     </ScreenScrollView>
@@ -149,42 +133,10 @@ function DashboardScreenBody({
 }
 
 const styles = StyleSheet.create({
-  chartCard: {
-    overflow: "hidden",
-  },
-  chartRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.md,
-  },
   heroShell: {
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
     marginBottom: spacing.xl,
-  },
-  legendAmount: {
-    ...typography.caption,
-  },
-  legendDot: {
-    borderRadius: 4,
-    height: 8,
-    marginTop: 3,
-    width: 8,
-  },
-  legendGrid: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  legendItem: {
-    alignItems: "flex-start",
-    flexDirection: "row",
-    gap: 6,
-    width: "46%",
-  },
-  legendName: {
-    ...typography.label,
   },
   section: {
     marginBottom: spacing.xl,

@@ -1,5 +1,6 @@
 import type {
   AccountDto,
+  AccountSpendingSegmentDto,
   BudgetLineDto,
   BudgetSummaryDto,
   CategoryDto,
@@ -45,6 +46,8 @@ export function defaultBudgetSummary(): BudgetSummary {
 export function mapTransaction(dto: TransactionDto): Transaction {
   const date = new Date(dto.occurredAt ?? dto.createdAt ?? Date.now());
   return {
+    accountId: dto.accountId,
+    accountName: dto.accountName,
     amount: dto.amount,
     category: dto.categoryName ?? dto.categorySlug ?? "Uncategorized",
     date: formatRelativeTransactionDate(date),
@@ -65,6 +68,18 @@ export function mapSpendingSegment(dto: SpendingSegmentDto, index = 0): Spending
     amount: dto.amount,
     color: dto.iconColor ?? SEGMENT_COLORS[index % SEGMENT_COLORS.length],
     name: dto.categoryName || dto.categorySlug || "Uncategorized",
+  };
+}
+
+export function mapAccountSpendingSegment(
+  dto: AccountSpendingSegmentDto,
+  index = 0,
+): SpendingSegment {
+  return {
+    id: dto.accountId || `account-segment-${index}`,
+    amount: dto.amount,
+    color: dto.iconColor ?? SEGMENT_COLORS[index % SEGMENT_COLORS.length],
+    name: dto.accountName || "Account",
   };
 }
 

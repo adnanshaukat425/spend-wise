@@ -19,6 +19,12 @@ export const TransactionRow = memo(function TransactionRow({
 }: TransactionRowProps) {
   const colors = useColors();
   const isIncome = transaction.amount > 0;
+  const subtitle = transaction.accountName
+    ? `${transaction.category} · ${transaction.accountName}`
+    : transaction.category;
+  const accessibilityLabel = transaction.accountName
+    ? `${transaction.name}, ${transaction.category}, ${transaction.accountName}`
+    : `${transaction.name}, ${transaction.category}`;
 
   return (
     <TouchableOpacity
@@ -27,7 +33,7 @@ export const TransactionRow = memo(function TransactionRow({
       onPress={onPress}
       disabled={!onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${transaction.name}, ${transaction.category}`}
+      accessibilityLabel={accessibilityLabel}
       testID={`transaction-row-${transaction.id}`}
     >
       <View style={[styles.icon, { backgroundColor: transaction.iconBg }]}>
@@ -42,7 +48,7 @@ export const TransactionRow = memo(function TransactionRow({
           {transaction.name}
         </Text>
         <Text style={[styles.category, { color: colors.mutedForeground }]}>
-          {transaction.category}
+          {subtitle}
         </Text>
       </View>
       <View style={styles.right}>

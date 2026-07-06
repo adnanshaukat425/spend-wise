@@ -64,6 +64,7 @@ export default function ExpensesScreen() {
       (t) =>
         t.name.toLowerCase().includes(q) ||
         t.category.toLowerCase().includes(q) ||
+        t.accountName?.toLowerCase().includes(q) ||
         t.note?.toLowerCase().includes(q),
     );
   }, [transactions, searchQuery]);
