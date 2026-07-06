@@ -13,7 +13,7 @@ class AddAccountPage extends BasePage {
     return this.el("save-account-btn");
   }
 
-  accountTypeBtn(type: "checking" | "savings" | "credit" | "investment") {
+  accountTypeBtn(type: "checking" | "savings" | "credit") {
     return this.el(`account-type-${type}`);
   }
 
@@ -35,7 +35,7 @@ class AddAccountPage extends BasePage {
     await this.dismissKeyboard();
   }
 
-  async selectType(type: "checking" | "savings" | "credit" | "investment") {
+  async selectType(type: "checking" | "savings" | "credit") {
     await this.tap(`account-type-${type}`);
   }
 

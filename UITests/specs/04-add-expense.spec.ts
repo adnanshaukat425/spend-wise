@@ -60,6 +60,23 @@ describe("Add Expense", () => {
     expect(value).toContain("Coffee");
   });
 
+  it("should open the account select modal when tapping the account field", async () => {
+    await AddExpensePage.openAccountPicker();
+    await AddExpensePage.waitForAccountSelectModal();
+    expect(await AddExpensePage.accountSelectModal.isDisplayed()).toBe(true);
+    await AddExpensePage.closeAccountSelectModal();
+  });
+
+  it("should select an account from the modal without leaving add expense", async () => {
+    await AddExpensePage.openAccountPicker();
+    await AddExpensePage.waitForAccountSelectModal();
+    await AddExpensePage.selectFirstAccount();
+    await waitForDataRefresh(500);
+    expect(await AddExpensePage.isOnScreen()).toBe(true);
+    const modalVisible = await AddExpensePage.accountSelectModal.isDisplayed().catch(() => false);
+    expect(modalVisible).toBe(false);
+  });
+
   it("should submit the expense and close the modal", async () => {
     // Ensure a valid amount is entered
     await AddExpensePage.enterAmount("12.50");

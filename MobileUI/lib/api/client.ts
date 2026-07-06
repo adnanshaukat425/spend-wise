@@ -13,6 +13,7 @@ import type {
   ParseVoiceResponse,
   SubscriptionPlanDto,
   TransactionDto,
+  UpdateAccountRequest,
   UpdateTransactionRequest,
   UserPreferencesDto,
   UserProfileDto,
@@ -144,8 +145,11 @@ export const usersApi = {
 
 export const accountsApi = {
   list: () => request<AccountDto[]>("GET", "/accounts"),
+  get: (id: string) => request<AccountDto>("GET", `/accounts/${id}`),
   create: (body: CreateAccountRequest) =>
     request<AccountDto>("POST", "/accounts", { body }),
+  update: (id: string, body: UpdateAccountRequest) =>
+    request<AccountDto>("PUT", `/accounts/${id}`, { body }),
   remove: (id: string) => request<void>("DELETE", `/accounts/${id}`),
 };
 

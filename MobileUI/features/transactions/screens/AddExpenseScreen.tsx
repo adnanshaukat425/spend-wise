@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter, type Href } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -17,6 +17,7 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 
+import { AccountSelectModal } from "../components/AccountSelectModal";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { expenseSchema } from "../validation";
 import {
@@ -51,6 +52,7 @@ export default function AddExpenseScreen() {
   const [receiptUri, setReceiptUri] = useState<string | undefined>();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [accountModalVisible, setAccountModalVisible] = useState(false);
 
   useEffect(() => {
     if (!categories.length) return;
@@ -204,7 +206,7 @@ export default function AddExpenseScreen() {
           onCategorySelect={setSelectedCategory}
           categories={categories}
           selectedAccount={selectedAccount}
-          onAccountPress={() => router.push("/accounts" as Href)}
+          onAccountPress={() => setAccountModalVisible(true)}
           selectedTags={selectedTags}
           onToggleTag={toggleTag}
           receiptUri={receiptUri}
@@ -215,6 +217,14 @@ export default function AddExpenseScreen() {
           onSave={handleSave}
         />
       </KeyboardAvoidingView>
+
+      <AccountSelectModal
+        visible={accountModalVisible}
+        accounts={accounts}
+        selectedAccountId={selectedAccountId}
+        onSelect={setSelectedAccountId}
+        onClose={() => setAccountModalVisible(false)}
+      />
     </Screen>
   );
 }

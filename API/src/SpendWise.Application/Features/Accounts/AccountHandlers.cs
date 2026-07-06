@@ -105,6 +105,102 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
     }
 }
 
+public record GetAccountQuery(Guid Id) : IRequest<AccountDto>;
+
+public class GetAccountQueryHandler : IRequestHandler<GetAccountQuery, AccountDto>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUserService _currentUser;
+
+    public GetAccountQueryHandler(IApplicationDbContext db, ICurrentUserService currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
+
+    public async Task<AccountDto> Handle(GetAccountQuery request, CancellationToken cancellationToken)
+    {
+        var userId = _currentUser.UserId
+            ?? throw new Common.Exceptions.UnauthorizedException("Not authenticated.");
+
+        var account = await _db.Accounts.FirstOrDefaultAsync(
+            a => a.Id == request.Id && a.UserId == userId && a.IsActive, cancellationToken)
+            ?? throw new Common.Exceptions.NotFoundException("Account not found.");
+
+        return new AccountDto
+        {
+            Id = account.Id,
+            Name = account.Name,
+            AccountType = account.AccountType.ToString(),
+            Balance = account.Balance,
+            LastFourDigits = account.LastFourDigits,
+            IconKey = account.IconKey,
+            IconColor = account.IconColor,
+        };
+    }
+}
+
+public record UpdateAccountCommand(
+    Guid Id,
+    string Name,
+    string AccountType,
+    decimal Balance,
+    string LastFourDigits,
+    string IconKey,
+    string IconColor) : IRequest<AccountDto>;
+
+public class UpdateAccountCommandValidator : AbstractValidator<UpdateAccountCommand>
+{
+    public UpdateAccountCommandValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.AccountType).Must(t => Enum.TryParse<AccountType>(t, true, out _));
+        RuleFor(x => x.LastFourDigits).MaximumLength(4);
+    }
+}
+
+public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, AccountDto>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUserService _currentUser;
+
+    public UpdateAccountCommandHandler(IApplicationDbContext db, ICurrentUserService currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
+
+    public async Task<AccountDto> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
+    {
+        var userId = _currentUser.UserId
+            ?? throw new Common.Exceptions.UnauthorizedException("Not authenticated.");
+
+        var account = await _db.Accounts.FirstOrDefaultAsync(
+            a => a.Id == request.Id && a.UserId == userId && a.IsActive, cancellationToken)
+            ?? throw new Common.Exceptions.NotFoundException("Account not found.");
+
+        account.Name = request.Name;
+        account.AccountType = Enum.Parse<AccountType>(request.AccountType, true);
+        account.Balance = request.Balance;
+        account.LastFourDigits = request.LastFourDigits;
+        account.IconKey = request.IconKey;
+        account.IconColor = request.IconColor;
+
+        await _db.SaveChangesAsync(cancellationToken);
+
+        return new AccountDto
+        {
+            Id = account.Id,
+            Name = account.Name,
+            AccountType = account.AccountType.ToString(),
+            Balance = account.Balance,
+            LastFourDigits = account.LastFourDigits,
+            IconKey = account.IconKey,
+            IconColor = account.IconColor,
+        };
+    }
+}
+
 public record DeleteAccountCommand(Guid Id) : IRequest;
 
 public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand>

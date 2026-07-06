@@ -22,7 +22,9 @@ export {
 } from "@/features/budget/queries";
 export {
   useAccounts,
+  useAccount,
   useCreateAccount,
+  useUpdateAccount,
   useDeleteAccount,
 } from "@/features/accounts/queries";
 export { useCategories } from "@/features/categories/queries";

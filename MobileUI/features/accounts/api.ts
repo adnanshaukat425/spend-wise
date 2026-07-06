@@ -1,1 +1,1 @@
-export { useAccounts, useCreateAccount, useDeleteAccount } from "./queries";
+export { useAccounts, useAccount, useCreateAccount, useUpdateAccount, useDeleteAccount } from "./queries";

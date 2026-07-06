@@ -13,6 +13,50 @@ class AddExpensePage extends BasePage {
     return this.el("add-expense-submit-btn");
   }
 
+  get accountPicker() {
+    return this.el("account-picker");
+  }
+
+  get accountSelectModal() {
+    return this.el("account-select-modal");
+  }
+
+  accountSelectRow(id: string) {
+    return this.el(`account-select-row-${id}`);
+  }
+
+  async openAccountPicker() {
+    const picker = this.accountPicker;
+    const emptyPicker = this.el("account-picker-empty");
+    const hasPicker = await picker.isExisting().catch(() => false);
+    if (hasPicker) {
+      await picker.click();
+      return;
+    }
+    await emptyPicker.waitForDisplayed({ timeout: 10000 });
+    await emptyPicker.click();
+  }
+
+  async waitForAccountSelectModal(timeout = 10000) {
+    await this.accountSelectModal.waitForDisplayed({ timeout });
+  }
+
+  async getAccountSelectRows() {
+    return $$('-ios predicate string:name BEGINSWITH "account-select-row-"');
+  }
+
+  async selectFirstAccount() {
+    const rows = await this.getAccountSelectRows();
+    if (rows.length === 0) {
+      throw new Error("No account rows found in select modal");
+    }
+    await rows[0].click();
+  }
+
+  async closeAccountSelectModal() {
+    await this.tap("account-select-close-btn");
+  }
+
   async waitForLoad(timeout = 20000) {
     await this.amountInput.waitForDisplayed({ timeout });
   }

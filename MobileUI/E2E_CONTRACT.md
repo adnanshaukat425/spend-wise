@@ -34,15 +34,24 @@ Stable `testID` and accessibility identifiers used by UITests. **Do not rename**
 | `transaction-search-input` | Expenses search |
 | `transaction-row-{id}` | `TransactionRow` |
 | `add-expense-submit` | Add expense form |
+| `account-picker` | Add expense account field |
+| `account-picker-empty` | Add expense account field (no accounts) |
+| `account-select-modal` | Account select modal root |
+| `account-select-row-{id}` | Selectable account row in modal |
+| `account-select-close-btn` | Close account select modal |
+| `account-select-manage-btn` | Manage accounts link in modal |
 
 ## Accounts
 
 | testID | Element |
 |--------|---------|
 | `accounts-total-balance` | Summary card |
-| `account-row-{id}` | Account list row |
+| `account-row-{id}` | Account list row (tap to edit) |
 | `delete-account-btn-{id}` | Delete button |
 | `add-account-btn` | Connect new account |
+| `account-name-input` | Add / edit account form |
+| `account-balance-input` | Add / edit account balance |
+| `save-account-btn` | Save add / edit account |
 
 ## Notifications
 

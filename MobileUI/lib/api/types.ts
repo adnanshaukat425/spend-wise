@@ -195,6 +195,15 @@ export interface CreateAccountRequest {
   iconColor?: string;
 }
 
+export interface UpdateAccountRequest {
+  name: string;
+  accountType?: string;
+  balance?: number;
+  lastFourDigits?: string;
+  iconKey?: string;
+  iconColor?: string;
+}
+
 export interface PagedResult<T> {
   items: T[];
   totalCount: number;

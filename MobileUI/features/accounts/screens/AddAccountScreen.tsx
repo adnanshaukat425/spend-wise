@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -15,19 +15,20 @@ import {
 } from "react-native";
 import { z } from "zod";
 
+import { ErrorState } from "@/components/ui/ErrorState";
 import { Screen } from "@/components/ui/Screen";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { ScreenLoading } from "@/components/ui/ScreenLoading";
 import { spacing } from "@/constants/theme";
 import { useColors } from "@/hooks/useColors";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 
-import { useCreateAccount } from "../api";
+import { useAccount, useCreateAccount, useUpdateAccount } from "../api";
 
 const ACCOUNT_TYPES = [
   { id: "checking", label: "Checking", icon: "wallet-outline" as const },
   { id: "savings", label: "Savings", icon: "save-outline" as const },
   { id: "credit", label: "Credit", icon: "card-outline" as const },
-  { id: "investment", label: "Investment", icon: "trending-up-outline" as const },
 ] as const;
 
 const ICON_COLORS = [
@@ -45,7 +46,6 @@ const ICON_KEY_BY_TYPE: Record<string, string> = {
   checking: "wallet",
   savings: "save",
   credit: "card",
-  investment: "trending-up",
 };
 
 const schema = z.object({
@@ -62,11 +62,22 @@ const schema = z.object({
     .regex(/^\d{0,4}$/, "Digits only"),
 });
 
+function formatLastFourForInput(value: string): string {
+  const trimmed = value.replace(/^0+/, "");
+  return trimmed === "" ? "" : trimmed;
+}
+
 export default function AddAccountScreen() {
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const accountId = typeof id === "string" ? id : undefined;
+  const isEditMode = Boolean(accountId);
+
   const router = useRouter();
   const colors = useColors();
   const insets = useScreenInsets();
   const createAccount = useCreateAccount();
+  const updateAccount = useUpdateAccount();
+  const { data: account, isLoading, isError, error, refetch } = useAccount(accountId);
 
   const [name, setName] = useState("");
   const [accountType, setAccountType] = useState<string>("checking");
@@ -75,6 +86,16 @@ export default function AddAccountScreen() {
   const [iconColor, setIconColor] = useState(ICON_COLORS[0].color);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!isEditMode || !account) return;
+
+    setName(account.name);
+    setAccountType(account.type.toLowerCase());
+    setBalance(String(account.balance));
+    setLastFour(formatLastFourForInput(account.lastFour));
+    setIconColor(account.iconColor);
+  }, [isEditMode, account]);
 
   const handleSave = async () => {
     const parsed = schema.safeParse({ name, accountType, balance, lastFourDigits: lastFour });
@@ -88,17 +109,23 @@ export default function AddAccountScreen() {
       return;
     }
 
+    const payload = {
+      name: name.trim(),
+      accountType,
+      balance: balance === "" ? 0 : parseFloat(balance),
+      lastFourDigits: lastFour.padStart(4, "0"),
+      iconKey: ICON_KEY_BY_TYPE[accountType] ?? "wallet",
+      iconColor,
+    };
+
     setErrors({});
     setSaving(true);
     try {
-      await createAccount.mutateAsync({
-        name: name.trim(),
-        accountType,
-        balance: balance === "" ? 0 : parseFloat(balance),
-        lastFourDigits: lastFour.padStart(4, "0"),
-        iconKey: ICON_KEY_BY_TYPE[accountType] ?? "wallet",
-        iconColor,
-      });
+      if (isEditMode && accountId) {
+        await updateAccount.mutateAsync({ id: accountId, body: payload });
+      } else {
+        await createAccount.mutateAsync(payload);
+      }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.back();
     } catch (err) {
@@ -112,11 +139,40 @@ export default function AddAccountScreen() {
   };
 
   const isValid = name.trim().length > 0 && accountType.length > 0;
+  const screenTitle = isEditMode ? "Edit Account" : "Add Account";
+  const balanceLabel = isEditMode ? "Balance" : "Opening Balance";
+  const saveLabel = saving ? "Saving..." : isEditMode ? "Save Changes" : "Add Account";
+
+  if (isEditMode && isLoading) {
+    return (
+      <Screen padded={false}>
+        <View style={styles.headerWrap}>
+          <ScreenHeader onBack={() => router.back()} title={screenTitle} />
+        </View>
+        <ScreenLoading label="Loading account" />
+      </Screen>
+    );
+  }
+
+  if (isEditMode && !isLoading && (isError || !account)) {
+    return (
+      <Screen padded={false}>
+        <View style={styles.headerWrap}>
+          <ScreenHeader onBack={() => router.back()} title={screenTitle} />
+        </View>
+        <ErrorState
+          error={error ?? new Error("Could not load this account.")}
+          onRetry={() => refetch()}
+          title="Could not load account"
+        />
+      </Screen>
+    );
+  }
 
   return (
     <Screen padded={false}>
       <View style={styles.headerWrap}>
-        <ScreenHeader onBack={() => router.back()} title="Add Account" />
+        <ScreenHeader onBack={() => router.back()} title={screenTitle} />
       </View>
 
       <KeyboardAvoidingView
@@ -188,7 +244,7 @@ export default function AddAccountScreen() {
             })}
           </View>
 
-          <Text style={[styles.label, { color: colors.foreground }]}>Opening Balance</Text>
+          <Text style={[styles.label, { color: colors.foreground }]}>{balanceLabel}</Text>
           <View style={[styles.amountField, { backgroundColor: colors.muted }]}>
             <Text style={[styles.currencySymbol, { color: colors.mutedForeground }]}>$</Text>
             <TextInput
@@ -276,7 +332,7 @@ export default function AddAccountScreen() {
             accessibilityLabel="Save account"
             testID="save-account-btn"
           >
-            <Text style={styles.saveBtnText}>{saving ? "Saving..." : "Add Account"}</Text>
+            <Text style={styles.saveBtnText}>{saveLabel}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

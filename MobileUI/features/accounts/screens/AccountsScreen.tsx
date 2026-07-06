@@ -118,9 +118,10 @@ export default function AccountsScreen() {
                   style={[styles.card, { backgroundColor: colors.card }]}
                   activeOpacity={0.7}
                   testID={`account-row-${account.id}`}
+                  onPress={() => router.push(`/account/${account.id}`)}
                   onLongPress={() => handleDeleteAccount(account.id, account.name)}
                   delayLongPress={600}
-                  accessibilityHint="Long press to delete"
+                  accessibilityHint="Tap to edit, long press to delete"
                 >
                   <View style={[styles.iconWrap, { backgroundColor: colors.secondary }]}>
                     <Ionicons name={account.icon} size={22} color={account.iconColor} />

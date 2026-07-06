@@ -17,6 +17,7 @@ import { defaultBudgetSummary, mapUserProfile } from "@/lib/mappers";
 import { queryKeys } from "@/lib/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/features/notifications/queries";
+import { useAccounts } from "@/features/accounts/queries";
 
 import { DashboardHero } from "../components/DashboardHero";
 import { DashboardMetrics } from "../components/DashboardMetrics";
@@ -60,8 +61,12 @@ function DashboardScreenBody({
   const insets = useScreenInsets();
   const qc = useQueryClient();
   const { data: notifications = [] } = useNotifications();
+  const { data: accounts = [] } = useAccounts();
 
-  const user = mapUserProfile(authUser, data.raw);
+  const user = {
+    ...mapUserProfile(authUser, data.raw),
+    accountsConnected: accounts.length,
+  };
   const spendingByCategory = data.spendingByCategory;
   const recentTransactions = data.recentTransactions;
   const hasUnreadNotifications = notifications.some((notification) => !notification.read);
@@ -70,6 +75,7 @@ function DashboardScreenBody({
 
   const handleRefresh = React.useCallback(() => {
     qc.invalidateQueries({ queryKey: queryKeys.dashboard });
+    qc.invalidateQueries({ queryKey: queryKeys.accounts });
     qc.invalidateQueries({ queryKey: queryKeys.notifications() });
   }, [qc]);
 

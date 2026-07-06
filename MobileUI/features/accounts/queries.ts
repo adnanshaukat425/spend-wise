@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { accountsApi } from "@/lib/api";
-import type { CreateAccountRequest } from "@/lib/api/types";
+import type { CreateAccountRequest, UpdateAccountRequest } from "@/lib/api/types";
 import { invalidateFinancialQueries, queryKeys } from "@/lib/query";
 import { mapAccount } from "@/lib/mappers";
 import { useApiEnabled } from "@/hooks/api/shared";
@@ -19,11 +19,32 @@ export function useAccounts() {
   });
 }
 
+export function useAccount(id: string | undefined) {
+  const enabled = useApiEnabled() && Boolean(id);
+  return useQuery({
+    queryKey: queryKeys.account(id ?? ""),
+    queryFn: async () => mapAccount(await accountsApi.get(id!)),
+    enabled,
+  });
+}
+
 export function useCreateAccount() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: CreateAccountRequest) => accountsApi.create(body),
     onSuccess: () => {
+      invalidateFinancialQueries(qc);
+    },
+  });
+}
+
+export function useUpdateAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: UpdateAccountRequest }) =>
+      accountsApi.update(id, body),
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.account(id) });
       invalidateFinancialQueries(qc);
     },
   });

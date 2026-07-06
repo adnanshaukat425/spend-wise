@@ -16,9 +16,15 @@ export function AccountPicker({ selectedAccount, onPress }: AccountPickerProps) 
 
   if (!selectedAccount) {
     return (
-      <Text style={{ color: colors.mutedForeground, marginBottom: 8 }}>
-        No accounts linked yet.
-      </Text>
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.7}
+        testID="account-picker-empty"
+      >
+        <Text style={{ color: colors.mutedForeground, marginBottom: 8 }}>
+          No accounts linked yet. Tap to manage accounts.
+        </Text>
+      </TouchableOpacity>
     );
   }
 

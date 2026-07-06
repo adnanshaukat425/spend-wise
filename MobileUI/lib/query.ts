@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 
 export const queryKeys = {
   accounts: ["accounts"] as const,
+  account: (id: string) => ["account", id] as const,
   budget: ["budget"] as const,
   categories: (type?: string) => ["categories", type ?? "all"] as const,
   dashboard: ["dashboard"] as const,

@@ -34,6 +34,27 @@ class AccountsPage extends BasePage {
     return $$('-ios predicate string:name BEGINSWITH "account-row-"');
   }
 
+  async getFirstAccountRowId(): Promise<string> {
+    const rows = await this.getAccountRows();
+    if (rows.length === 0) {
+      throw new Error("No account rows found");
+    }
+
+    const testId = await rows[0].getAttribute("name");
+    const match = testId?.match(/^account-row-(.+)$/);
+    if (!match?.[1]) {
+      throw new Error(`Unexpected account row testID: ${testId}`);
+    }
+
+    return match[1];
+  }
+
+  async tapFirstAccount() {
+    const id = await this.getFirstAccountRowId();
+    await this.tapAccount(id);
+    return id;
+  }
+
   async tapAccount(id: string) {
     await this.tap(`account-row-${id}`);
   }

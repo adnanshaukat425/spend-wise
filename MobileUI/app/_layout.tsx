@@ -16,6 +16,7 @@ export default function RootLayout() {
         <Stack.Screen name="notifications" />
         <Stack.Screen name="accounts" />
         <Stack.Screen name="add-account" />
+        <Stack.Screen name="account/[id]" />
         <Stack.Screen name="transaction/[id]" />
         <Stack.Screen name="settings/[slug]" />
         <Stack.Screen name="(tabs)" />

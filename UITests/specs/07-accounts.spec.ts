@@ -72,4 +72,32 @@ describe("Accounts", () => {
     const rows = await AccountsPage.getAccountRows();
     expect(rows.length).toBeGreaterThan(0);
   });
+
+  it("should open the edit screen when tapping an account row", async () => {
+    await AccountsPage.tapFirstAccount();
+    await AddAccountPage.waitForLoad();
+    expect(await AddAccountPage.isOnScreen()).toBe(true);
+    const value = await AddAccountPage.nameInput.getValue();
+    expect(value).toContain("Test");
+  });
+
+  it("should allow updating the account balance", async () => {
+    await AddAccountPage.enterBalance("750");
+    const value = await AddAccountPage.balanceInput.getValue();
+    expect(value).toBe("750");
+  });
+
+  it("should save account edits and return to the accounts list", async () => {
+    await AddAccountPage.save();
+    await waitForDataRefresh(2000);
+    await AccountsPage.waitForLoad();
+    expect(await AccountsPage.isOnScreen()).toBe(true);
+  });
+
+  it("should persist the updated balance when reopening the account", async () => {
+    await AccountsPage.tapFirstAccount();
+    await AddAccountPage.waitForLoad();
+    const value = await AddAccountPage.balanceInput.getValue();
+    expect(value).toBe("750");
+  });
 });
